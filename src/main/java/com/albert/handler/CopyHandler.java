@@ -17,7 +17,7 @@ public class CopyHandler extends Handler {
     @Override
     protected String handlerWork() {
         try {
-            FileCopyUtils.copyFile(configInfo.getGitbookPath()+"/_book", configInfo.getGithubProjectPath());
+            FileCopyUtils.copyFile(configInfo.getGitbookPath()+"/docs/.vuepress/dist", configInfo.getGithubProjectPath());
             System.out.println("第二步：将_book目录文件复制到项目目录成功!");
         } catch (IOException e) {
             e.printStackTrace();

@@ -16,7 +16,7 @@ public class GitbookHandler extends Handler {
     @Override
     protected String handlerWork() {
         try {
-            ShellUtils.exec(configInfo.getGitbookPath(), "gitbook build");
+            ShellUtils.exec(configInfo.getGitbookPath(), "vuepress build .");
             System.out.println("第一步：gitbook build success!");
         } catch (IOException e) {
             e.printStackTrace();

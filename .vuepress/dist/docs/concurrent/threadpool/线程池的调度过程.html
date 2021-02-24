@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>线程池的创建与调度</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/assets/css/0.styles.88b3a504.css" as="style"><link rel="preload" href="/assets/js/app.17451394.js" as="script"><link rel="preload" href="/assets/js/2.cc84b9c3.js" as="script"><link rel="preload" href="/assets/js/23.e39158e5.js" as="script"><link rel="prefetch" href="/assets/js/10.0c56a2dc.js"><link rel="prefetch" href="/assets/js/11.506c65d6.js"><link rel="prefetch" href="/assets/js/12.343d956c.js"><link rel="prefetch" href="/assets/js/13.60366a73.js"><link rel="prefetch" href="/assets/js/14.2ff1c4aa.js"><link rel="prefetch" href="/assets/js/15.99b8ad7b.js"><link rel="prefetch" href="/assets/js/16.f700ea7c.js"><link rel="prefetch" href="/assets/js/17.5ebf7113.js"><link rel="prefetch" href="/assets/js/18.7b4e9722.js"><link rel="prefetch" href="/assets/js/19.62b89497.js"><link rel="prefetch" href="/assets/js/20.d3785e00.js"><link rel="prefetch" href="/assets/js/21.4f1901b1.js"><link rel="prefetch" href="/assets/js/22.df6d6621.js"><link rel="prefetch" href="/assets/js/24.df11f8b8.js"><link rel="prefetch" href="/assets/js/25.d6552f6a.js"><link rel="prefetch" href="/assets/js/26.3c85f2f6.js"><link rel="prefetch" href="/assets/js/27.9decae83.js"><link rel="prefetch" href="/assets/js/28.eccb7dbb.js"><link rel="prefetch" href="/assets/js/29.82065844.js"><link rel="prefetch" href="/assets/js/3.49003687.js"><link rel="prefetch" href="/assets/js/30.470a7694.js"><link rel="prefetch" href="/assets/js/31.0fafad5a.js"><link rel="prefetch" href="/assets/js/32.78421787.js"><link rel="prefetch" href="/assets/js/33.63fdbafa.js"><link rel="prefetch" href="/assets/js/34.2d9f639c.js"><link rel="prefetch" href="/assets/js/35.8199bc3f.js"><link rel="prefetch" href="/assets/js/36.1210455c.js"><link rel="prefetch" href="/assets/js/37.50ae1287.js"><link rel="prefetch" href="/assets/js/38.01c6c439.js"><link rel="prefetch" href="/assets/js/39.d382d2f3.js"><link rel="prefetch" href="/assets/js/4.fd2cb9de.js"><link rel="prefetch" href="/assets/js/40.b0ff7f27.js"><link rel="prefetch" href="/assets/js/41.274811b5.js"><link rel="prefetch" href="/assets/js/42.63672faa.js"><link rel="prefetch" href="/assets/js/43.31dedc42.js"><link rel="prefetch" href="/assets/js/5.c4461c2c.js"><link rel="prefetch" href="/assets/js/6.ddc16600.js"><link rel="prefetch" href="/assets/js/7.698acf48.js"><link rel="prefetch" href="/assets/js/8.8691f2cd.js"><link rel="prefetch" href="/assets/js/9.05095da2.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.88b3a504.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="线程池的创建与调度"><a href="#线程池的创建与调度" class="header-anchor">#</a> 线程池的创建与调度</h2> <h3 id="线程池创建时的7个参数"><a href="#线程池创建时的7个参数" class="header-anchor">#</a> 线程池创建时的7个参数</h3> <div class="language- extra-class"><pre class="language-text"><code>public ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue&lt;Runnable&gt; workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler) {
+       ......
+    }
+</code></pre></div><p>对应各个参数的含义：</p> <p><em>1.corePoolSize</em></p> <p>核心线程数。即使在空闲时也要保留在线程池中的线程数，除非设置了allowCoreThreadTimeOut。</p> <p><em>2.maximumPoolSize</em></p> <p>最大线程数。当线程数大于核心线程数时，一个任务被提交到线程池后，首先会缓存到工作队列中，如果工作队列满了，则会在线程池中创建一个新线程，而线程数量会有一个最大数量的限制，即为maximumPoolSize。</p> <p><em>3.keepAliveTime</em></p> <p>线程空闲时间。一个线程处于空闲，并且线程数量大于核心线程数，那么该线程会在指定时间后被回收，指定时间由keepAliveTime指定。</p> <p><em>4.TimeUnit unit</em></p> <p>线程空闲时间单位。</p> <p><em>5.workQueue</em></p> <p>存放线程任务类的任务队列。当线程池没有空闲线程时，在执行任务之前将任务保存在队列中，该队列仅保存由execute方法提交的任务。</p> <p><em>6.ThreadFactory threadFactory</em></p> <p>线程工厂，可设置线程为守护线程，自定义线程名称等。</p> <p><em>7.RejectedExecutionHandler handler</em></p> <p>任务拒绝策略。当任务队列里的任务长度达到最大，线程池中的线程数量达到最大，就会执行任务拒绝策略。</p> <h3 id="线程池中的任务队列"><a href="#线程池中的任务队列" class="header-anchor">#</a> 线程池中的任务队列</h3> <p><em>1.ArrayBlockingQueue （有界队列）</em></p> <p>是一个基于数组结构的有界阻塞队列，此队列按 FIFO（先进先出）原则对元素进行排序。</p> <p><em>2.LinkedBlockingQueue （无界队列）</em></p> <p>一个基于链表结构的阻塞队列，此队列按FIFO （先进先出） 排序元素，吞吐量通常要高于ArrayBlockingQueue。静态工厂方法Executors.newFixedThreadPool()使用了这个队列。</p> <p><em>3.SynchronousQueue（同步队列）</em></p> <p>一个不存储元素的阻塞队列。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量通常要高于LinkedBlockingQueue，静态工厂方法Executors.newCachedThreadPool使用了这个队列。</p> <p><em>4.DelayQueue（延迟队列）</em></p> <p>一个任务定时周期的延迟执行的队列。根据指定的执行时间从小到大排序，否则根据插入到队列的先后排序。</p> <p><em>5.PriorityBlockingQueue（优先级队列）</em></p> <p>一个具有优先级得无限阻塞队列。</p> <h3 id="四种拒绝策略"><a href="#四种拒绝策略" class="header-anchor">#</a> 四种拒绝策略</h3> <hr> <h4 id="直接抛出异常-abortpolicy"><a href="#直接抛出异常-abortpolicy" class="header-anchor">#</a> 直接抛出异常：AbortPolicy</h4> <p>默认的任务拒绝策略，对于新增任务，拒绝处理，直接抛出RejectedExecutionException异常。</p> <div class="language- extra-class"><pre class="language-text"><code>public static class AbortPolicy implements RejectedExecutionHandler {
+    
+    public AbortPolicy() { }
+
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        //直接抛出异常
+        throw new RejectedExecutionException(&quot;Task &quot; + r.toString() +
+                                             &quot; rejected from &quot; +
+                                             e.toString());
+    }
+}
+</code></pre></div><h4 id="调用当前线程-callerrunspolicy"><a href="#调用当前线程-callerrunspolicy" class="header-anchor">#</a> 调用当前线程：CallerRunsPolicy</h4> <p>调用自己的线程来执行任务，不创建新的线程，而是用自己当前线程进行执行，会降低对于新任务的提交速度，影响整体性能。如果程序能够容许延时，并且不能丢弃每一个任务，即可采取这个策略。</p> <div class="language- extra-class"><pre class="language-text"><code>public static class CallerRunsPolicy implements RejectedExecutionHandler {
+    public CallerRunsPolicy() { }
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        if (!e.isShutdown()) {
+            //调用自己的线程执行
+            r.run();
+        }
+    }
+}
+</code></pre></div><h4 id="不做处理-discardpolicy"><a href="#不做处理-discardpolicy" class="header-anchor">#</a> 不做处理： DiscardPolicy</h4> <p>不做任何处理，直接丢掉该任务.</p> <div class="language- extra-class"><pre class="language-text"><code>public static class DiscardPolicy implements RejectedExecutionHandler {
+   
+    public DiscardPolicy() { }
+
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+    }
+}
+</code></pre></div><h4 id="删除队列任务-discardoldestpolicy"><a href="#删除队列任务-discardoldestpolicy" class="header-anchor">#</a> 删除队列任务： DiscardOldestPolicy</h4> <p>删除任务队列中最早的任务，将新增任务添加到任务队列中。</p> <div class="language- extra-class"><pre class="language-text"><code>public static class DiscardOldestPolicy implements RejectedExecutionHandler {
+   
+    public DiscardOldestPolicy() { }
+
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        if (!e.isShutdown()) {
+            //删除线程池的任务队列的第一个元素
+            e.getQueue().poll();
+            e.execute(r);
+        }
+    }
+}
+</code></pre></div><h3 id="线程池的调度过程"><a href="#线程池的调度过程" class="header-anchor">#</a> 线程池的调度过程</h3> <ol><li>根据<code>初始化参数</code>创建线程池，刚创建时，线程池内<code>没有</code>线程。</li> <li>当有新的任务进到线程池的时候，会立即<code>新增</code>线程执行任务。</li> <li>若线程数<code>等于</code>核心线程数时，这时进来的任务会被添加到<code>任务队列</code>中，而线程会从任务队列中获取任务执行。</li> <li>线程数<code>等于</code>核心线程数且<code>任务队列已满</code>，这时候会在线程池中<code>创建新线程</code>来执行任务。</li> <li>若线程数<code>等于</code>最大线程数，且任务队列<code>已满</code>，此时会执行线程池对应的<code>拒绝策略</code>。</li> <li>当任务队列中没有任务，且线程等待时间超过空闲时间，则该线程会被回收。最终线程池中的线程数量会保持在核心线程数的大小。</li></ol></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.17451394.js" defer></script><script src="/assets/js/2.cc84b9c3.js" defer></script><script src="/assets/js/23.e39158e5.js" defer></script>
+  </body>
+</html>

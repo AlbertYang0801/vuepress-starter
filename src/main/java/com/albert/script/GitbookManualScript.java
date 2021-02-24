@@ -18,11 +18,11 @@ public class GitbookManualScript {
     /**
      * gitbook目录
      */
-    private final static String GITBOOK_PATH = "/Users/yangjunwei/gitbook";
+    private final static String GITBOOK_PATH = "/Users/yangjunwei/vuepress-starter";
     /**
      * github对应本地项目目录
      */
-    private final static String GITHUB_PROJECT_PATH = "/Users/yangjunwei/IdeaProjects/gitbook-technology";
+    private final static String GITHUB_PROJECT_PATH = "/Users/yangjunwei/IdeaProjects/vuepress-technology-station";
     /**
      * github对应remote
      */
