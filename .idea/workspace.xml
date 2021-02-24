@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:main" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b6a11529-7104-495a-bca5-6dd806bfeaf7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/docs/.vuepress/configs/navConfig.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/.vuepress/configs/plugins.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/.vuepress/configs/sidebar/concurrent.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/.vuepress/configs/sidebarConfig.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/personal/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/personal/work/oppo出差随笔.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vuepress/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/.vuepress/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vuepress/configs/navConfig.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vuepress/configs/plugins.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vuepress/configs/sidebarConfig.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/albert/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/container/并发容器.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/公平锁和非公平锁.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/可重入锁和不可重入锁.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/并发锁.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/自旋锁.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/读写锁ReadWriteLock.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/重入锁ReentrantLock.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/重入锁的好搭档Condition.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/lock/锁优化.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/synchronized/synchronized.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/synchronized/synchronized和Lock的区别.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/synchronized/同步代码块和同步方法.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/safety/threadlocal/ThreadLocal.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/JDK对线程池的支持.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/JDK提供的线程池.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/四种拒绝策略.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/线程池.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/线程池创建时的七个参数.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/threadpool/线程池的调度过程.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/tool/ReadLimiter限流.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/tool/信号量Semaphore.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/tool/倒计数器CountdownLatch.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/tool/并发控制工具.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrent/tool/循环栅栏CyclicBarrier.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/overview/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/服务器向.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/端口占用问题.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/Java实现markdown增加目录.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/Java实现复制文件夹下的所有文件.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/Java实现执行系统命令.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/PicGo+GitHub搭建图床.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/gitbook/Gitbook插件.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/gitbook/Gitbook搭配GitHubPages搭建主页.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/gitbook/Gitbook本地环境搭建.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/gitbook/Gitbook自动发布GitHub脚本.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/gitbook/gitbook使用总结.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/工具向.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="vue-pages" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="/Library/maven/m2/repository" />
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+        <option name="userSettingsFile" value="/Library/apache-maven-3.6.3/conf/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ouvw98VTaFkUGPAtsChowxv1uf" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="flattenModules" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/docs/.vuepress/configs/sidebarConfig" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs/personal/work" />
+      <recent name="$PROJECT_DIR$/docs/concurrent/tool" />
+      <recent name="$PROJECT_DIR$/docs/concurrent" />
+      <recent name="$PROJECT_DIR$/docs/concurrent/safety/synchronized" />
+      <recent name="$PROJECT_DIR$/docs/concurrent/safety" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs/.vuepress/configs/sidebarConfig" />
+      <recent name="$PROJECT_DIR$/docs/personal" />
+      <recent name="$PROJECT_DIR$/docs/concurrent/threadpool" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="FileApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="vuepress-starter" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.albert.FileApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b6a11529-7104-495a-bca5-6dd806bfeaf7" name="Default Changelist" comment="" />
+      <created>1614149525515</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1614149525515</updated>
+      <workItem from="1614149527333" duration="3620000" />
+      <workItem from="1614168677883" duration="4674000" />
+    </task>
+    <task id="LOCAL-00001" summary="# first commit">
+      <created>1614150978342</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1614150978343</updated>
+    </task>
+    <task id="LOCAL-00002" summary="# first commit">
+      <created>1614151030724</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1614151030724</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="# first commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="# first commit" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="348" y="186" key="Vcs.Push.Dialog.v2" timestamp="1614151032030">
+      <screen x="56" y="25" width="1384" height="875" />
+    </state>
+    <state x="348" y="186" key="Vcs.Push.Dialog.v2/56.25.1384.875@56.25.1384.875" timestamp="1614151032030" />
+    <state x="539" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1614153161716">
+      <screen x="54" y="25" width="1386" height="875" />
+    </state>
+    <state x="539" y="380" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/54.25.1386.875@54.25.1386.875" timestamp="1614153161716" />
+    <state x="478" y="303" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1614152338578">
+      <screen x="54" y="25" width="1386" height="875" />
+    </state>
+    <state x="478" y="303" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/54.25.1386.875@54.25.1386.875" timestamp="1614152338578" />
+  </component>
+</project>
