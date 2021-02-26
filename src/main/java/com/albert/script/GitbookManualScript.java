@@ -18,7 +18,7 @@ public class GitbookManualScript {
     /**
      * gitbook目录
      */
-    private final static String GITBOOK_PATH = "/Users/yangjunwei/vuepress-starter";
+    private final static String GITBOOK_PATH = "/Users/yangjunwei/vuepress-starter/docs";
     /**
      * github对应本地项目目录
      */

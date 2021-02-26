@@ -11,6 +11,12 @@ module.exports = {
     markdown: {
         lineNumbers: true // 代码块是否显示行号
     },
+    head: [
+        [
+            'link', // 设置 favicon.ico，注意图片放在 public 文件夹下
+            { rel: 'icon', href: 'logo.ico' }
+        ]
+    ],
     themeConfig: {
         nav: navConfig,		//导航栏
         sidebar: sidebarConfig, //侧边栏配置，自定义
