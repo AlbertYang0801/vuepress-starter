@@ -42,7 +42,10 @@ module.exports = [
         "title": "并发容器",
         "collapsable": true,
         "children": [
-            "/concurrent/container/并发容器.md"
+            "/concurrent/container/并发容器.md",
+            "/concurrent/container/线程安全的Map.md",
+            "/concurrent/container/线程安全的List.md",
+            "/concurrent/container/BlockQueue阻塞队列.md"
         ]
     }
 ]
