@@ -2,7 +2,7 @@
 home: true
 heroImage: 
 actionText: 了解我 →
-actionLink: /overview/
+actionLink: /personal/
 features:
 - title: 高并发学习笔记
   details: 高并发是比较重要的技术，也是进阶的关键。记录学习过程的笔记，以便随时复习。
