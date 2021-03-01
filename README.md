@@ -7,7 +7,7 @@
     
 ### 发布脚本
 
-[手动发布脚本](src/main/java/com/albert/script/GitbookManualScript.java)
+- [手动发布脚本](src/main/java/com/albert/script/GitbookManualScript.java)
 
 ### 常用命令
 
