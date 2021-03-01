@@ -29,7 +29,14 @@ const sidebarConfig = {
     ],
     "/personal/": [
         {
-            "title": "工作",
+            "title": "学习计划表",
+            "collapsable": true,
+            "children": [
+                "/personal/学习计划表.md"
+            ]
+        },
+        {
+            "title": "个人随笔",
             "collapsable": true,
             "children": [
                 "/personal/work/oppo出差随笔.md"
