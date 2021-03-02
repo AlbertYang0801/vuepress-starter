@@ -1,8 +1,8 @@
-### 倒计数器CountdownLatch
+### 倒计数器 CountdownLatch
 
 ---
 
-`CountDownLatch`是线程相关的一个倒计数器。位于`java.util.concurrent.CountDownLatch`。
+`CountDownLatch` 是线程相关的一个倒计数器。位于 `java.util.concurrent.CountDownLatch`。
 
 #### 主要方法
 
@@ -15,11 +15,9 @@ public void countDown();
 public void await() throws InterruptedException ;
 ```
 
+在创建的时候，可以为 `CountDownLatch` 设置初始值 `n`，线程可进行倒数操作 `countDown()` 和等待操作 `await()`。
 
-
-在创建的时候，可以为`CountDownLatch`设置初始值`n`，线程可进行倒数操作`countDown()`和等待操作`await()`。
-
-`CountDownLatch`计数器的操作是原子性的，同时只能有一个线程去操作这个计数器，所以同时只能有一个线程能减少这个计数器里面的值。任何线程都可以调用对应的`await()`方法，直到这个计数器的初始值被其他的线程减到0为止，调用`await()`方法的线程即可继续执行。
+`CountDownLatch` 计数器的操作是原子性的，同时只能有一个线程去操作这个计数器，所以同时只能有一个线程能减少这个计数器里面的值。任何线程都可以调用对应的 `await()` 方法，直到这个计数器的初始值被其他的线程减到 0 为止，调用 `await()` 方法的线程即可继续执行。
 
 #### 练习例子
 
@@ -27,7 +25,7 @@ public void await() throws InterruptedException ;
 
 >有三个工人为老板干活，这个老板会在三个工人全部干完活之后，检查工作。
 
-* 设计`Worker`类为工人。
+* 设计 `Worker` 类为工人。
 
   ```java
   @Slf4j
@@ -64,7 +62,7 @@ public void await() throws InterruptedException ;
   }
   ```
 
-* 设计`Boss`类为老板。
+* 设计 `Boss` 类为老板。
 
   ```java
   public class Boss implements Runnable{
@@ -91,7 +89,7 @@ public void await() throws InterruptedException ;
   }
   ```
 
-* 在调用时指定计数器个数，`Worker`类调用`countDown()`方法，使计数器减1。`Boss`类调用`await()`方法，使`Boss`线程休眠，等待计数器减少到0时唤醒`Boss`类。
+* 在调用时指定计数器个数，`Worker` 类调用 `countDown()` 方法，使计数器减 1。`Boss` 类调用 `await()` 方法，使 `Boss` 线程休眠，等待计数器减少到 0 时唤醒 `Boss` 类。
 
   ```java
   		/**
@@ -140,11 +138,11 @@ public void await() throws InterruptedException ;
 
   
 
-例2：使用`CountDownLatch`实现多线程之间按照顺序执行。
+例2：使用 `CountDownLatch` 实现多线程之间按照顺序执行。
 
 >进行读写操作，读操作必须在写操作完成之后进行。
 
-* 设计`Read`类为读操作。
+* 设计 `Read` 类为读操作。
 
   ```java
   public class Read implements Runnable{
@@ -166,7 +164,7 @@ public void await() throws InterruptedException ;
   }
   ```
 
-* 设计`Write`类为写操作。
+* 设计 `Write` 类为写操作。
 
   ```java
   public class Write implements Runnable {
