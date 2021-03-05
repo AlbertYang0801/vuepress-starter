@@ -1,7 +1,14 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "线程池",
+        "title": "一、多线程基础",
+        "collapsable": true,
+        "children": [
+            "/concurrent/basic/多线程基础"
+        ]
+    },
+    {
+        "title": "二、线程池",
         "collapsable": true,
         "children": [
             "/concurrent/threadpool/线程池概述",
@@ -9,7 +16,7 @@ module.exports = [
             "/concurrent/threadpool/JDK提供的线程池"
         ]
     }, {
-        "title": "synchronized",
+        "title": "三、synchronized",
         "collapsable": true,
         "children": [
             "/concurrent/synchronized/synchronized概述",
@@ -17,7 +24,7 @@ module.exports = [
             "/concurrent/synchronized/synchronized和Lock的区别"
         ]
     }, {
-        "title": "锁",
+        "title": "四、锁",
         "collapsable": true,
         "children": [
             "/concurrent/lock/自旋锁",
@@ -29,23 +36,23 @@ module.exports = [
             "/concurrent/lock/锁优化",
         ]
     }, {
-        "title": "并发控制工具",
+        "title": "五、并发控制工具",
         "collapsable": true,
         "children": [
             "/concurrent/tool/倒计数器CountdownLatch",
             "/concurrent/tool/信号量Semaphore",
             "/concurrent/tool/循环栅栏CyclicBarrier",
+            "/concurrent/tool/LockSupport阻塞工具",
             "/concurrent/tool/ReadLimiter限流",
             "/concurrent/tool/ThreadLocal"
         ]
     }, {
-        "title": "并发容器",
+        "title": "六、并发容器",
         "collapsable": true,
         "children": [
-            "/concurrent/container/并发容器.md",
-            "/concurrent/container/线程安全的Map.md",
-            "/concurrent/container/线程安全的List.md",
-            "/concurrent/container/BlockQueue阻塞队列.md"
+            "/concurrent/container/线程安全的Map",
+            "/concurrent/container/线程安全的List",
+            "/concurrent/container/BlockQueue阻塞队列"
         ]
     }
 ]
