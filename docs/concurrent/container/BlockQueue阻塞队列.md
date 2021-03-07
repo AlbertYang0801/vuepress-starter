@@ -24,7 +24,7 @@
 
 `BlockQueue`是一个接口，其实现类有`ArrayBlockingQueue`、`LinkedBlockingQueue`、`SynchronousQueue`、`DelayQueue`、`PriorityBlockingQueue`等。下面以`ArrayBlockingQueue`为例，主要分析`put()`方法和`take()`方法的阻塞实现。
 
-##### 1.ArrayBlockingQueue（有界队列）
+##### 1. ArrayBlockingQueue（有界队列）
 
 是一个基于数组结构的有界阻塞队列，此队列按 FIFO（先进先出）原则对元素进行排序，由于结构基于数组，所以在创建的时候需要指定长度。
 
@@ -166,9 +166,105 @@ ArrayBlockingQueue<Integer> blockingQueue = new ArrayBlockingQueue<>(5);
 
 
 
-##### 2.LinkedBlockingQueue（无界队列）
+##### 2. LinkedBlockingQueue（无界队列）
 
-一个基于链表结构的阻塞队列，此队列按FIFO （先进先出） 排序元素，吞吐量通常要高于ArrayBlockingQueue。静态工厂方法Executors.newFixedThreadPool()使用了这个队列。
+一个基于链表结构的阻塞队列，此队列按FIFO （先进先出） 排序元素，吞吐量通常要高于`ArrayBlockingQueue`。静态工厂方法 `Executors.newFixedThreadPool()` 使用了这个队列。
+
+在 `ArrayBlockingQueue`  队列源码中 ，`take()` 和 `put()`  分别实现了从队列中取得数据和往队列中增加数据，而这两个方法使用的是同一把重入锁来保证线程安全。
+
+而在  LinkedBlockingQueue  源码中，其实就应用了锁分离的思想。
+
+LinkedBlockingQueue 里面的 `take()` 和 `put()`  同样实现了从队列中取得数据和往队列中增加数据。但是由于 LinkedBlockingQueue 是基于链表实现的，两个操作分别作用于队列的头部和尾部。所以，两个操作并不冲突。
+
+如果和 `ArrayBlockingQueue` 一样使用同一把锁， `take()` 和 `put()`  操作就不能实现并发，两个操作之间还是会有竞争，进而影响性能。
+
+而 JDK实现 LinkedBlockingQueue 时，使用了两把不同的锁分离了 `take()` 和 `put()`  操作。
+
+```java
+public class LinkedBlockingQueue<E> extends AbstractQueue<E>
+        implements BlockingQueue<E>, java.io.Serializable {
+      
+    private final ReentrantLock takeLock = new ReentrantLock();
+
+    private final ReentrantLock putLock = new ReentrantLock();
+      
+    ......
+      
+}
+```
+
+- LinkedBlockingQueue 里面的 `take()` 方法的实现具体如下：
+
+```java
+public E take() throws InterruptedException {
+        E x;
+        int c = -1;
+        final AtomicInteger count = this.count;
+      	//使用takeLock锁
+        final ReentrantLock takeLock = this.takeLock;
+  			//加锁
+        takeLock.lockInterruptibly();
+        try {
+          	//如果队列为空
+            while (count.get() == 0) {
+              	//等待
+                notEmpty.await();
+            }
+          	//获取队列头部数据并从队列删除
+            x = dequeue();
+          	// 使用原子操作减1 （c是减1之前的值）
+            c = count.getAndDecrement();
+            if (c > 1)
+                notEmpty.signal();
+        } finally {
+            takeLock.unlock();
+        }
+        if (c == capacity)
+          	//通知put操作，队列有空余空间
+            signalNotFull();
+        return x;
+    }
+```
+
+- LinkedBlockingQueue 里面的 `put()` 方法的实现具体如下：
+
+```java
+    public void put(E e) throws InterruptedException {
+        if (e == null) throw new NullPointerException();
+    
+        int c = -1;
+        Node<E> node = new Node<E>(e);
+      	//使用putLock锁
+        final ReentrantLock putLock = this.putLock;
+        final AtomicInteger count = this.count;
+        putLock.lockInterruptibly();
+        try {
+           	//如果当前队列满了
+            while (count.get() == capacity) {
+              	//等待
+                notFull.await();
+            }
+          	//将节点放到队列末尾
+            enqueue(node);
+          	// 使用原子操作加1 （c是加1之前的值）
+            c = count.getAndIncrement();
+            if (c + 1 < capacity)
+                notFull.signal();
+        } finally {
+            putLock.unlock();
+        }
+        if (c == 0)
+          	//通知take操作，队列不为空
+            signalNotEmpty();
+    }
+
+    private void enqueue(Node<E> node) {
+      	//将node指向尾结点
+        last = last.next = node;
+    }
+```
+
+通过两把锁，实现了读数据和写数据的分离，实现了真正意义上的并发。
 
 ##### 3.SynchronousQueue（同步队列）
 
