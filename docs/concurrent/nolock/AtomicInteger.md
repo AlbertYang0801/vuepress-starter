@@ -1,0 +1,138 @@
+## AtomicInteger
+
+AtomicInteger 是无锁的线程安全整数类，基于 `CAS` 实现，位于 `java.util.concurrent.atomic` 包下，该包下实现了一系列使用 `CAS` 操作实现线程安全的类型。其它原子类和 AtomicInteger 非常类似，故只分析 AtomicInteger。
+
+<img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210308171220.png" style="zoom:33%;" />
+
+### 比较 Integer
+
+AtomicInteger 是一个整数，与 Integer 不同的是，它是可变的并且是线程安全的。
+
+比如在多线程不加锁的情况下，操作 Integer 或者 AtomicInteger ，来比较结果是否正确。
+
+```java
+public class AtomicInteger_02 {
+
+    static CountDownLatch countDownLatch = new CountDownLatch(10);
+
+    //线程不安全
+//    static Integer num;
+
+    //线程安全
+    static AtomicInteger num = new AtomicInteger();
+
+    static class AddThread implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10000; i++) {
+//                num++;
+              	//数据加1，并返回当前值（忽略返回结果）
+                num.incrementAndGet();
+            }
+            countDownLatch.countDown();
+        }
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10; i++) {
+            executorService.submit(new AddThread());
+        }
+        countDownLatch.await();
+        System.out.println(num);
+        executorService.shutdown();
+    }
+
+
+}
+
+//output
+//100000
+```
+
+从上面的例子可以发现，对 Integer 类型的数据进行累加操作时，结果很难达到 100000 。而对 AtomicInteger 类型的数据进行累加的时候，结果能够达到 100000。
+
+### 常用方法
+
+```java
+//获取当前值
+public final int get();   
+//设置当前值
+public final void set(int newValue)
+//获取旧值，并设置新值
+public final int getAndSet(int newValue)
+//如果当前值为expect，则将当前值设置为update
+public final boolean compareAndSet(int expect, int update) 
+//返回旧值，当前值加1
+public final int getAndIncrement()
+//返回旧值，当前值减1
+public final int getAndDecrement()
+//返回旧值，当前值增加delta
+public final int getAndAdd(int delta)
+//当前值加1，返回新值
+public final int incrementAndGet() 
+//当前值减1，返回新值
+public final int decrementAndGet()
+//当前值增加delta，返回新值
+public final int addAndGet(int delta)
+```
+
+### 源码分析
+
+这里以 `getAndSet(int newValue)` 方法为例。
+
+```java
+    public final int getAndSet(int newValue) {
+        return unsafe.getAndSetInt(this, valueOffset, newValue);
+    }
+```
+
+实际上是调用了 unsafe 实例里的 `getAndSetInt(Object var1, long var2, int var4)` 方法。（注意 `unsafe` 类是 Java 中的指针）。
+
+- 第一个参数 `var1` 对应传入的对象；
+- 第二个参数 `var2` 对应对象内的偏移量（通过偏移量可以快速定位数据）；
+- 第三个参数 `var4` 对应的是要设置的新值。
+
+```java
+ public final class Unsafe {
+   
+   ......
+
+   //第一个参数，代表给定的对象；第二个参数，代表对象内的偏移量；第三个参数代表要设置的值
+	 public final int getAndSetInt(Object var1, long var2, int var4) {
+        int var5;
+        do {
+          	//根据给定对象和偏移量获取对象当前值
+            var5 = this.getIntVolatile(var1, var2);
+          	//循环，直到操作成功
+        } while(!this.compareAndSwapInt(var1, var2, var5, var4));
+        return var5;
+   }
+   
+   public native int getIntVolatile(Object var1, long var2);
+   
+    //本地方法
+   public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);
+   
+   ......
+   
+ }
+```
+
+操作对象本质上使用了 `CAS` ，并且放到了循环里面进行，来保证操作成功。
+
+原因是若 `CAS` 操作时的期望值和当前值不一致（代表对象值被其它线程修改了），操作会不成功并返回 false 。此时就需要重新获取对象值并继续进行 `CAS` 操作，以此循环下去直到执行成功。
+
+首先根据根据给定对象和偏移量获取对象当前值，调用 `compareAndSwapInt(Object var1, long var2, int var4, int var5)` 方法。该方法是由 `native` 方法修饰的本地方法，是 `CAS` 原子操作具体的体现。
+
+- 第一个参数 `var1` 对应传入的对象；
+
+- 第二个参数 `var2` 对应对象内的偏移量（通过偏移量可以快速定位数据）；
+
+- 第三个参数 `var4` 对应的是期望值；
+
+- 第四个参数 `var5` 对应的是要设置的新值。
+
+
+对应`CAS` 操作的本质就是以对象当前值和之前获取到的期望值作比较，若一致，则代表在获取期望值和进行操作之间没有其它线程修改对象值，这时把当前值设置为新值并返回 true ，反之返回 false 。

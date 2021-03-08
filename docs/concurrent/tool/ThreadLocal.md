@@ -1,6 +1,6 @@
 
 
-### ThreadLocal
+### ThreadLocal总结
 
 * [概念](#概念)
 * [简单例子](#简单例子)
@@ -43,17 +43,17 @@ public class ThreadLocalDemo {
 
 从代码中可以看到，新线程和主线程之间对  ThreadLocal 的修改不会互相影响。
 
-对例子的内存图分析如下，可以看到两个线程其实指向的是同一个 ThreadLocal  对象，而每个线程都会在内存中维护一个 `ThreadLocalMap` ，需要注意 `ThreadLocalMap` 存放的 `key` 是 ThreadLocal 对象的弱引用，`value` 存放的是设置的值。(具体可见源码阅读)
+对例子的内存图分析如下，可以看到两个线程其实指向的是同一个 ThreadLocal  对象，而每个线程都会在内存中维护一个 ThreadLocalMap ，需要注意 ThreadLocalMap 存放的 key 是 ThreadLocal 对象的弱引用，value 存放的是设置的值。(具体可见源码阅读)
 
 ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210306234735.png)
 
 #### 源码阅读
 
-ThreadLocal 内部维护了一个静态类 `ThreadLocalMap` , `ThreadLocalMap` 内部维护了一个 `Entry` 类用来存储数据。`key` 值存放的就是 ThreadLocal 对象，而 `value` 存放的就是 ThreadLocal 里需要存放的变量。
+ThreadLocal 内部维护了一个静态类 ThreadLocalMap , ThreadLocalMap  内部维护了一个 Entry  类用来存储数据。 key 值存放的就是 ThreadLocal 对象，而 value 存放的就是 ThreadLocal 里需要存放的变量。
 
 - set方法
 
-  将 `key-value` 添加到 `ThreadLocalMap` 中，`key` 是 ThreadLocal 对象 ，而 `value` 是需要设置的 ThreadLocal 里需要存放的变量。
+  将数据添加到 ThreadLocalMap 中，  key 是 ThreadLocal 对象 ，而 value 是需要设置的 ThreadLocal 里需要存放的变量。
 
   ```java
   public class ThreadLocal<T> {
@@ -119,7 +119,7 @@ ThreadLocal 内部维护了一个静态类 `ThreadLocalMap` , `ThreadLocalMap` �
 
 - get方法
 
-  首先根据当前线程获取对应的 `ThreadLocalMap` 实例，该实例存放了对应的变量值，其中 `key`是 ThreadLocal 对象。根据 ThreadLocal  对象从 `ThreadLocalMap` 中获取 ThreadLocal  对应的 `Entry`，返回`Entry`里的 `value`值，即为 ThreadLocal 对应的变量值。
+  首先根据当前线程获取对应的 ThreadLocalMap 实例，该实例存放了对应的变量值，其中 key 是 ThreadLocal 对象。根据 ThreadLocal  对象从 ThreadLocalMap  中获取 ThreadLocal 对应的 Entry ，返回Entry 里的 value 值，即为 ThreadLocal 对应的变量值。
 
   ```java
   public class ThreadLocal<T> {
@@ -189,7 +189,7 @@ ThreadLocal 内部维护了一个静态类 `ThreadLocalMap` , `ThreadLocalMap` �
 
 > 弱引用：如果一个对象仅被一个弱引用指向，那么在下一次内存回收的时候，这个对象就会被垃圾回收器回收掉。
 
-实际保存  ThreadLocal 变量值的是 `Entry`类，该类是 ThreadLocal  内部类 `ThreadLocalMap` 里的内部类。通过源码可以看到 `key` 的赋值使用了弱引用。
+实际保存  ThreadLocal 变量值的是 Entry 类，该类是 ThreadLocal  内部类 ThreadLocalMap 里的内部类。通过源码可以看到  key 的赋值使用了弱引用。
 
 ```java
         static class Entry extends WeakReference<ThreadLocal<?>> {
@@ -206,39 +206,39 @@ ThreadLocal 内部维护了一个静态类 `ThreadLocalMap` , `ThreadLocalMap` �
 
 
 
-继续分析上方的例子，如果我们在使用 ThreadLocal  结束之后，将线程中的`ThreadLocal引用` 指向 `null`，即释放 ThreadLocal 对象。
+继续分析上方的例子，如果我们在使用 ThreadLocal  结束之后，将线程中的 ThreadLocal引用 指向 `null`，即释放 ThreadLocal 对象。
 
 ```java
 ThreadLocalDemo.threadLocal = null;
 ```
 
-- 假设 `ThreadLocalMap ` 的 `key` 对应的引用是`强引用`。
+- 假设 ThreadLocalMap 的 key 对应的引用是 `强引用`。
 
 > 强引用：指创建一个对象并把这个对象赋给一个引用变量， 强引用有引用变量指向时永远不会被垃圾回收。即使内存不足的时候宁愿报OOM也不被垃圾回收器回收，我们new的对象都是强引用
 
-此时如图所示，虽然线程不会拥有对  ThreadLocal  对象的引用，但是线程内部的 `ThreadLocalMap` 会一直持有对  ThreadLocal 的引用，而这个时候 ThreadLocal  就无法被真正释放，占用着内存直到线程结束。由于  ThreadLocal 没有被线程引用而且占据着内存，就造成了 `内存泄漏` 的问题。
+此时如图所示，虽然线程不会拥有对  ThreadLocal  对象的引用，但是线程内部的 ThreadLocalMap 会一直持有对  ThreadLocal 的引用，而这个时候 ThreadLocal  就无法被真正释放，占用着内存直到线程结束。由于  ThreadLocal 没有被线程引用而且占据着内存，就造成了 `内存泄漏` 的问题。
 
 ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210307000233.png)
 
-- 而如果 `ThreadLocalMap` 的 `key` 对应的引用是`弱引用`，根据`弱引用` 的定义，如果一个对象仅被一个弱引用指向，那么在下一次内存回收的时候，这个对象就会被垃圾回收器回收掉。所以当设置 `ThreadLocal` 为 `null` 之后，线程对象不再指向 `ThreadLocal 对象`，此时指向 ``ThreadLocal 对象`的只有 `ThreadLocalMap`里的 `key `对它的弱引用，这样 `ThreadLocal` 就会在下一次内存回收的时候被回收掉，进而避免了 `内存泄漏的 `发生。
+- 而如果 ThreadLocalMap 的 key 对应的引用是 `弱引用`，根据 `弱引用` 的定义，如果一个对象仅被一个弱引用指向，那么在下一次内存回收的时候，这个对象就会被垃圾回收器回收掉。所以当设置 ThreadLocal  为 `null` 之后，线程对象不再指向 ThreadLocal 对象 ，此时指向 ThreadLocal 对象的只有 ThreadLocalMap 里的 key  对它的弱引用，这样 ThreadLocal  就会在下一次内存回收的时候被回收掉，进而避免了 `内存泄漏` 的发生。
 
 **总结**
 
-使用 `弱引用` 的作用是为了防止 `ThreadLocal` 对象无法回收造成的 `内存泄漏`。
+使用 `弱引用` 的作用是为了防止 ThreadLocal 对象无法回收造成的 `内存泄漏`。
 
 
 
 #### 怎样防止内存泄漏
 
-有了`弱引用` 的加入之后，虽然可以避免 `ThreadLocal` 对象无法回收造成的 `内存泄漏`，但此时使用 `ThreadLocal` 还是会存在 `内存泄漏` 的问题。
+有了`弱引用` 的加入之后，虽然可以避免 ThreadLocal  对象无法回收造成的 `内存泄漏`，但此时使用 ThreadLocal 还是会存在 `内存泄漏` 的问题。
 
 **原因分析**
 
-当 `key` 值的 `ThreadLocal` 对象为 `null` 时，因为 `弱引用` 的原因，`ThreadLocal`对象会被内存回收。但此时 `ThreadLocalMap` 里 对应的 `value` 值的引用还存在，由于 `key` 已被回收，所以 `value` 无法被访问并占据内存，进而产生了 `内存泄漏`。
+当 key 值的 ThreadLocal 对象为 `null` 时，因为 `弱引用` 的原因，ThreadLocal 对象会被内存回收。但此时 ThreadLocalMap 里对应的 value 值的引用还存在，由于 key 已被回收，所以 value 无法被访问并占据内存，进而产生了 `内存泄漏`。
 
 **解决办法**
 
-`ThreadLocal` 提供了 `remove()` 方法，可以将 `ThreadLocalMap` 里对应的 `key` 和 `value` 都清空掉。
+ThreadLocal 提供了 `remove()` 方法，可以将 ThreadLocalMap 里对应的 `key` 和 `value` 都清空掉。
 
 ```java
      public void remove() {
@@ -254,7 +254,7 @@ ThreadLocalDemo.threadLocal = null;
 
 **总结**
 
-每次在操作完 `ThreadLocal` 之后，在适当的位置调用 `remove()` 方法。
+每次在操作完 ThreadLocal  之后，在适当的位置调用 `remove()` 方法。
 
 
 
@@ -262,7 +262,7 @@ ThreadLocalDemo.threadLocal = null;
 
 1. 线程池使用 Threadlocal 的问题？
 
-   线程池中的线程是可以复用的，假如第一个线程对 `ThreadLocal` 变量进行了操作，如果没有及时清理，下一个线程就会受到影响。因为 `ThreadLocal` 是在每个线程上维护了一个 `ThreadLocalMap` ，所以在线程复用的情况下，之后的线程会获取到 `ThreadLocal` 里之前线程设置的值。
+   线程池中的线程是可以复用的，假如第一个线程对  ThreadLocal 变量进行了操作，如果没有及时清理，下一个线程就会受到影响。因为 ThreadLocal  是在每个线程上维护了一个 ThreadLocalMap ，所以在线程复用的情况下，之后的线程会获取到  ThreadLocal  里之前线程设置的值。
 
    ```java
    		//对ThreadLocal设置初始值0
@@ -291,7 +291,7 @@ ThreadLocalDemo.threadLocal = null;
    //before :2，after：3
    ```
 
-   由于不对 `ThreadLocal` 进行及时清理，对后面线程会产生影响。所以在当前线程使用完`ThreadLocal`之后，应及时清理。
+   由于不对  ThreadLocal  进行及时清理，对后面线程会产生影响。所以在当前线程使用完 ThreadLocal 之后，应及时清理。
 
    ```java
    		//对ThreadLocal设置初始值0

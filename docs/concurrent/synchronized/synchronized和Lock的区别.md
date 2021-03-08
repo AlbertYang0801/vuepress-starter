@@ -1,4 +1,4 @@
-### synchronized和Lock的区别
+## synchronized和Lock的区别
 
 ---
 | 类别     | synchronized                                                 | Lock                            |
