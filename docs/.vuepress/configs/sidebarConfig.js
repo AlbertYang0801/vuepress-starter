@@ -1,6 +1,7 @@
-const concurrent = require('./sidebar/concurrent'); // 左侧边栏
-const design = require('./sidebar/design'); // 左侧边栏
-const util = require('./sidebar/util'); // 左侧边栏
+const concurrent = require('./sidebar/concurrent');
+const design = require('./sidebar/design');
+const util = require('./sidebar/util');
+const spring = require('./sidebar/spring');
 
 
 // 为以下路由添加左侧边栏
@@ -8,8 +9,9 @@ const sidebarConfig = {
     "/concurrent/": concurrent,
     "/design/": design,
     "/util/": util,
+    "/frame/spring/": spring,
 
-    "/jvm": [
+    "/jvm/": [
         {
             "title": "JVM",
             "collapsable": false,
