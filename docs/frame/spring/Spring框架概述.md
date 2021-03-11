@@ -75,23 +75,32 @@ IOC 容器是 Spring 用来实现 IOC 的载体。将对象之间的相互依赖
 
 - 装饰器模式
 
-
-
-
-
 ### 四、什么是 AOP？
 
-#### AOP 中的设计模式
+AOP（面向切面编程）能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（如事务管理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可扩展性和可维护性。
+
+#### 动态代理和静态代理
 
 - 动态代理
 
+  以 Spring AOP 为代表。指代理类在JVM运行时动态生成的。效率会低一点，但是大大提高了代码的简洁度和开发工作。
 
+- 静态代理
 
+  以 AspectJ 为代表。指代理类在编译期生成的，与动态代理相比，效率会很高，但是会生成大量代理类。
 
+#### SpringAOP 和 AspectJ 有什么区别？
 
-### 五、声明式事务
+- SpringAOP 属于`运行时增强`，而 AspectJ 属于`编译期增强`。
 
+- SpringAOP 基于动态代理实现，而 AspectJ 属于静态代理。
 
+- SpringAOP 已经集成了 AspectJ ，AspectJ 相比于 SpringAOP 功能更加强大，但是 SpringAOP 更简单。
+
+#### SpringAOP 动态代理的两种方式？
+
+- JDK 动态代理
+- CGlib 动态代理
 
 
 
@@ -99,7 +108,9 @@ IOC 容器是 Spring 用来实现 IOC 的载体。将对象之间的相互依赖
 
 ### 参考链接
 
-[JavaGuide](https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/spring/Spring%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93?id=_1-%e4%bb%80%e4%b9%88%e6%98%af-spring-%e6%a1%86%e6%9e%b6)
+[JavaGuide-Spring框架](https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/spring/Spring%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93?id=_1-%e4%bb%80%e4%b9%88%e6%98%af-spring-%e6%a1%86%e6%9e%b6)
 
 [博客园：Spring 框架概述](https://www.cnblogs.com/wanghuaying/p/9678349.html)
+
+[Spring IOC 容器源码分析](https://javadoop.com/post/spring-ioc)
 
