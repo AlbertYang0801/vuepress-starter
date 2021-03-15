@@ -1,6 +1,6 @@
 
 
-## BeanFactory和FactoryBean总结
+## BeanFactory 和 FactoryBean总结
 
 ### BeanFactory总结
 

@@ -1,6 +1,6 @@
 
 
-## Spring事务总结
+## Spring 事务总结
 
 
 ### 编程式事务
@@ -21,7 +21,7 @@ Exception 分为运行时异常 RuntimeException 和非运行时异常。事务�
 
 #### 作用范围
 
-- 当 `@Transactional`注解作用于类上的时，该类的所有方法都将具有该类型的事务属性，同样的我们也可以在方法级别上使用该注解来覆盖类级别的定义。
+当 `@Transactional`注解作用于类上的时，该类的所有方法都将具有该类型的事务属性，同样的我们也可以在方法级别上使用该注解来覆盖类级别的定义。
 
 #### @Ttransactional(rollbackFor=Exception.class)
 

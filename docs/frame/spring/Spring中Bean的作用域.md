@@ -1,2 +1,2 @@
 
-### Spring中Bean的作用域
+## Spring 中 Bean 的作用域
