@@ -2,6 +2,8 @@ const concurrent = require('./sidebar/concurrent');
 const design = require('./sidebar/design');
 const util = require('./sidebar/util');
 const spring = require('./sidebar/spring');
+//Java容器
+const collection = require('./sidebar/collection');
 
 
 // 为以下路由添加左侧边栏
@@ -10,6 +12,7 @@ const sidebarConfig = {
     "/design/": design,
     "/util/": util,
     "/frame/spring/": spring,
+    "/java/collection": collection,
 
     "/jvm/": [
         {
@@ -30,13 +33,6 @@ const sidebarConfig = {
         }
     ],
     "/personal/": [
-        {
-            "title": "学习计划表",
-            "collapsable": true,
-            "children": [
-                "/personal/学习计划表.md"
-            ]
-        },
         {
             "title": "个人随笔",
             "collapsable": true,

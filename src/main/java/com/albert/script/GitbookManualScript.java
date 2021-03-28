@@ -6,6 +6,8 @@ import com.albert.handler.GitHandler;
 import com.albert.handler.GitbookHandler;
 import com.albert.handler.Handler;
 
+import java.util.ArrayList;
+
 /**
  * gitbook手动脚本-不需要启动项目
  * 需手动指定参数
@@ -45,7 +47,6 @@ public class GitbookManualScript {
         GitbookHandler gitbookHandler = new GitbookHandler();
         CopyHandler copyHandler = new CopyHandler();
         GitHandler gitHandler = new GitHandler();
-
         gitbookHandler.setNextNode(copyHandler);
         copyHandler.setNextNode(gitHandler);
         //执行信息
