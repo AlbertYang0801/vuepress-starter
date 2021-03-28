@@ -30,4 +30,7 @@
 
 
 
+### 参考链接
+
+[LeetBook - 数组简介](https://leetcode-cn.com/leetbook/read/array-and-string/ybfut/)
 
