@@ -1,6 +1,13 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
+        "title": "抓包工具",
+        "collapsable": false,
+        "children": [
+            "/util/抓包工具Fiddler的使用总结.md"
+        ]
+    },
+    {
         "title": "Maven",
         "collapsable": false,
         "children": [

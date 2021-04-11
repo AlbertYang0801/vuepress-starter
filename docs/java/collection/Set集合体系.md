@@ -6,8 +6,8 @@
 ### 特点
 
 - 底层基于**哈希算法**实现，使用 `HashMap` 保存数据。
-- `无序（存取顺序不一致）`。
-- `不可以存储重复元素`。
+- **无序**（存取顺序不一致）。
+- **不可以存储重复元素**。
 - **线程不安全**。
 
 ### 构造方法
@@ -30,7 +30,7 @@
     		private transient HashMap<E,Object> map;
    
    		public HashSet(Collection<? extends E> c) {
-         	//根据集合长度判断 HashMap长度
+         	//根据集合长度判断 HashMap初始容量长度
            map = new HashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
          	//添加集合内容到 HashMap
            addAll(c);
@@ -49,7 +49,20 @@
        }
    ```
    
+3. 有参构造 - 初始容量和负载因子
+
+   传入底层 `HashMap` 初始容量和负载因子，来初始化底层 `HashMap`。
+
+   ```java
+       public HashSet(int initialCapacity, float loadFactor) {
+           map = new HashMap<>(initialCapacity, loadFactor);
+       }
    
+   ```
+
+   
+
+4. 
 
 ### 常用方法
 

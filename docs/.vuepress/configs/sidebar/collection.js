@@ -14,8 +14,7 @@ module.exports = [
         "title": "二、Map集合",
         "collapsable": true,
         "children": [
-            "/java/collection/Collection集合概述",
-            "/java/collection/List集合体系"
+            "/java/collection/HashMap1.7"
         ]
     }
 ]
