@@ -609,7 +609,7 @@ Vector 的扩容因子是 2。
 
 ![双向链表](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324234152.png)
 
-**JDK1.6 之前位双向循环链表，JDK1.7 以及以后为普通双向链表**
+**JDK1.6 之前为双向循环链表，JDK1.7 以及以后为普通双向链表**
 
 双向循环链表需要维护一个头指针，头指针指向节点的前驱就是尾节点。
 
@@ -733,13 +733,13 @@ Vector 的扩容因子是 2。
 
 Vector 的扩容机制和 ArrayList 有所不同。
 
-ArrayList 扩容因子是 `1.5` 左右。而 Vector 可以在创建时指定扩容因子，若不指定，则默认是` 2` 。
+ArrayList 扩容因子是 `1.5` 左右，而 Vector 可以在创建时指定扩容因子。若 Vector 不指定扩容因子，则默认是` 2` 。
 
 其它机制和 ArrayList 一致。
 
 ### Vector 的扩容因子为什么默认是 2？
 
-参考 [ArrayList 扩容因子为 1.5 倍的原因？](ArrayList 扩容因子为 1.5 倍的原因？)
+参考 [ArrayList 扩容因子为 1.5 倍的原因？](#ArrayList 扩容因子为 1.5 倍的原因？)
 
 ### Vector 线程安全机制？
 

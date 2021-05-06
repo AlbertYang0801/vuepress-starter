@@ -14,12 +14,12 @@ const sidebarConfig = {
     "/frame/spring/": spring,
     "/java/collection": collection,
 
-    "/jvm/": [
+    "/java/jvm/": [
         {
-            "title": "JVM",
+            "title": "Jvm",
             "collapsable": false,
             "children": [
-                "/jvm/类加载器.md"
+                "/java/jvm/类加载器.md"
             ]
         }
     ],

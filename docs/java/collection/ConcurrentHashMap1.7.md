@@ -1,76 +1,243 @@
-# HashMap - 1.7
+# ConcurrentHashMap - 1.7
 
 ## 类简介
 
-HashMap 是一个用来存储 Key - Value 键值对的集合，每一个键值对也叫做 Entry，这些 Entry 保存在底层数组中。
+ConcurrentHashMap 是一个线程安全的 HashMap，在 JDK 1.7 HashMap的基础上实现了 `分段锁` 来保证线程安全。在 HashMap 的基础上，默认分为 16 个段，每个段都拥有独立的锁，来保证各个段的线程安全。
 
-### 1. 底层数组
+### 扩展 - 线程安全的 HashMap
+
+[Map实现线程安全的三种方式](https://albertyang0801.github.io/blog/concurrent/container/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84Map.html)
+
+### Unsafe方法总结
+
+
+
+## 主要参数
 
 ```java
-    static final Entry<?,?>[] EMPTY_TABLE = {};
+public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
+        implements ConcurrentMap<K, V>, Serializable {
+  	
+  	//默认初始化容量
+    static final int DEFAULT_INITIAL_CAPACITY = 16;
+	
+  	//默认加载因子
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
+  	//默认并发级别
+    static final int DEFAULT_CONCURRENCY_LEVEL = 16;
+
+  	//最大容量
+    static final int MAXIMUM_CAPACITY = 1 << 30;
+
+  	//Segment最小容量
+    static final int MIN_SEGMENT_TABLE_CAPACITY = 2;
+
+    static final int MAX_SEGMENTS = 1 << 16; // slightly conservative
+
+    static final int RETRIES_BEFORE_LOCK = 2;
+  
+    final int segmentMask;
+
+    final int segmentShift;
+   
+  	//ConcurrentHashMap底层数组
+    final Segment<K,V>[] segments;
+
+    transient Set<K> keySet;
+    transient Set<Map.Entry<K,V>> entrySet;
+    transient Collection<V> values;
+```
+
+
+
+### 1. Segment是什么？
+
+Segment 是 ConcurretnHashMap的一个内部类，继承于 ReentrantLock，可实现同步操作保证线程安全。作为 ConcurrentHashMap 的底层数组结构，各个 Segment 之间的锁互不影响，称这种锁机制为分段锁。
+
+```java
+static final class Segment<K,V> extends ReentrantLock implements Serializable {
+	
+  //真正存放数据的数组
+  transient volatile HashEntry<K,V>[] table;
+  
+  transient int count;
+
+  transient int modCount;
+  
+  transient int threshold;
+  
+  final float loadFactor;
+  
+  Segment(float lf, int threshold, HashEntry<K,V>[] tab) {
+            this.loadFactor = lf;
+            this.threshold = threshold;
+            this.table = tab;
+        }
+  
+  ......
+
+}
+```
+
+
+
+### 2. HashEntry是什么？
+
+HashEntry 是 ConcurrentHashMap 中实际存放数据的对象。其实体类于 HashMap 中的 Entry 实体类一样，是一个链表结构。不同的是 ConcurrentHashMap 的 value 和 next 字段都增加了 `volatile` 字段来保证字段的可见性，防止多线程情况出现的数据问题。
+
+```java
+    static final class HashEntry<K,V> {
+      	//hash值
+        final int hash;
+      	//key值
+        final K key;
+        volatile V value;
+      	//下一节点
+        volatile HashEntry<K,V> next;
+
+        HashEntry(int hash, K key, V value, HashEntry<K,V> next) {
+            this.hash = hash;
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+
+        final void setNext(HashEntry<K,V> n) {
+          	//原子操作
+            UNSAFE.putOrderedObject(this, nextOffset, n);
+        }
+
+        static final sun.misc.Unsafe UNSAFE;
+        static final long nextOffset;
+        static {
+            try {
+                UNSAFE = sun.misc.Unsafe.getUnsafe();
+                Class k = HashEntry.class;
+                nextOffset = UNSAFE.objectFieldOffset
+                    (k.getDeclaredField("next"));
+            } catch (Exception e) {
+                throw new Error(e);
+            }
+        }
+    }
+```
+
+
+
+### 3. concurrencyLevel是什么？
+
+意为并发级别。实际作用是用来限制底层 segments 的大小，来保证 ConcurrentHashMap 同时支持的并发数。
+
+在构造方法中，存在一个局部变量 `ssize`，初始化 segments 时传入的容量为 `ssize`。
+
+` Segment<K,V>[] ss = (Segment<K,V>[])new Segment[ssize];`
+
+而 `ssize` 的结果为第一个大于等于concurrencyLevel的2次方幂值。
+
+```java
+//循环结束，得到 ssize 的结果为第一个大于等于concurrencyLevel的2次方幂值
+while (ssize < concurrencyLevel) {
+    ++sshift;
+    //向左移一位，增大两倍
+    ssize <<= 1;
+}
+```
+
+而 ssize 值必须是2次方幂值，因为计算 index 时候，公式为 ` hash(key) & (ssize- 1) `，所以要求ssize必须是2次方幂值（参考 JDK1.7HashMap）。
+
+
+
+## 构造方法
+
+ConcurrentHashMap 默认底层数组是长度为 16 的 Segment[]，每个 Segment 对象包含了默认长度为 2 的 HashEntry[]，HashEntry 是实际保存数据的对象，所以 **ConcurrentHashMap 默认可保存元素长度为32个**，而不是 16个。
+
+### 默认构造方法
+
+```java
+        /**
+     * The default initial capacity for this table,
+     * used when not otherwise specified in a constructor.
+     */
+		//默认长度
+    static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
-     * The table, resized as necessary. Length MUST Always be a power of two.
+     * The default load factor for this table, used when not
+     * otherwise specified in a constructor.
      */
-    transient Entry<K,V>[] table = (Entry<K,V>[]) EMPTY_TABLE;
-```
+		//默认负载因子
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-### 2. Entry 类
+    /**
+     * The default concurrency level for this table, used when not
+     * otherwise specified in a constructor.
+     */
+		//默认并发级别
+    static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 
-Entry 类实际上是一个单向的链表结构，它具有 Next 指针，来链接下一个 Entry 实体。
-
-```java
-    static class Entry<K,V> implements Map.Entry<K,V> {
-            //key值
-            final K key;
-            //value值
-            V value;
-            //下一节点
-            Entry<K,V> next;
-            //当前节点hash值
-            int hash;
-
-            /**
-             * Creates new entry.
-             */
-            Entry(int h, K k, V v, Entry<K,V> n) {
-                value = v;
-                next = n;
-                key = k;
-                hash = h;
-            }
-
-            ......
-
+		public ConcurrentHashMap() {
+      	//传入默认参数值，调用有参构造
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL);
     }
 ```
 
-### 3. 负载因子 - loadFactor
 
-负载因子与数组的扩容机制有关，主要用来计算扩容临界值 - threshold。
 
-该值默认为 0.75 ，表示底层数组会在大于等于当前数组长度的 0.75 倍时发生扩容。
-
-### 4. 扩容临界值 - threshold
-
-threshold 表示的是底层数组发生扩容的临界值，当底层数组大于该值时，会发生扩容。
-
-### 5. 元素长度 - size
-
-size 表示 HashMap 中实际保存元素的个数。
-
-在新建 Entry 时会执行 `size++`；
+### 有参构造 - 主要构造方法
 
 ```java
-    void createEntry(int hash, K key, V value, int bucketIndex) {
-      	//获取索引位置上原来的Entry
-        Entry<K,V> e = table[bucketIndex];
-      	//索引执行新建的Entry。（新建的Entry的next执行原来的Entry，实现头插）
-        table[bucketIndex] = new Entry<>(hash, key, value, e);
-      	//数组内部元素长度+1
-        size++;
+public ConcurrentHashMap(int initialCapacity,
+                             float loadFactor, int concurrencyLevel) {
+        if (!(loadFactor > 0) || initialCapacity < 0 || concurrencyLevel <= 0)
+            throw new IllegalArgumentException();
+        if (concurrencyLevel > MAX_SEGMENTS)
+            concurrencyLevel = MAX_SEGMENTS;
+        // Find power-of-two sizes best matching arguments
+        int sshift = 0;
+      	//Segment[]长度。
+        int ssize = 1;
+      	//找到第一个大于等于 concurrencyLevel 的 2次幂（Segment[]长度）
+        while (ssize < concurrencyLevel) {
+            ++sshift;
+          	//向左移一位，增大两倍
+            ssize <<= 1;
+        }
+        this.segmentShift = 32 - sshift;
+        this.segmentMask = ssize - 1;
+        if (initialCapacity > MAXIMUM_CAPACITY)
+            initialCapacity = MAXIMUM_CAPACITY;
+        //初始容量 / Segment[]长度 = 每个Segment的容量
+        int c = initialCapacity / ssize;
+        if (c * ssize < initialCapacity)
+            ++c;
+      	//Segment最小容量为2
+        int cap = MIN_SEGMENT_TABLE_CAPACITY;
+      	//控制Segment容量大小为2次幂
+        while (cap < c)
+            cap <<= 1;
+        // create segments and segments[0]
+      	//初始化一个Segment模版
+        Segment<K,V> s0 =
+            new Segment<K,V>(loadFactor, (int)(cap * loadFactor),
+                             (HashEntry<K,V>[])new HashEntry[cap]);
+      	//根据Segment[]容量初始化
+        Segment<K,V>[] ss = (Segment<K,V>[])new Segment[ssize];
+      	//使用UNSAFE类，根据模版初始化Segment[]
+        UNSAFE.putOrderedObject(ss, SBASE, s0); // ordered write of segments[0]
+        this.segments = ss;
     }
 ```
+
+### 扩展问题？
+
+1. Segment 数组长度必须是2次方幂值的原因？
+
+   因为计算 index 时候，公式为 ` hash(key) & (ssize- 1) `，所以要求 ssize 必须是2次方幂值（参考 JDK1.7HashMap）。
+
+2. segment 的 HashEntry 数组的最小长度是 2？
+
+   因为 ConcurrentHashMap 的扩容是更新单个 Segment。而不是整个数组。这就要求 Segment 长度是 2次方幂值，而 2 是最小的 2 次方幂值。由于 ConcurrentHashMap 默认拥有 16 个段，所以单个段发生扩容的几率较低，若 segment 过大，资源浪费较大。
 
 
 
@@ -78,15 +245,9 @@ size 表示 HashMap 中实际保存元素的个数。
 
 采用 `数组 + 链表` 的形式存储。
 
-- 数组是为了确定元素所在索引的位置，数组中每个元素初始值都是 NULL。元素所在索引位置和 ` Key 值` 和 `数组长度值` 有关。
+结合 1.7 的 HashMap 来看，ConcurrentHashMap 的底层数据结构是 Segment[]，而每一个 Segment 包含了一个 HashEntry[]，而 HashEntry[] 里的每个 HashEntry 才是存储数据的位置。
 
-  对 `Key` 进行 `Hash 算法 `得到的结果值 `Hash(key)`，与`数组长度 - 1` 得到的结果值进行`与运算`，得到元素对应的数组索引位置。
-
-  计算公式为：`index = Hash(key) & (length-1)`
-
-- 链表是为了解决 `索引冲突` 问题，当出现元素计算的`索引 index` 值一样的情况时，就出现了`索引冲突`问题。此时在`索引 index` 上形成一个`链表`来保存元素。
-
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407172541.png)
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210424235121.png)
 
 1. 通过特定 Hash 算法计算 Key 的 Hash 值。
 
@@ -185,13 +346,8 @@ size 表示 HashMap 中实际保存元素的个数。
 
 整个链表的插入过程分为两部分。
 
-头插法和尾插法都会先循环遍历链表，将链表中所有元素和要插入的元素都比较一遍，来判断链表是否存在相同的 key。
-
-1. 如果链表 `存在` 相同的 key，直接覆盖，此时 头插法和尾插法效率相同。
-
-2. 如果链表 `不存在` 相同的 key，此时 头插法和尾插法效率也是相同的。
-
-   因为当不存在相同 key 时，链表会被从头遍历到尾，而遍历结束可以得到头尾节点，此时执行插入效率是一样的。
+1. 如果链表已经存在相同的 Key，直接覆盖，此时 头插法和尾插法效率一致。
+2. 如果链表不存在相同的 Key，头插法和尾插法都会将链表循环遍历，将链表中所有元素和要插入的元素都比较了一遍。由于插入之前链表已经被遍历了，此时头插法和尾插法效率是一致的。
 
 综上所述：
 
@@ -201,9 +357,17 @@ size 表示 HashMap 中实际保存元素的个数。
 
 
 
+
+
 ## 底层扩容原理？
 
-在向 HashMap 中新增元素的时候，涉及到对底层数组容量扩容的一个机制。
+扩容是更新单个Segment。而不是整个数组。
+
+
+
+
+
+# 这是个书签！
 
 ### 底层数组初始化
 
@@ -430,6 +594,10 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
    ```
 
    
+
+## 
+
+
 
 ## 添加元素 put 方法源码分析（重要）
 
@@ -821,7 +989,7 @@ JDK 1.7 的删除方法较为简单，理解单向链表的删除原理，再结
 
 **所以当负载因子越大时，碰撞几率越大，发生扩容机率越低，链表长度会越长，而此时效率会越来越低，但是空间利用率会高。**
 
-**总结而言，选择负载因子为 0.75 是一种以空间换时间的考虑，牺牲了空间利用率来提高效率。**
+**总结而言，选择负载因为为 0.75 是一种以空间换时间的考虑，牺牲了空间利用率来提高效率。**
 
 
 ### 4. 多线程导致的死循环问题？（重要）

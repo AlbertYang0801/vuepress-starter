@@ -1,8 +1,9 @@
 module.exports = [
     {"text": "首页", "link": "/"},
     {
-        "text": "Java基础", items: [
-            {text: 'Java容器', link: '/java/collection/'}
+        "text": "Java篇", items: [
+            {text: 'Java容器', link: '/java/collection/'},
+            {text: "Jvm", link: '/java/jvm/'},
         ]
     },
     {"text": "高并发", "link": "/concurrent/"},
@@ -15,7 +16,7 @@ module.exports = [
         ]
     },
     {"text": "设计模式", "link": "/design/"},
-    {"text": "JVM", "link": "/jvm/"},
+
     {"text": "服务器向", "link": "/server/"},
     {"text": "工具向", "link": "/util/"},
     {"text": "关于我", "link": "/personal/"}

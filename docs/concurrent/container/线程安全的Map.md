@@ -83,20 +83,18 @@ private static class SynchronizedMap<K,V> implements Map<K,V>, Serializable {
 
 
 
-#### 三、ConcurrentHashMap（待研究原理）
+#### 三、ConcurrentHashMap
 
-ConcurrentHashMap位于Java.util.concurrent包内，专门对并发进行了优化，更适合多线程的场合。
+ConcurrentHashMap位于 `Java.util.concurrent` 包内，专门对并发进行了优化，更适合多线程的场合。
 
 ```java
 //线程安全的Map
 ConcurrentMap<Object, Object> map = Maps.newConcurrentMap();
 ```
 
-
-
 ##### 常见问题
 
-1. `key`或者`value`若为`null`就会报空指针。
+-  `key`或者`value`若为`null`就会报空指针。
 
    ```java
     public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
