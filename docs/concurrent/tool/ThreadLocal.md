@@ -45,7 +45,7 @@ public class ThreadLocalDemo {
 
 对例子的内存图分析如下，可以看到两个线程其实指向的是同一个 ThreadLocal  对象，而每个线程都会在内存中维护一个 ThreadLocalMap ，需要注意 ThreadLocalMap 存放的 key 是 ThreadLocal 对象的弱引用，value 存放的是设置的值。(具体可见源码阅读)
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210306234735.png)
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210508141039.png)
 
 #### 源码阅读
 
@@ -218,7 +218,7 @@ ThreadLocalDemo.threadLocal = null;
 
 此时如图所示，虽然线程不会拥有对  ThreadLocal  对象的引用，但是线程内部的 ThreadLocalMap 会一直持有对  ThreadLocal 的引用，而这个时候 ThreadLocal  就无法被真正释放，占用着内存直到线程结束。由于  ThreadLocal 没有被线程引用而且占据着内存，就造成了 `内存泄漏` 的问题。
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210307000233.png)
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210508141057.png)
 
 - 而如果 ThreadLocalMap 的 key 对应的引用是 `弱引用`，根据 `弱引用` 的定义，如果一个对象仅被一个弱引用指向，那么在下一次内存回收的时候，这个对象就会被垃圾回收器回收掉。所以当设置 ThreadLocal  为 `null` 之后，线程对象不再指向 ThreadLocal 对象 ，此时指向 ThreadLocal 对象的只有 ThreadLocalMap 里的 key  对它的弱引用，这样 ThreadLocal  就会在下一次内存回收的时候被回收掉，进而避免了 `内存泄漏` 的发生。
 

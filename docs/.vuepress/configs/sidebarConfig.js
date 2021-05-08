@@ -37,7 +37,7 @@ const sidebarConfig = {
             "title": "个人随笔",
             "collapsable": true,
             "children": [
-                "/personal/work/oppo出差随笔.md"
+                // "/personal/work/oppo出差随笔.md"
             ]
         }
     ]
