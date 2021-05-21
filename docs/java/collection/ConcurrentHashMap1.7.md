@@ -53,7 +53,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
 
 ### 1. Segment是什么？
 
-Segment 是 ConcurretnHashMap的一个内部类，继承于 ReentrantLock，可实现同步操作保证线程安全。作为 ConcurrentHashMap 的底层数组结构，各个 Segment 之间的锁互不影响，称这种锁机制为分段锁。
+Segment 是 ConcurretnHashMap的一个内部类，继承于 ReentrantLock，可实现同步操作保证线程安全。作为 ConcurrentHashMap 的底层数组结构，各个 Segment 之间的锁互不影响，称这种锁机制为**分段锁**。
 
 ```java
 static final class Segment<K,V> extends ReentrantLock implements Serializable {
@@ -84,7 +84,7 @@ static final class Segment<K,V> extends ReentrantLock implements Serializable {
 
 ### 2. HashEntry是什么？
 
-HashEntry 是 ConcurrentHashMap 中实际存放数据的对象。其实体类于 HashMap 中的 Entry 实体类一样，是一个链表结构。不同的是 ConcurrentHashMap 的 value 和 next 字段都增加了 `volatile` 字段来保证字段的可见性，防止多线程情况出现的数据问题。
+HashEntry 是 ConcurrentHashMap 中实际存放数据的对象。其实体类于 HashMap 中的 Entry 实体类一样，是一个链表结构。不同的是 ConcurrentHashMap 的 `value` 和 `next` 字段都增加了 `volatile` 字段来保证字段的可见性，防止多线程情况出现并发问题。
 
 ```java
     static final class HashEntry<K,V> {
@@ -127,13 +127,13 @@ HashEntry 是 ConcurrentHashMap 中实际存放数据的对象。其实体类于
 
 ### 3. concurrencyLevel是什么？
 
-意为并发级别。实际作用是用来限制底层 segments 的大小，来保证 ConcurrentHashMap 同时支持的并发数。
+意为并发级别。实际作用是用来限制底层数组 Segment[] 的大小，来保证 ConcurrentHashMap 同时支持的并发数。
 
 在构造方法中，存在一个局部变量 `ssize`，初始化 segments 时传入的容量为 `ssize`。
 
 ` Segment<K,V>[] ss = (Segment<K,V>[])new Segment[ssize];`
 
-而 `ssize` 的结果为第一个大于等于concurrencyLevel的2次方幂值。
+而 `ssize` 的结果为第一个大于等于 concurrencyLevel 的2次方幂值。
 
 ```java
 //循环结束，得到 ssize 的结果为第一个大于等于concurrencyLevel的2次方幂值
@@ -144,13 +144,9 @@ while (ssize < concurrencyLevel) {
 }
 ```
 
-而 ssize 值必须是2次方幂值，因为计算 index 时候，公式为 ` hash(key) & (ssize- 1) `，所以要求ssize必须是2次方幂值（参考 JDK1.7HashMap）。
-
-
-
 ## 构造方法
 
-ConcurrentHashMap 默认底层数组是长度为 16 的 Segment[]，每个 Segment 对象包含了默认长度为 2 的 HashEntry[]，HashEntry 是实际保存数据的对象，所以 **ConcurrentHashMap 默认可保存元素长度为32个**，而不是 16个。
+ConcurrentHashMap 默认底层数组是长度为 16 的 Segment[]，每个 Segment 对象包含了默认长度为 2 的 HashEntry[]，HashEntry 是实际保存数据的对象，所以 **ConcurrentHashMap 默认初始可保存元素长度为32个**，而不是 16个。
 
 ### 默认构造方法
 
@@ -203,6 +199,7 @@ public ConcurrentHashMap(int initialCapacity,
           	//向左移一位，增大两倍
             ssize <<= 1;
         }
+  			//segmentShift和segmentMask用来计算segment的下标位置
         this.segmentShift = 32 - sshift;
         this.segmentMask = ssize - 1;
         if (initialCapacity > MAXIMUM_CAPACITY)
@@ -229,13 +226,60 @@ public ConcurrentHashMap(int initialCapacity,
     }
 ```
 
-### 扩展问题？
+### 扩展问题
 
-1. Segment 数组长度必须是2次方幂值的原因？
+1. **底层数组 segments 长度必须是2次方幂值的原因？**
 
-   因为计算 index 时候，公式为 ` hash(key) & (ssize- 1) `，所以要求 ssize 必须是2次方幂值（参考 JDK1.7HashMap）。
+   创建时指定长度为 ssize。
 
-2. segment 的 HashEntry 数组的最小长度是 2？
+   因为在 put 方法时，计算索引的下标时需要用到与运算。
+
+   ```java
+   public V put(K key, V value) {
+       Segment<K,V> s;
+       if (value == null)
+           throw new NullPointerException();
+       //基于key，计算hash值
+       int hash = hash(key);
+       //因为一个键要计算两个数组的索引，为了避免冲突，这里取高位计算Segment[]的索引
+       int j = (hash >>> segmentShift) & segmentMask;
+       //判断该索引位的Segment对象是否创建，没有就创建
+       if ((s = (Segment<K,V>)UNSAFE.getObject          // nonvolatile; recheck
+            (segments, (j << SSHIFT) + SBASE)) == null) //  in ensureSegment
+           s = ensureSegment(j);
+       //调用Segmetn的put方法实现元素添加
+       return s.put(key, hash, value, false);
+   }
+   ```
+
+   在构造方法中，指定了 segmentShift 和 segmentMask 的值。
+
+   ```java
+           ......
+             
+   				int sshift = 0;
+         	//Segment[]长度。
+           int ssize = 1;
+         	//找到第一个大于等于 concurrencyLevel 的 2次幂（Segment[]长度）
+           while (ssize < concurrencyLevel) {
+               ++sshift;
+             	//向左移一位，增大两倍
+               ssize <<= 1;
+           }
+     			//segmentShift和segmentMask用来计算segment的下标位置
+           this.segmentShift = 32 - sshift;
+           this.segmentMask = ssize - 1;
+   
+     			......
+   ```
+
+   计算索引元素的公式 ：
+
+   `index = (hash >>> segmentShift) & segmentMask）` 等价于 `index = hash(key) & (ssize- 1）`。
+
+   由于是与运算，所以需要保证 ssize 的值为 2次方幂值（参考 JDK1.7HashMap）。
+
+2. **segment 的 HashEntry 数组的最小长度是 2？**
 
    因为 ConcurrentHashMap 的扩容是更新单个 Segment。而不是整个数组。这就要求 Segment 长度是 2次方幂值，而 2 是最小的 2 次方幂值。由于 ConcurrentHashMap 默认拥有 16 个段，所以单个段发生扩容的几率较低，若 segment 过大，资源浪费较大。
 
@@ -251,13 +295,19 @@ public ConcurrentHashMap(int initialCapacity,
 
 1. 通过特定 Hash 算法计算 Key 的 Hash 值。
 
-2. 通过 Key 的 Hash 值和 长度 - 1 的与运算结果，得到底层数组对应索引位置 Index。
+2. 根据  Key 的 Hash 值和 Segment[] 长度 - 1 的与运算结果，得到新增元素对应的 Segment。
 
-3. 若数组对应的 index 位置为 NULL，将 Entry 存放到数组的 index 位置上。
+3. 调用对应 Segment 的 put 方法。
+
+4. 根据 Key 的 Hash 值和 HashEntry[] 长度 - 1 的与运算结果，得到新增元素对应的 HashEntry。
+
+5. 
+
+6. 若数组对应的 index 位置为 NULL，将 Entry 存放到数组的 index 位置上。
 
    ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113537.png)
 
-4. 若数组对应的 index 位置不为 NULL，即发生了索引冲突，此时采用链表的方式来保存元素，新增的元素会保存在链表的头部，并存放到数组对应的 index 位置上（头插法）。
+7. 若数组对应的 index 位置不为 NULL，即发生了索引冲突，此时采用链表的方式来保存元素，新增的元素会保存在链表的头部，并存放到数组对应的 index 位置上（头插法）。
 
    ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113812.png)
 
