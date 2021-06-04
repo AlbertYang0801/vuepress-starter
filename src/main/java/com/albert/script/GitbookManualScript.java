@@ -24,7 +24,7 @@ public class GitbookManualScript {
     /**
      * github对应本地项目目录
      */
-    private final static String GITHUB_PROJECT_PATH = "/Users/yangjunwei/IdeaProjects/vuepress-technology-station";
+    private final static String GITHUB_PROJECT_PATH = "/Users/yangjunwei/IdeaProjects/blog";
     /**
      * github对应remote
      */
