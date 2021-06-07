@@ -15,7 +15,8 @@ module.exports = [
         "collapsable": true,
         "children": [
             "/java/collection/HashMap1.7",
-            "/java/collection/ConcurrentHashMap1.7"
+            "/java/collection/ConcurrentHashMap1.7",
+            "/java/collection/HashMap1.8"
         ]
     },
     {
