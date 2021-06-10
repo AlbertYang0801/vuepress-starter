@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2020/8/14 17:50
  */
 @SpringBootApplication
-public class FileApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(FileApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

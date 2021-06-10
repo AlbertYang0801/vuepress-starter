@@ -1,13 +1,6 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "抓包工具",
-        "collapsable": false,
-        "children": [
-            "/util/抓包工具Fiddler的使用总结.md"
-        ]
-    },
-    {
         "title": "Maven",
         "collapsable": false,
         "children": [
@@ -33,11 +26,24 @@ module.exports = [
             "/util/gitbook/GitBook插件.md",
             "/util/gitbook/GitBook搭配GitHubPages搭建主页.md",
             "/util/gitbook/GitBook本地环境搭建.md",
-            "/util/gitbook/GitBook自动发布GitHub脚本.md",
+            "/util/gitbook/GitBook自动发布GitHub脚本.md"
         ]
     },
     {
-        "title": "Java",
+        "title": "VuePress",
+        "collapsable": false,
+        "children": [
+            "/util/vuepress/vuepress总结.md"
+        ]
+    }, {
+        "title": "抓包工具",
+        "collapsable": false,
+        "children": [
+            "/util/抓包工具Fiddler的使用总结.md"
+        ]
+    },
+    {
+        "title": "Java工具类",
         "collapsable": false,
         "children": [
             "/util/Java实现复制文件夹下的所有文件.md",
