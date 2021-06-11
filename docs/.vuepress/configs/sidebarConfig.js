@@ -1,9 +1,19 @@
+//高并发
 const concurrent = require('./sidebar/concurrent');
+//设计模式
 const design = require('./sidebar/design');
+//工具向
 const util = require('./sidebar/util');
 const spring = require('./sidebar/spring');
 //Java容器
 const collection = require('./sidebar/collection');
+//mysql
+const mysql = require('./sidebar/mysql');
+//redis
+const redis = require('./sidebar/redis');
+//jvm
+const jvm = require('./sidebar/jvm');
+
 
 
 // 为以下路由添加左侧边栏
@@ -13,25 +23,9 @@ const sidebarConfig = {
     "/util/": util,
     "/frame/spring/": spring,
     "/java/collection": collection,
-
-    "/java/jvm/": [
-        {
-            "title": "Jvm",
-            "collapsable": false,
-            "children": [
-                "/java/jvm/类加载器.md"
-            ]
-        }
-    ],
-    "/server/": [
-        {
-            "title": "服务器向",
-            "collapsable": false,
-            "children": [
-                "/server/端口占用问题.md"
-            ]
-        }
-    ],
+    "/database/mysql": mysql,
+    "/database/redis": redis,
+    "/java/jvm/": jvm,
     "/personal/": [
         {
             "title": "个人随笔",

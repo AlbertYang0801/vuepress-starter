@@ -24,4 +24,7 @@ Java 有路勤为径，JVM 无涯苦作舟，与君共勉。
 
 手画的模型图，有待丰富。
 
-<img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210225104654.png" style="zoom:50%;" />
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210611155359.png)
+
+
+

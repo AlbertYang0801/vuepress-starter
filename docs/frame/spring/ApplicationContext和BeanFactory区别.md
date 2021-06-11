@@ -44,7 +44,7 @@ public class SpringBeanUtil implements ApplicationContextAware {
 
 BeanFactory 是 Spring 中的一个接口，提供了 IOC 容器最基本的形式，给具体的 IOC 容器实现提供了规范。
 
-其本质是一个 IOC 容器或对象工厂，所有的 Bean 都是由 BeanFactory （IOC容器）来进行管理的。Spring 有许多 BeanFactory 的实现类，附件了许多功能。
+其本质是一个 IOC 容器或对象工厂，所有的 Bean 都是由 BeanFactory （IOC容器）来进行管理的。Spring 有许多 BeanFactory 的实现类，附加了许多功能。
 
 ```java
 public interface BeanFactory {
