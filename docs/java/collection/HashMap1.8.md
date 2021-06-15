@@ -1,10 +1,76 @@
 # HashMap - 1.8
 
+## 类简介
+
+### 1.底层数组 - table
+
+### 2. Node 类 
+
+### 3.元素长度 - size
+
+### 4.modCount
+
+### 5.扩容临界值 - threshold
+
+### 6.负载因子 - loadFactor
+
+### 7. 默认参数
+
+- 默认长度
+
+  ```
+   static final int DEFAULT_INITIAL_CAPACITY = 1 << 4
+  ```
+
+- 最大容量
+
+  ```
+  static final int MAXIMUM_CAPACITY = 1 << 30;
+  ```
+
+- 默认负载因子
+
+  ```
+   static final float DEFAULT_LOAD_FACTOR = 0.75f;
+  ```
+
+- 默认树化临界点
+
+  ```
+  static final int TREEIFY_THRESHOLD = 8;
+  ```
+
+- 默认树退化链表的临界点
+
+  ```
+  static final int UNTREEIFY_THRESHOLD = 6;
+  ```
+
+- 最小树长度
+
+  ```
+  MIN_TREEIFY_CAPACITY
+  ```
 
 
 
 
-## put 方法
+
+
+
+
+
+## 存储元素原理
+
+
+
+
+
+## 底层扩容原理
+
+
+
+## 添加元素 put 方法源码分析
 
 
 
@@ -75,7 +141,7 @@
 
 
 
-## get 方法
+## 查询元素 get 方法分析
 
 ```java
     public V get(Object key) {
@@ -114,8 +180,6 @@
         return null;
     }
 ```
-
-
 
 ### 红黑树查找思路
 
@@ -200,6 +264,12 @@
 
 
 
+
+
+
+
+
+## 删除元素 remove 方法分析
 
 
 
