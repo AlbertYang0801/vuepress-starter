@@ -1,30 +1,15 @@
-## 概述
+# JVM
 
-Java 有路勤为径，JVM 无涯苦作舟，与君共勉。
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210617205914.png)
 
-## 学习计划
+## 一、类加载器
 
-### 第一阶段：快速入门
+- [类加载器](./类加载器.md)
 
-计划跟着一个完整的视频，快速过一下整体内容结构。然后随着学习的深入，丰富JVM内存模型图。
+## 二、JVM内存模型
 
-- 学习资料
+- [JVM内存模型](./内存模型.md)
 
-  [B站：【狂神说Java】JVM快速入门篇](https://www.bilibili.com/video/BV1iJ411d7jS)
+## 三、垃圾回收算法
 
-### 第二阶段：面试题
-
-
-
-### 第三阶段：整体研究
-
-根据内存模型图，按照顺序深入研究。
-
-## JVM内存模型图
-
-手画的模型图，有待丰富。
-
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210611155359.png)
-
-
-
+- [垃圾回收算法](./垃圾回收算法.md)

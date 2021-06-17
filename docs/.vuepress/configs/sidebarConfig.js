@@ -23,9 +23,9 @@ const sidebarConfig = {
     "/util/": util,
     "/frame/spring/": spring,
     "/java/collection": collection,
+    "/java/jvm/": jvm,
     "/database/mysql": mysql,
     "/database/redis": redis,
-    "/java/jvm/": jvm,
     "/personal/": [
         {
             "title": "个人随笔",

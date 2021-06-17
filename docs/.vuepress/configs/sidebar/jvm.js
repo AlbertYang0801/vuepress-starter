@@ -12,6 +12,12 @@ module.exports = [
         "children": [
             "/java/jvm/内存模型.md"
         ]
+    },{
+        "title": "垃圾回收算法",
+        "collapsable": false,
+        "children": [
+            "/java/jvm/垃圾回收算法.md"
+        ]
     }
 ]
 
