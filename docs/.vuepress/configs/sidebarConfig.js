@@ -25,7 +25,16 @@ const sidebarConfig = {
     "/java/collection": collection,
     "/java/jvm/": jvm,
     "/database/mysql": mysql,
-    "/database/redis": redis,
+    "/middleware/es":  [
+        {
+            "title": "elasticsearch",
+            "collapsable": true,
+            "children": [
+                "/middleware/es/Elasticsearch.md"
+            ]
+        }
+    ],
+
     "/personal/": [
         {
             "title": "个人随笔",

@@ -3,7 +3,8 @@ module.exports = [
     {
         "text": "Java篇", items: [
             {text: 'Java容器', link: '/java/collection/'},
-            {text: "JVM虚拟机", link: '/java/jvm/'}
+            {text: "JVM虚拟机", link: '/java/jvm/'},
+            {text: "高并发", link: '/java/jvm/'}
         ]
     },
     {
@@ -19,6 +20,12 @@ module.exports = [
             {text: 'Spring', link: '/frame/spring/'},
             {text: 'SpringBoot', link: '/frame/springboot/'},
             {text: 'MyBatis', link: '/frame/mybatis/'}
+        ]
+    },
+    {
+        text: "中间件",
+        items: [
+            {text: 'Elasticsearch', link: '/middleware/es/'},
         ]
     },
     {"text": "设计模式", "link": "/design/"},
