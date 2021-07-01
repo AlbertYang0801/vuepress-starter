@@ -13,28 +13,22 @@ const mysql = require('./sidebar/mysql');
 const redis = require('./sidebar/redis');
 //jvm
 const jvm = require('./sidebar/jvm');
+//elasticsearch
+const elasticsearch = require('./sidebar/elasticsearch');
+
 
 
 
 // 为以下路由添加左侧边栏
 const sidebarConfig = {
-    "/concurrent/": concurrent,
+    "/java/concurrent/": concurrent,
     "/design/": design,
     "/util/": util,
     "/frame/spring/": spring,
     "/java/collection": collection,
     "/java/jvm/": jvm,
     "/database/mysql": mysql,
-    "/middleware/es":  [
-        {
-            "title": "elasticsearch",
-            "collapsable": true,
-            "children": [
-                "/middleware/es/Elasticsearch.md"
-            ]
-        }
-    ],
-
+    "/middleware/es": elasticsearch,
     "/personal/": [
         {
             "title": "个人随笔",

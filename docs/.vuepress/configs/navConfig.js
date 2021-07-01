@@ -4,7 +4,7 @@ module.exports = [
         "text": "Java篇", items: [
             {text: 'Java容器', link: '/java/collection/'},
             {text: "JVM虚拟机", link: '/java/jvm/'},
-            {text: "高并发", link: '/java/jvm/'}
+            {text: "高并发", link: '/java/concurrent/'}
         ]
     },
     {
@@ -13,7 +13,6 @@ module.exports = [
             {text: "Redis", link: '/database/redis/'}
         ]
     },
-    {"text": "高并发", "link": "/concurrent/"},
     {
         text: '框架篇',
         items: [
