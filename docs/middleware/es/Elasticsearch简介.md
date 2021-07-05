@@ -1,8 +1,18 @@
-# 简介
+# Elasticsearch简介
 
-## 一、Elasticsearch介绍
+## Elastic Stack
 
-### 百度百科
+ELK Stack 是 Elasticsearch、Logstash、Kibana 三大开源框架的合集简称。
+
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210705174726.png)
+
+1. Elasticsearch  是一个基于Lucene、可分布式、近实时的搜索引擎，其通过 Restful 方式进行交互。
+2. Logstash 是一个数据引擎，可将不用来源数据对接进 Elasticsearch 或其它目的地中。
+3. Kibana 是一个数据可视化平台 。
+
+## Elasticsearch介绍
+
+### 百度百科介绍
 
 > Elasticsearch 是一个分布式、高扩展、高实时的搜索与[数据分析](https://baike.baidu.com/item/数据分析/6577123)引擎。它能很方便的使大量数据具有搜索、分析和探索的能力。充分利用Elasticsearch的水平伸缩性，能使数据在生产环境变得更有价值。Elasticsearch 的实现原理主要分为以下几个步骤，首先用户将数据提交到Elasticsearch 数据库中，再通过分词控制器去将对应的语句分词，将其权重和分词结果一并存入数据，当用户搜索数据时候，再根据权重将结果排名，打分，再将返回结果呈现给用户。
 >
@@ -17,22 +27,14 @@
 1. Elasticsearch 是一个基于 Lucene 的高扩展性分布式搜索服务器。
 2. Elasticsearch 隐藏了 Lucene 的复杂性，对外提供 Restful 接口来操作。
 
-### Elk Stack
+### Elasticsearch通信方式
 
-ELK Stack 是 Elasticsearch、Logstash、Kibana 三大开源框架的合集简称。
-
-1. Elasticsearch  是一个基于Lucene、可分布式、近实时的搜索引擎，其通过 Restful 方式进行交互。
-2. Logstash 是一个数据引擎，可将不用来源数据对接进 Elasticsearch 或其它目的地中。
-3. Kibana 是一个数据可视化平台 。
-
-## 二、Elasticsearch通信方式
+Elasticsearch 默认提供两种通信方式。
 
 - Java客户端通信 **9300** 端口。
 - Restful方式通信，HTTP服务所在的端口，默认为 **9200** 端口。
 
-## 三、搜索引擎对比
-
-### Elasticsearch vs Solr 总结
+### Elasticsearch和Solr对比
 
 1. es 基本是开箱即用，非常简单。Solr 安装略微复杂。
 2. Solr 利用 Zookeeper 进行分布式管理，而 Elasticsearch 自身带有分布式协调管理功能。
@@ -43,11 +45,7 @@ ELK Stack 是 Elasticsearch、Logstash、Kibana 三大开源框架的合集简�
 7. 是传统搜索应用的有力解决方案，但 Elasticsearch 更适用于新兴的实时搜索应用。
 8. Solr 比较成熟，有一个更大，更成熟的用户、开发和贡献者社区，而 Elasticsearch 相对开发维护者较少，更新太快，学习使用成本较高。
 
-## 参考链接
 
-- [百度百科 - elasticsearch](https://baike.baidu.com/item/elasticsearch/3411206?fr=aladdin)
-- [[Elasticsearch: 权威指南](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)](https://www.elastic.co/guide/cn/elasticsearch/guide/current/mapping-intro.html)
-- [Elasticsearch Guide](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/index.html)
-- [ElasticSearch和solr的差别](https://www.cnblogs.com/blueskyli/p/8326229.html)
 
-  
+
+
