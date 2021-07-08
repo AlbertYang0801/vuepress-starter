@@ -382,10 +382,6 @@ IK 分词器默认有两种分词模式，还支持自定义词库。
 
 
 
-
-
-
-
 ## 参考链接
 
 - [Elasticsearch Guide](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/index.html)
