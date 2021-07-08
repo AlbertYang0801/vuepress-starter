@@ -48,3 +48,6 @@
   
   例如：https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main
 
+### Typora配置图床
+
+![image-20210708093012886](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210708093012.png)
