@@ -12,4 +12,4 @@
 - [ElasticSearch和solr的差别](https://www.cnblogs.com/blueskyli/p/8326229.html)
 - [Elasticsearch: 权威指南](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
 - [Elasticsearch Guide](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/index.html)
-
+- [来源Bilibili黑马程序员的视频：Elastic Stack（ELK）从入门到实践笔记](https://gitee.com/moxi159753/LearningNotes/tree/master/ElasticStack/1_ElasticSearch%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%AE%89%E8%A3%85)
