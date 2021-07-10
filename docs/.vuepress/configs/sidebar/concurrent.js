@@ -14,6 +14,8 @@ module.exports = [
             "/java/concurrent/threadpool/线程池概述",
             "/java/concurrent/threadpool/线程池的调度过程",
             "/java/concurrent/threadpool/线程池的创建过程",
+            "/java/concurrent/threadpool/线程池的状态",
+            "/java/concurrent/threadpool/线程池的关闭",
             "/java/concurrent/threadpool/JDK提供的线程池"
         ]
     }, {
