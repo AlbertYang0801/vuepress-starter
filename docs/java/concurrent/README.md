@@ -8,8 +8,12 @@
 ### 二、线程池
 
 - [线程池概述](./threadpool/线程池概述)
-- [线程池的调度过程](./threadpool/线程池的调度过程)
+- [线程池的创建过程](./threadpool/线程池的创建过程)
+- [线程池的状态](./threadpool/线程池的状态)
+- [线程池的执行](./threadpool/线程池的执行)
+- [线程池的关闭](./threadpool/线程池的关闭)
 - [JDK提供的线程池](./threadpool/JDK提供的线程池)
+
 
 ### 三、synchronized
 
