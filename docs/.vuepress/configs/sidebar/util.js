@@ -1,10 +1,10 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "Maven",
+        "title": "Maven管理",
         "collapsable": false,
         "children": [
-            "/util/maven/Maven上传Jar包到私服.md"
+            "/util/maven/Maven管理.md"
         ]
     }, {
         "title": "Git",

@@ -1,4 +1,6 @@
-## Gitbook插件
+# Gitbook插件
+
+## 配置文件
 
 > GitBook的配置文件主要是book.json，和SUMMARY.md在同级目录。plugins设置插件名称，pluginsConfig设置各个插件的属性，links可以设置外部超链接地址，styles可以设置页面属性。
 
