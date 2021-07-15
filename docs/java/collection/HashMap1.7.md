@@ -6,6 +6,8 @@ HashMap 是一个用来存储 Key - Value 键值对的集合，每一个键值�
 
 ### 1. 底层数组
 
+底层数组包含的每个元素可以称之为 **桶**，元素实际保存在每个桶上。
+
 ```java
     static final Entry<?,?>[] EMPTY_TABLE = {};
 
@@ -49,11 +51,9 @@ Entry 类实际上是一个单向的链表结构，它具有 Next 指针，来�
 
 负载因子与数组的扩容机制有关，主要用来计算扩容临界值 - threshold。
 
-该值默认为 0.75 ，表示底层数组会在大于等于当前数组长度的 0.75 倍时发生扩容。
-
 ### 4. 扩容临界值 - threshold
 
-threshold 表示的是底层数组发生扩容的临界值，当底层数组大于该值时，会发生扩容。
+threshold 表示的是底层数组发生扩容的临界值，用于计算底层数组是否需要扩容。
 
 ### 5. 元素长度 - size
 
@@ -76,15 +76,15 @@ size 表示 HashMap 中实际保存元素的个数。
 
 ## 存储元素的原理
 
-采用 `数组 + 链表` 的形式存储。
+采用 **数组 + 链表** 的形式存储。
 
-- 数组是为了确定元素所在索引的位置，数组中每个元素初始值都是 NULL。元素所在索引位置和 ` Key 值` 和 `数组长度值` 有关。
+- 数组是为了确定元素所在桶的位置，数组中每个元素初始值都是 NULL。新增元素所在桶位置和 **Key 值** 和 **底层数组长度值** 有关。
 
-  对 `Key` 进行 `Hash 算法 `得到的结果值 `Hash(key)`，与`数组长度 - 1` 得到的结果值进行`与运算`，得到元素对应的数组索引位置。
+  对 **Key值** 进行 **Hash 算法** 得到的结果值 **Hash(key)**，与 **数组长度 - 1** 得到的结果值进行 **与运算** ，得到元素对应的桶位置。
 
-  计算公式为：`index = Hash(key) & (length-1)`
+  计算公式为：**`index = Hash(key) & (length-1)`**
 
-- 链表是为了解决 `索引冲突` 问题，当出现元素计算的`索引 index` 值一样的情况时，就出现了`索引冲突`问题。此时在`索引 index` 上形成一个`链表`来保存元素。
+- 链表是为了解决 **索引冲突** 问题，当出现元素计算的 **桶位置** 一样的情况时，就出现了冲突问题，也叫做 **哈希冲突** 。1.7 采用了 **拉链法** 解决哈希冲突，在此时桶的位置上上形成一个 **链表** 来保存元素。
 
 ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407172541.png)
 
@@ -102,9 +102,7 @@ size 表示 HashMap 中实际保存元素的个数。
 
 ### 为什么引入链表？
 
-通过 Hash 算法计算元素在数组中的位置时，会发生 Hash 冲突，即多个元素对应同一个位置。
-
-此时在发生冲突的索引位置上，生成一个链表按照一定顺序保存元素，来解决 Hash 冲突。
+通过 Hash 算法计算元素所在的桶位置时，可能会发生 **哈希冲突**，即多个元素对应同一个桶。此时为了解决哈希冲突的问题， 1.7 采用了**拉链法** 。在发生冲突的桶位置上，生成一个链表按照一定顺序保存元素，来解决哈希冲突。
 
 ### 为什么采用头插法？
 
@@ -116,9 +114,9 @@ size 表示 HashMap 中实际保存元素的个数。
 
   在链表增加新增元素时，默认添加到末尾。
 
-当发生 Hash 冲突时，向链表插入元素的过程为：
+当发生哈希冲突时，向链表插入元素的过程为：
 
-1. 计算元素所在索引位置 index
+1. 计算元素所在桶位置 index。
 
 2. 遍历 index 位置对应的链表，判断是否包含和插入元素相同 Key 值的元素。（从 index 位置保存的元素开始循环）
 
@@ -150,9 +148,9 @@ size 表示 HashMap 中实际保存元素的个数。
                    return oldValue;
                }
            }
-   				//修改次数+1（用于迭代器判断并发修改异常）
+   		//修改次数+1（用于迭代器判断并发修改异常）
            modCount++;
-     			//添加元素
+     		//添加元素
            addEntry(hash, key, value, i);
      			//首次新增，返回null
            return null;
@@ -179,6 +177,7 @@ size 表示 HashMap 中实际保存元素的个数。
            Entry<K,V> e = table[bucketIndex];
          	//将插入元素初始化，设置链表旧的头部元素为Next，并将生成的 Entry 存放到数组对应的索引位置。（头插法）
            table[bucketIndex] = new Entry<>(hash, key, value, e);
+           //hashmap内元素总数+1
            size++;
        }
    ```
@@ -187,17 +186,15 @@ size 表示 HashMap 中实际保存元素的个数。
 
 头插法和尾插法都会先循环遍历链表，将链表中所有元素和要插入的元素都比较一遍，来判断链表是否存在相同的 key。
 
-1. 如果链表 `存在` 相同的 key，直接覆盖，此时 头插法和尾插法效率相同。
+1. 如果链表 **存在** 相同的 key，直接覆盖，此时 头插法和尾插法效率相同。
 
-2. 如果链表 `不存在` 相同的 key，此时 头插法和尾插法效率也是相同的。
+2. 如果链表 **不存在** 相同的 key，此时 头插法和尾插法效率也是相同的。
 
    因为当不存在相同 key 时，链表会被从头遍历到尾，而遍历结束可以得到头尾节点，此时执行插入效率是一样的。
 
-综上所述：
+*综上所述，头插法和尾插法在效率上是一致的，1.7之所以采用头插法，是因为热点数据的原因。在使用 HashMap 的时候，更倾向于获取最新插入的数据，所以将新数据插入到链表头部，方便获取最新插入的数据。*
 
-头插法和尾插法在效率上是一致的，1.7之所以采用头插法，是因为热点数据的原因。在使用 HashMap 的时候，更倾向于获取最新插入的数据，所以将新数据插入到链表头部，方便获取最新插入的数据。
-
-注意：JDK 1.8 已改为尾插法。
+*注意：JDK 1.8 已改为尾插法。*
 
 
 
@@ -218,7 +215,7 @@ HashMap 底层数组采用的是懒加载，新建时不会初始化底层数组
     //默认负载因子为0.75
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-		//扩容临界值
+	//扩容临界值
     int threshold;
 
     //负载因子
@@ -237,7 +234,7 @@ HashMap 底层数组采用的是懒加载，新建时不会初始化底层数组
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new IllegalArgumentException("Illegal load factor: " +
                                                loadFactor);
-				//指定扩容因子
+		//指定扩容因子
         this.loadFactor = loadFactor;
       	//指定扩容临界值
         threshold = initialCapacity;
@@ -262,12 +259,12 @@ HashMap 底层数组采用的是懒加载，新建时不会初始化底层数组
         return null;
     }
 		
-		//扩容方法
+	//扩容方法
     private void inflateTable(int toSize) {
         // Find a power of 2 >= toSize
       	// 计算离数组容量值最近的2次幂值。比如 10 =》16；16=》16
         int capacity = roundUpToPowerOf2(toSize);
-				//第一次赋值扩容临界值。等于数组容量*扩容因子
+		//第一次赋值扩容临界值。等于数组容量*扩容因子
         threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
       	//初始化数组容量
         table = new Entry[capacity];
@@ -284,33 +281,106 @@ HashMap 底层数组采用的是懒加载，新建时不会初始化底层数组
 threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
 ```
 
-### 发生扩容
+### 添加元素时扩容(重要)
 
-在每次添加新的 Entry 的时候，都会判断是否达到扩容条件，如果达到条件，就会发生扩容。
+在每次新增元素调用 put 方法的时候，都会对 hashmap 进行检查是否达到了扩容条件。
 
-**发生扩容的条件？**
+1. 调用 put 方法，若是匹配到相同 key 值，则更新 value。若是未匹配到，则新增元素。
 
-在数组内部元素 >= 扩容临界值 threshold ，并且新增元素对应索引位置不为空时，即发生扩容。
+   ```JAVA
+       public V put(K key, V value) {
+           //判断底层数据是否为空（是否首次添加元素）
+           if (table == EMPTY_TABLE) {
+               inflateTable(threshold);
+           }
+           //对 key=null 情况做特殊处理，放到第0个桶上
+           if (key == null)
+               return putForNullKey(value);
+           //新增元素的key进行哈希算法
+           int hash = hash(key);
+           //计算新增元素所在的桶
+           int i = indexFor(hash, table.length);
+           //若桶不为空，开始遍历桶上的链表(判断是否更新)
+           for (Entry<K,V> e = table[i]; e != null; e = e.next) {
+               Object k;
+               //匹配链表上是否有相同 key 的元素
+               if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+                   V oldValue = e.value;
+                   //匹配到相同 key，更新 value
+                   e.value = value;
+                   e.recordAccess(this);
+                   return oldValue;
+               }
+           }
+   	
+           modCount++;
+           //重要，新增元素
+           addEntry(hash, key, value, i);
+           return null;
+       }
+   ```
 
-（临界值 = 数组长度 * 负载因子）
+2. 判断是否需要发生扩容？
 
-底层数组初始化的时候会指定扩容临界值 threshold 为 12 （初始数组长度 16 * 默认负载因子 0.75 = 12 ），所以当底层数组存放第 13 个元素的时候，就会发生第一次扩容，以此类推。
+   ```JAVA
+       void addEntry(int hash, K key, V value, int bucketIndex) {
+           //扩容条件判断，满足条件开始扩容
+           //1.hashmap中元素数量 >= 扩容临界值（数组容量*负载因子 =》默认16）
+           //2.新增元素对应桶不为空
+           if ((size >= threshold) && (null != table[bucketIndex])) {
+               resize(2 * table.length);
+               hash = (null != key) ? hash(key) : 0;
+               bucketIndex = indexFor(hash, table.length);
+           }
+   		//新增元素
+           createEntry(hash, key, value, bucketIndex);
+       }
+   ```
 
-| 扩容次数 | 临界值（默认负载因子 0.75） | 扩容后的长度（每次扩容2倍） |
-| -------- | --------------------------- | --------------------------- |
-| 第 1 次  | 16 * 0.75 = 12              | 16 * 2 = 32                 |
-| 第 2 次  | 32 * 0.75 = 24              | 32 * 2 = 64                 |
-| 第 3 次  | 64 * 0.75 = 48              | 64 * 2 = 128                |
+3. 采用头插法，新增元素
 
-**扩容的长度是 2 倍的原因？**
+   ```JAVA
+       void createEntry(int hash, K key, V value, int bucketIndex) {
+           //获取桶上头节点
+           Entry<K,V> e = table[bucketIndex];
+           //采用头插法，将原有的头节点点作为后继。
+           table[bucketIndex] = new Entry<>(hash, key, value, e);
+           size++;
+       }
+   ```
 
-首先数组默认长度是 16，而数组底层长度需要满足是 2 的非零次幂，所以扩容长度是 2 倍能够满足数组长度为 2 的 非零次幂的要求。
+### 非首次扩容发生的条件？
 
-[数组默认长度是 16 的原因？](数组默认长度是 16 的原因？)
+总共有两个条件，缺一不可。
 
-[数组长度为什么限制为 2 的非零次幂？](#数组长度为什么限制为 2 的非零次幂？)
+1. **hashmap 元素总量大于等于扩容临界值**。
 
-数组扩容倍数若过大，则会有比较多的空闲空间，为了减少内存空间的浪费，扩容倍数应越小越好，所以选择倍数为 2 。
+   扩容临界值 = 底层数组容量 * 负载因子
+
+   `threshold = capacity * loadFactor`
+
+2.  **新增元素对应的桶不为空**。
+
+   ```JAVA
+       void addEntry(int hash, K key, V value, int bucketIndex) {
+           //扩容条件判断
+           //1.hashmap中元素数量 >= 扩容临界值（数组容量*负载因子 =》默认16）
+           //2.新增元素对应桶不为空
+           if ((size >= threshold) && (null != table[bucketIndex])) {
+               resize(2 * table.length);
+               hash = (null != key) ? hash(key) : 0;
+               bucketIndex = indexFor(hash, table.length);
+           }
+   		//新增元素
+           createEntry(hash, key, value, bucketIndex);
+       }
+   ```
+
+**即使 hashmap 中元素总数量大于等于扩容临界值的时候，也不一定发生扩容**。因为还有一个条件必须满足，即**新增元素对应的桶不为空**。
+
+![image-20210715211200026](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/image-20210715211200026.png)
+
+### 底层数组扩容过程
 
 **扩容的步骤**
 
@@ -318,14 +388,14 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
 2. 将旧数组的元素全部转移到新数组中。（需要重新计算元素所在索引位置）
    - 遍历旧数组上的每一个 Entry 链表 （Entry 内部维护了 next字段，指向下一节点的 Entry）。
      - 循环每个 Entry 链表的 每个Entry 实体类，根据新数组长度重新计算索引位置（索引位置受数组长度的影响，数组长度改变，对应索引也需要改变）。
-     - 采用`头插法`将每个 Entry 插入到 新数组中。
+     - 采用**头插法**将每个 Entry 插入到 新数组中。
      - 直到链表循环结束。
    - 旧数组遍历结束，即旧数组元素转移到新数组完毕。
 3. 将新数组（长度为旧数组的 2 倍）赋值给底层数组。
 4. 赋值扩容临界值（新数组长度 * 负载因子）。
 
 ```java
- 		public V put(K key, V value) {
+ 	public V put(K key, V value) {
       	//判断是否首次扩容
         if (table == EMPTY_TABLE) {
           	//执行扩容
@@ -339,7 +409,7 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
         return null;
     }
     
-		//添加Entry
+	//添加Entry
     void addEntry(int hash, K key, V value, int bucketIndex) {
       	//数组内部长度 >= 临界值 && 元素索引位置不为空
         if ((size >= threshold) && (null != table[bucketIndex])) {
@@ -362,7 +432,7 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
             threshold = Integer.MAX_VALUE;
             return;
         }
-				//按照旧数组长度的二倍初始化新的数组
+		//按照旧数组长度的二倍初始化新的数组
         Entry[] newTable = new Entry[newCapacity];
       	//将旧数组的元素全部转移到新数组（需要重新 Hash）
         transfer(newTable, initHashSeedAsNeeded(newCapacity));
@@ -372,7 +442,7 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
         threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
     }
 		
-		//将旧数组所有元素移动到新数组
+	//将旧数组所有元素移动到新数组
     void transfer(Entry[] newTable, boolean rehash) {
       	//新数组长度
         int newCapacity = newTable.length;
@@ -414,7 +484,7 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
     }
 ```
 
-**常见问题**
+### 相关问题
 
 1. 为什么将数据从旧数组移动到新数组时需要重新计算索引？
 
@@ -429,7 +499,34 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
        }
    ```
 
-   
+2. 扩容过程重新哈希计算索引的规律？
+
+   桶对应链表上的元素 key 的哈希值是一样的，即使根据新数组长度重新哈希之后，这些元素还是会在一个桶上。只是由于 **头插法** 的原因，在新数组上的链表和之前相比较顺序是反的。
+
+   ![image-20210715212512467](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/image-20210715212512467.png)
+
+3. 假设底层数组长度是 100，扩容临界指是 75，那么当第 76 个元素插入的时候会发生扩容吗？
+
+   扩容发生的条件有两个。分别是 **hashmap 元素总量大于等于扩容临界值** 和 **新增元素对应的桶不为空**。
+
+   当新增第 76 个元素的时候，hashmap 元素总量为 75 ，满足第一个条件。
+
+   判断底层是否扩容的条件取决于第二个条件 新增元素对应的桶不为空。
+
+   - 若新增元素对应桶为空，则不会发生扩容。
+   - 若新增元素对应桶不为空，已经有元素，则会发生扩容。
+
+4. **扩容的长度是 2 倍的原因？**
+
+   首先数组默认长度是 16，而数组底层长度需要满足是 2 的非零次幂，所以扩容长度是 2 倍能够满足数组长度为 2 的 非零次幂的要求。
+
+   [数组默认长度是 16 的原因？](数组默认长度是 16 的原因？)
+
+   [数组长度为什么限制为 2 的非零次幂？](#数组长度为什么限制为 2 的非零次幂？)
+
+   数组扩容倍数若过大，则会有比较多的空闲空间，为了减少内存空间的浪费，扩容倍数应越小越好，所以选择倍数为 2 。
+
+
 
 ## 添加元素 put 方法源码分析（重要）
 
@@ -487,15 +584,71 @@ public V put(K key, V value) {
         return h & (length-1);
     }
 
-		//hash值，key值，value值，插入的索引位置
+	//添加Entry
+	//新增元素哈希值、key、value、桶位置
     void addEntry(int hash, K key, V value, int bucketIndex) {
+      	//数组内部长度 >= 临界值 && 元素索引位置不为空
         if ((size >= threshold) && (null != table[bucketIndex])) {
+          	//扩容（底层数组的二倍）
             resize(2 * table.length);
+          	//对新增元素进行 Hash
             hash = (null != key) ? hash(key) : 0;
+          	//计算新增元素在新数组中的索引位置
             bucketIndex = indexFor(hash, table.length);
         }
-
         createEntry(hash, key, value, bucketIndex);
+    }
+	
+	//底层数组扩容
+    void resize(int newCapacity) {
+      	//旧的底层数组
+        Entry[] oldTable = table;
+        int oldCapacity = oldTable.length;
+      	//是否数组最大值
+        if (oldCapacity == MAXIMUM_CAPACITY) {
+            threshold = Integer.MAX_VALUE;
+            return;
+        }
+		//按照旧数组长度的二倍初始化新的数组
+        Entry[] newTable = new Entry[newCapacity];
+      	//将旧数组的元素全部转移到新数组（需要重新 Hash）
+        transfer(newTable, initHashSeedAsNeeded(newCapacity));
+      	//将新数组赋值给底层数组
+        table = newTable;
+      	//根据新数组长度，修改扩容临界值。（新数组长度*负载因子）
+        threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
+    }
+		
+	//将旧数组所有元素移动到新数组
+    void transfer(Entry[] newTable, boolean rehash) {
+      	//新数组长度
+        int newCapacity = newTable.length;
+      	//遍历旧数组每个元素
+        for (Entry<K,V> e : table) {
+          	//遍历每个元素的链表结构
+            while(null != e) {
+              	//获取节点的下一节点
+                Entry<K,V> next = e.next;
+              	//重新 Hash
+                if (rehash) {
+                  	//key ！= null 时计算 key 的 Hash 值
+                    e.hash = null == e.key ? 0 : hash(e.key);
+                }
+              	//通过 key 的 Hash 值和新数组长度的与运算来计算元素所在索引。（重新计算的目的，是因为数组长度发生了变化）
+                int i = indexFor(e.hash, newCapacity);
+              	//头插法，当前节点下一节点执行新数组的头节点
+                e.next = newTable[i];
+              	//头插法，将当前节点作为头节点赋值给数组索引位置
+                newTable[i] = e;
+              	//将下一节点值赋值给 e ，开始下一轮循环，直到链表循环结束。
+                e = next;
+            }
+        }
+    }
+
+    static int indexFor(int h, int length) {
+        // assert Integer.bitCount(length) == 1 : "length must be a non-zero power of 2";
+        return h & (length-1);
     }
 
     void createEntry(int hash, K key, V value, int bucketIndex) {
@@ -557,7 +710,7 @@ public V put(K key, V value) {
 
 4. 计算元素所在桶位置。
 
-   得到 Key 的 Hash 算法值之后，与`数组长度 - 1`的结果进行`与运算`，得到元素对应的索引位置。
+   得到 Key 的 Hash 算法值之后，与**数组长度 - 1**的结果进行**与运算**，得到元素对应的索引位置。
 
    ```java
        static int indexFor(int h, int length) {
@@ -582,9 +735,94 @@ public V put(K key, V value) {
 
 7. 添加元素。
 
-8. 返回 null。
+   判断是否达到扩容条件，若满足则扩容，若不满足扩容条件，则不扩容，而后创建元素。
 
+   ```JAVA
+   	//添加Entry
+   	//新增元素哈希值、key、value、桶位置
+       void addEntry(int hash, K key, V value, int bucketIndex) {
+         	//hashmap元素长度 >= 临界值 && 元素索引位置不为空
+           if ((size >= threshold) && (null != table[bucketIndex])) {
+             	//扩容（底层数组的二倍）
+               resize(2 * table.length);
+             	//对新增元素进行 Hash
+               hash = (null != key) ? hash(key) : 0;
+             	//计算新增元素在新数组中的索引位置
+               bucketIndex = indexFor(hash, table.length);
+           }
+           createEntry(hash, key, value, bucketIndex);
+       }
+   ```
 
+8. 底层数组扩容方法。
+
+   新数组为旧数组的两倍，需要将旧数组所有元素进行重新哈希，放到新数组上。
+
+   ```JAVA
+   	//底层数组扩容
+       void resize(int newCapacity) {
+         	//旧的底层数组
+           Entry[] oldTable = table;
+           int oldCapacity = oldTable.length;
+         	//是否数组最大值
+           if (oldCapacity == MAXIMUM_CAPACITY) {
+               threshold = Integer.MAX_VALUE;
+               return;
+           }
+   		//按照旧数组长度的二倍初始化新的数组
+           Entry[] newTable = new Entry[newCapacity];
+         	//将旧数组的元素全部转移到新数组（需要重新 Hash）
+           transfer(newTable, initHashSeedAsNeeded(newCapacity));
+         	//将新数组赋值给底层数组
+           table = newTable;
+         	//根据新数组长度，修改扩容临界值。（新数组长度*负载因子）
+           threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
+       }
+   		
+   	//将旧数组所有元素移动到新数组
+       void transfer(Entry[] newTable, boolean rehash) {
+         	//新数组长度
+           int newCapacity = newTable.length;
+         	//遍历旧数组每个元素
+           for (Entry<K,V> e : table) {
+             	//遍历每个元素的链表结构
+               while(null != e) {
+                 	//获取节点的下一节点
+                   Entry<K,V> next = e.next;
+                 	//重新 Hash
+                   if (rehash) {
+                     	//key ！= null 时计算 key 的 Hash 值
+                       e.hash = null == e.key ? 0 : hash(e.key);
+                   }
+                 	//通过 key 的 Hash 值和新数组长度的与运算来计算元素所在索引。（重新计算的目的，是因为数组长度发生了变化）
+                   int i = indexFor(e.hash, newCapacity);
+                 	//头插法，当前节点下一节点执行新数组的头节点
+                   e.next = newTable[i];
+                 	//头插法，将当前节点作为头节点赋值给数组索引位置
+                   newTable[i] = e;
+                 	//将下一节点值赋值给 e ，开始下一轮循环，直到链表循环结束。
+                   e = next;
+               }
+           }
+       }
+   ```
+
+   
+
+9. 在对应桶创建元素。
+
+   ```JAVA
+    void createEntry(int hash, K key, V value, int bucketIndex) {
+         	//获取索引位置上原来的Entry
+           Entry<K,V> e = table[bucketIndex];
+         	//索引执行新建的Entry。（新建的Entry的next执行原来的Entry，实现头插）
+           table[bucketIndex] = new Entry<>(hash, key, value, e);
+         	//数组内部元素长度+1
+           size++;
+    }
+   ```
+
+10. 返回 null。
 
 ## 查询元素 get 方法源码分析（重要）
 
@@ -734,8 +972,6 @@ JDK 1.7 的删除方法较为简单，理解单向链表的删除原理，再结
     }
 ```
 
-
-
 ## 常见问题
 
 ### 1. 数组默认长度是 16 的原因？
@@ -791,11 +1027,9 @@ JDK 1.7 的删除方法较为简单，理解单向链表的删除原理，再结
 
 - 不浪费数组空间。
 
-
-
 ### 3. 为何负载因子默认为 0.75？（重要）
 
-这个问题需要搭配扩容机制来看，可以理解为为什么要在当前数组长度大于等于底层数组长度的 0.75 倍时发生扩容？
+这个问题需要搭配扩容机制来看，可以理解为为什么要在 hashmap 元素总数大于等于底层数组长度的 0.75 倍时可以扩容？
 
 主要目的是**为了减少索引冲突的次数**。
 
