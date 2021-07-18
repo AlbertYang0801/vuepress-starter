@@ -28,6 +28,7 @@ const sidebarConfig = {
     "/java/collection": collection,
     "/java/jvm/": jvm,
     "/database/mysql": mysql,
+    "/database/redis": redis,
     "/middleware/es": elasticsearch,
     "/personal/": [
         {
