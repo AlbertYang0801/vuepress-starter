@@ -229,15 +229,19 @@ set 是一种无序集合，存储元素无序并且不可重复。
 
    - 随机抽两人（只能中一次）
 
-     `stop key [count]`
+     `spop key [count]`
 
 3. 微博共同关注的人
 
    - 对两个用户关注的人取交集
 
+     `sinter userA userB`
+
 4. QQ - 可能认识的人
 
    - 对两个用户取差集
+   
+     `sdiff userA userB`
 
 ## 六、有序集合 - zset
 
@@ -316,3 +320,4 @@ zset 是有序版本，是在 set 集合的基础上，增加一个 score 值，
    
 
    
+
