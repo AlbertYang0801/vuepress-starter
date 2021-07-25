@@ -1,5 +1,7 @@
 # redis五大数据类型
 
+[练习代码地址  redis-practice](https://gitee.com/zztiyjw/JavaAdvanced/tree/master/redis-practice#/zztiyjw/JavaAdvanced/blob/master/redis-practice/src/test/java/com/albert/redis/datastructure/DataStructureTest.java)
+
 ## 一、键 - key
 
 在了解数据类型之前，先了解一下 redis 的键。
@@ -319,5 +321,5 @@ zset 是有序版本，是在 set 集合的基础上，增加一个 score 值，
 
    
 
-   
+
 
