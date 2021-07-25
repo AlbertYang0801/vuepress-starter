@@ -36,6 +36,11 @@ const sidebarConfig = {
             "collapsable": true,
             "children": [
                 // "/personal/work/oppo出差随笔.md"
+            ],
+            "title": "琐碎记录",
+            "collapsable": true,
+            "children": [
+                "/personal/琐碎记录.md"
             ]
         }
     ]
