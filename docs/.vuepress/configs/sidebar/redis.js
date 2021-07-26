@@ -9,7 +9,9 @@ module.exports = [
             "/database/redis/redis常见问题",
             "/database/redis/redis实现分布式锁",
             "/database/redis/过期策略",
-            "/database/redis/内存淘汰策略"
+            "/database/redis/内存淘汰策略",
+            "/database/redis/发布订阅"
+
         ]
     }
 ]

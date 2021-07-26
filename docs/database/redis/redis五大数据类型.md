@@ -62,6 +62,20 @@
 
 ![image-20210715144700772](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210715144700.png)
 
+
+
+### 数据结构
+
+String 的数据结构是简单动态字符串（Simplie Dynamic String，SDS），是可以动态修改的字符串，类似 ArrayList，采用预分配冗余空间的方式来减少内存的频繁分配。
+
+![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210726163144.png)
+
+内存中分配给当前字符串的容量 capacity 一般要高于实际字符串长度。
+
+- 当字符串长度 < 1MB 时，扩容时当前空间加倍。
+- 当字符串长度 > 1MB 时，扩容时一次增加 1MB 的空间。
+- 字符串最大限制长度为 512MB。
+
 ### 实战总结
 
 1. 点赞数量
