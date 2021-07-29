@@ -7,11 +7,11 @@ module.exports = [
             "/database/redis/redis简介",
             "/database/redis/redis五大数据类型",
             "/database/redis/redis常见问题",
-            "/database/redis/redis实现分布式锁",
+            "/database/redis/发布订阅",
             "/database/redis/过期策略",
             "/database/redis/内存淘汰策略",
-            "/database/redis/发布订阅"
-
+            "/database/redis/LRU和LFU算法",
+            "/database/redis/redis实现分布式锁",
         ]
     }
 ]
