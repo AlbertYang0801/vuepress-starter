@@ -349,4 +349,6 @@ LFU 算法基于**如果一个数据在最近一段时间内使用次数很少�
 
 ## 参考链接
 
-[LRU . LFU 和 LRU-K 的解释与区别](https://blog.csdn.net/zhanglong_4444/article/details/88344953)
+- [LRU . LFU 和 LRU-K 的解释与区别](https://blog.csdn.net/zhanglong_4444/article/details/88344953)
+- [阳哥大厂面试题第三季-第 5 章 Redis](https://blog.csdn.net/oneby1314/category_10692968.html)
+
