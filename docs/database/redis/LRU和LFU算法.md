@@ -347,26 +347,6 @@ LFU 算法基于**如果一个数据在最近一段时间内使用次数很少�
 
 
 
-
-
-
-
-## LRU-K算法
-
-
-
-
-
-
-
-
-
-
-
-LinkedHashMap 比较 HashMap 能够将元素按照插入顺序排序。内部维护了一个双向链表，每个结点都包含前驱和后继，来维护双向链表。
-
-
-
 ## 参考链接
 
 [LRU . LFU 和 LRU-K 的解释与区别](https://blog.csdn.net/zhanglong_4444/article/details/88344953)
