@@ -142,8 +142,7 @@
                //不断请求锁
                while (true) {
                    //加分布式锁 setNx（增加过期时间）
-                   Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent(GOOD_LOCK, UUID.randomUUID().toString(),
-                           1000L, TimeUnit.SECONDS);
+                   Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent(GOOD_LOCK, UUID.randomUUID().toString(),1000L, TimeUnit.SECONDS);
                    if (Objects.isNull(lock)) {
                        continue;
                    }
@@ -170,13 +169,13 @@
            }
        }
    ```
-
+   
    上述增加了锁过期的机制，是为了解决锁可能无法正常被解决的问题。但是也引来了新的问题。比如业务逻辑未执行完成，锁过期。
-
+   
    锁过期会导致其他线程在自旋的过程可以拿到分布式锁，进行业务处理。最终会导致在线程结束删除锁时，删除的不是自己的锁。
-
+   
    ![商品预约](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210723161851.png)
-
+   
 4. 对分布式锁增加线程标识，保证删除的是自己线程新建的锁。
 
    ```java
@@ -230,8 +229,7 @@
                //不断请求锁
                while (true) {
                    //加分布式锁 setNx（增加过期时间）
-                   Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent(GOOD_LOCK, value,
-                           1000L, TimeUnit.SECONDS);
+                   Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent(GOOD_LOCK, value,1000L, TimeUnit.SECONDS);
                    if (Objects.isNull(lock)) {
                        continue;
                    }
@@ -274,7 +272,7 @@
            }
        
    ```
-
+   
 6. 保证 redis 多个操作的原子性，更常用的是使用 lua 脚本。
 
    ```java
@@ -340,39 +338,45 @@
 
 可以发现通过 setnx 实现的分布式锁，主要解决了：
 
-1. **设置和删除操作时的原子性**。
+1. **加锁设置和删除锁操作时的原子性**。
 2. **防止死锁的发生**。
 
 但是没有解决**锁提前过期时的续期问题**。解决锁续期问题可以采用 Redisson 来实现。
 
+---
+
+
+
 ## Redisson
 
+Redisson 是官方推荐的分布式锁实现方案，Redisson 内部的 **WatchDog** 机制解决了锁续期的问题。
 
+### 使用Redisson解决超卖
 
 1. 配置 redisson。
 
    ```java
-   @Configuration
-   public class RedissonConfig {
-   
-       @Bean
-       public RedissonClient redissonConfig() {
-           Config config = new Config();
-           config.useSingleServer().setAddress("redis://localhost:6379");
-           return Redisson.create(config);
-       }
-   
-   
-   }
+     @Configuration
+     public class RedissonConfig {
+     
+         @Bean
+         public RedissonClient redissonConfig() {
+             Config config = new Config();
+             config.useSingleServer().setAddress("redis://localhost:6379");
+             return Redisson.create(config);
+         }
+     
+     
+     }
    ```
 
 2. 解决超卖问题。
 
    ```java
    public String testRedisson() {
-           //分布式锁
+           //获取分布式锁
            RLock rLock = redissonClient.getLock(GOOD_LOCK);
-           //redisson加锁
+           //加锁
            rLock.lock(1000L, TimeUnit.SECONDS);
            try {
                //获取商品数量
@@ -401,5 +405,92 @@
 
 
 
+### 加锁原理
+
+之前在使用 sexnx 实现分布式锁时，需要考虑加锁和解锁时的操作原子性，而在实现删除锁时，采用了 lua 脚本来解锁。
+
+因为 lua 脚本操作 redis 命令的时候，具有着一些优势。
+
+- 原子操作：将脚本作为一个整体执行，执行过程不会插入其它命令，无需使用事务。
+- 减少网络开销：将多个 redis 请求一次发送。
+
+---
+
+在 Redisson 中，加锁其实就是通过 lua 脚本实现的。
+
+源码中的体现
+
+```java
+    <T> RFuture<T> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId, RedisStrictCommand<T> command) {
+        this.internalLockLeaseTime = unit.toMillis(leaseTime);
+        return this.commandExecutor.evalWriteAsync(this.getName(), LongCodec.INSTANCE, command, "if (redis.call('exists', KEYS[1]) == 0) then redis.call('hset', KEYS[1], ARGV[2], 1); redis.call('pexpire', KEYS[1], ARGV[1]); return nil; end; if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then redis.call('hincrby', KEYS[1], ARGV[2], 1); redis.call('pexpire', KEYS[1], ARGV[1]); return nil; end; return redis.call('pttl', KEYS[1]);", Collections.singletonList(this.getName()), new Object[]{this.internalLockLeaseTime, this.getLockName(threadId)});
+    }
+```
+
+把其中 lua 脚本命令摘选出来。
+
+```java
+if (redis.call('exists', KEYS[1]) == 0) 
+  then redis.call('hset', KEYS[1], ARGV[2], 1); 
+			 redis.call('pexpire', KEYS[1], ARGV[1]); 
+	return nil; 
+	end; 
+if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) 
+  then redis.call('hincrby', KEYS[1], ARGV[2], 1); 
+       redis.call('pexpire', KEYS[1], ARGV[1]);
+  return nil; 
+  end; 
+return redis.call('pttl', KEYS[1]);"
+```
+
+其中各个参数对应关系如下。
+
+- **KEYS[1]**：分布式锁 key。
+- **ARGV[2]**：加锁客户端 ID。
+- **ARGV[1]**：锁 key 的默认失效时间，默认 30 秒。
+
+锁在 redis 中的数据格式是 hash 类型，类似下方命令。
+
+```java
+127.0.0.1:6379> hset mylock 285475da-9152-4c83-822a-67ee2f116a79:52 1
+(integer) 1
+```
+
+针对 lua 脚本过程解析，有三种情况。
+
+- 分布式锁 key 不存在。
+- 分布式锁 key 已存在，相同客户端非首次设置。
+- 分布式锁 key 已存在，不痛客户端设置。
+
+```java
+//1.分布式锁key首次设置
+//1.1 判断分布式锁 key 是否存在 => 不存在
+if (redis.call('exists', KEYS[1]) == 0) 
+  //1.2 设置分布式锁key（设置客户端Id，设置计数统计（方便重入次数））
+  then redis.call('hset', KEYS[1], ARGV[2], 1); 
+			 //1.3 为分布式锁key增加默认失效时间
+			 redis.call('pexpire', KEYS[1], ARGV[1]); 
+	return nil; 
+	end; 
+//2.同一个key已经设置过
+//2.1 hexists (分布式锁为hash结构) 判断分布式锁key和相同客户端Id是否已经存在 => 存在
+if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) 
+  //2.2 增加计数统计
+  then redis.call('hincrby', KEYS[1], ARGV[2], 1); 
+			 //	增加失效时间
+       redis.call('pexpire', KEYS[1], ARGV[1]);
+  return nil; 
+  end; 
+//3.不满足加锁条件，返回当前锁剩余时间
+return redis.call('pttl', KEYS[1]);"
+```
+
+### 锁互斥原理
 
 
+
+
+
+## 参考链接
+
+[Redisson 实现分布式锁原理分析](https://zhuanlan.zhihu.com/p/135864820)
