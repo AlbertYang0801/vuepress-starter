@@ -314,6 +314,8 @@ public class LruCacheDemo {
 
 在 LRU 算法中，当热点数据比较多的时候，淘汰时能够把冷数据给淘汰点。但是当某些冷数据被突然访问的时候，根据 LRU 的策略，很可能把热点数据淘汰掉，这种情况下，存在缓存污染的问题。
 
+![image-20210803174619336](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210803174619.png)
+
 
 
 ## LFU算法
