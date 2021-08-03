@@ -12,6 +12,8 @@ module.exports = [
             "/database/redis/内存淘汰策略",
             "/database/redis/LRU和LFU算法",
             "/database/redis/redis实现分布式锁",
+            "/database/redis/Redisson"
+
         ]
     }
 ]
