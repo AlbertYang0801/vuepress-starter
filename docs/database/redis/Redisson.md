@@ -213,7 +213,35 @@ return redis.call('pttl', KEYS[1]);"
 
 5. 若服务宕机，看门狗机制对应的定时线程也没有了，此时 key 会在 30 s 后过期。
 
+---
 
+
+
+*注意，若指定了过期时间 leaseTime，看门狗机制不会生效。*
+
+以 `RLock` 中的  `tryLock(long waitTime, long leaseTime, TimeUnit unit) ` 方法举例。
+
+![image-20210804110539009](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210804110539.png)
+
+- waitTime
+
+  锁申请的等待时间。
+
+  若不设置，会不停重试获取锁。若设置了指定时间，则在指定时间停止重试，返回 false。
+
+  ![image-20210804110051550](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210804110051.png)
+
+  ![image-20210804110247686](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210804110247.png)
+
+- leaseTime
+
+  锁的过期时间。
+
+  leaseTime 默认 -1，代表永不过期，会触发看门狗机制。
+
+  修改 leaseTime 为其它有效值，代表在指定时间后过期，不会触发看门狗机制。
+
+  ![image-20210804113120377](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210804113120.png)
 
 ### 锁删除原理
 
