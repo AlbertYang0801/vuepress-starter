@@ -245,7 +245,104 @@ return redis.call('pttl', KEYS[1]);"
 
 ### 锁删除原理
 
+在删除锁的时候，不仅要删除 Redis 中的锁，还要通知由于申请锁阻塞的线程（Redis 的发布订阅）。若开启了 Watch Dog 机制，还要将 Watch Dog 机制关闭。
 
+```java
+lock.unlock();
+```
+
+源码中 `unlock()` 的具体实现。
+
+```java
+    @Override
+    public void unlock() {
+        try {
+          	//get方法是非阻塞等待（CountDownLatch）
+            get(unlockAsync(Thread.currentThread().getId()));
+        } catch (RedisException e) {
+            if (e.getCause() instanceof IllegalMonitorStateException) {
+                throw (IllegalMonitorStateException) e.getCause();
+            } else {
+                throw e;
+            }
+        }
+
+    }
+
+
+		@Override
+    public RFuture<Void> unlockAsync(long threadId) {
+        RPromise<Void> result = new RedissonPromise<Void>();
+      	//调用解锁方法
+        RFuture<Boolean> future = unlockInnerAsync(threadId);
+				//解锁完成后的回调方法
+        future.onComplete((opStatus, e) -> {
+            if (e != null) {
+              	//取消看门狗机制
+                cancelExpirationRenewal(threadId);
+                result.tryFailure(e);
+                return;
+            }
+
+            if (opStatus == null) {
+                IllegalMonitorStateException cause = new IllegalMonitorStateException("attempt to unlock lock, not locked by current thread by node id: "
+                        + id + " thread-id: " + threadId);
+                result.tryFailure(cause);
+                return;
+            }
+            //取消看门狗机制
+            cancelExpirationRenewal(threadId);
+            result.trySuccess(null);
+        });
+
+        return result;
+    }
+```
+
+真正实现解锁的方法 `unlockInnerAsync`，内部使用了 lua 脚本。
+
+```java
+    protected RFuture<Boolean> unlockInnerAsync(long threadId) {
+        return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN,
+                "if (redis.call('hexists', KEYS[1], ARGV[3]) == 0) then " +
+                    "return nil;" +
+                "end; " +
+                "local counter = redis.call('hincrby', KEYS[1], ARGV[3], -1); " +
+                "if (counter > 0) then " +
+                    "redis.call('pexpire', KEYS[1], ARGV[2]); " +
+                    "return 0; " +
+                "else " +
+                    "redis.call('del', KEYS[1]); " +
+                    "redis.call('publish', KEYS[2], ARGV[1]); " +
+                    "return 1; "+
+                "end; " +
+                "return nil;",
+                Arrays.<Object>asList(getName(), getChannelName()), LockPubSub.UNLOCK_MESSAGE, internalLockLeaseTime, getLockName(threadId));
+
+    }
+```
+
+对删除锁的 lua 脚本分析如下。
+
+```java
+//判断key是否存在						
+"if (redis.call('hexists', KEYS[1], ARGV[3]) == 0) then " +
+		"return nil;" +
+"end; " +
+//对key的value值减1，即计数统计减1
+"local counter = redis.call('hincrby', KEYS[1], ARGV[3], -1); " +
+"if (counter > 0) then " +
+		"redis.call('pexpire', KEYS[1], ARGV[2]); " +
+		"return 0; " +
+"else " +
+  	//先删除key
+		"redis.call('del', KEYS[1]); " +
+  	//发布消息，通知申请锁的线程
+		"redis.call('publish', KEYS[2], ARGV[1]); " +
+		"return 1; "+
+"end; " +
+"return nil;",
+```
 
 
 
@@ -576,19 +673,45 @@ return redis.call('pttl', KEYS[1]);"
 
 
 
-
-
-
-
-
-
-
-
 ## 红锁
+
+### 简介
+
+>在分布式版本的算法里我们假设我们有N个Redis master节点，这些节点都是完全独立的，我们不用任何复制或者其他隐含的分布式协调算法。我们已经描述了如何在单节点环境下安全地获取和释放锁。因此我们理所当然地应当用这个方法在每个单节点里来获取和释放锁。在我们的例子里面我们把N设成5，这个数字是一个相对比较合理的数值，因此我们需要在不同的计算机或者虚拟机上运行5个master节点来保证他们大多数情况下都不会同时宕机。一个客户端需要做如下操作来获取锁：
+>
+>1、获取当前时间（单位是毫秒）。
+>
+>2、轮流用相同的key和随机值在N个节点上请求锁，在这一步里，客户端在每个master上请求锁时，会有一个和总的锁释放时间相比小的多的超时时间。比如如果锁自动释放时间是10秒钟，那每个节点锁请求的超时时间可能是5-50毫秒的范围，这个可以防止一个客户端在某个宕掉的master节点上阻塞过长时间，如果一个master节点不可用了，我们应该尽快尝试下一个master节点。
+>
+>3、客户端计算第二步中获取锁所花的时间，只有当客户端在大多数master节点上成功获取了锁（在这里是3个），而且总共消耗的时间不超过锁释放时间，这个锁就认为是获取成功了。
+>
+>4、如果锁获取成功了，那现在锁自动释放时间就是最初的锁释放时间减去之前获取锁所消耗的时间。
+>
+>5、如果锁获取失败了，不管是因为获取成功的锁不超过一半（N/2+1)还是因为总消耗时间超过了锁释放时间，客户端都会到每个master节点上释放锁，即便是那些他认为没有获取成功的锁。
+
+### 使用方法
+
+Redisson 中封装的有 RedLock，可以直接使用。
+
+```java
+        RLock redLock = redissonClient.getRedLock(lock,fairLock);
+        redLock.lock();
+        redLock.unlock();
+```
+
+
+
+
+
+
+
+
 
 
 
 ## 参考链接
+
+[GitHub - redisson](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95)
 
 [Redisson 实现分布式锁原理分析](https://zhuanlan.zhihu.com/p/135864820)
 
