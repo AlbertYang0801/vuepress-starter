@@ -1,8 +1,8 @@
-# redis五大数据类型
+# redis八大数据类型
 
 [练习代码地址  redis-practice](https://gitee.com/zztiyjw/JavaAdvanced/tree/master/redis-practice#/zztiyjw/JavaAdvanced/blob/master/redis-practice/src/test/java/com/albert/redis/datastructure/DataStructureTest.java)
 
-## 一、键 - key
+## 键 - key
 
 在了解数据类型之前，先了解一下 redis 的键。
 
@@ -10,7 +10,7 @@
 
 ![image-20210715161837066](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210718224605.png)
 
-## 二、字符串 - string
+## 字符串 - string
 
 字符串数据结构是简单的 K-V 模式数据结构。
 
@@ -92,7 +92,7 @@ String 的数据结构是简单动态字符串（Simplie Dynamic String，SDS）
 
 
 
-## 三、列表 - list
+## 列表 - list
 
 list 是类似双端链表或双端队列的数据结构。
 
@@ -137,7 +137,7 @@ list 是类似双端链表或双端队列的数据结构。
 
      `lrange code 0 4`
 
-## 四、哈希表 - hash
+## 哈希 - hash
 
 hash 的数据结构也是 K-V 模式，但是 hash 的 V 对应 K-V，也就是 **K-（K-V）**，适合存储对象。比如存储用户信息，K 是用户Id，V 是用户信息。
 
@@ -189,7 +189,7 @@ hash 的数据结构也是 K-V 模式，但是 hash 的 V 对应 K-V，也就是
 
      `hgetall shopcart`
 
-## 五、无序集合 - set
+## 无序集合 - set
 
 set 是一种无序集合，存储元素无序并且不可重复。
 
@@ -259,7 +259,7 @@ set 是一种无序集合，存储元素无序并且不可重复。
    
      `sdiff userA userB`
 
-## 六、有序集合 - zset
+## 有序集合 - zset
 
 zset 是有序版本，是在 set 集合的基础上，增加一个 score 值，来进行排序。
 
@@ -332,6 +332,241 @@ zset 是有序版本，是在 set 集合的基础上，增加一个 score 值，
    - 查询前十条热度最高的新闻
 
      `zrevrange weibo 0 9 WITHSCORES`
+
+   
+   
+   
+## 位图 - bitmaps
+
+   bitmaps 又称位图，本身并不是一种实际的数据结构，而是基于 String 数据类型的按位操作。bitmaps 本质上是数组，数组由多个二进制位组成，每个二进制位只能存储 0 和 1。
+
+### 特点
+
+- **优点**
+
+  1. 位图数据结构操作二进制位，只有 0 和 1 两个值。
+
+     > 只支持存储 0 和 1，不支持存储其它数据类型。
+
+  2. 基于 String 数据类型，bitmaps 最大存储长度为 512 MB。
+
+     > 由于 String 数据类型的数据结构为 SDS （简单动态字符串），SDS 最大长度为 512MB，所以 bitmaps 的最大长度是 512MB。
+
+  3. 由于 Bitmaps 是按位操作，所以存储时可以极大的节省空间。
+
+     > 512MB （2^32）内存可以存储将近 42.9 亿的字节信息。
+
+- **缺点**
+
+  1. 由于 Bitmaps 是按位操作，当二进制位的偏移量很大时，会比较耗时。
+
+  2. Bitmaps 有时可能会浪费空间。
+
+     > Bitmaps 底层基于 SDS，底层字符串可以根据输入的位次，进行扩展以保存 value 到指定偏移量，对应的空白位置以 0 填充。
+     >
+     > 如果连续输入比较稀疏（输入1，30000等跨度比较大的位次），会浪费大量内存空间。
+
+  3. 若 Bitmaps 操作大的 offset 时，对内存的分配可能阻塞 Redis 服务器。
+
+### 常用命令
+
+- 向指定偏移量 bit 位置设置值 - `setbit key offset value`
+
+  > 当 key 不存在时，自动生成一个新的字符串。
+  >
+  > offset 参数值必须大于等于 0，小于 2^32。
+
+  ![img](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210809143928.jpeg)
+
+  ```java
+  127.0.0.1:6379> set hello big
+  OK
+  127.0.0.1:6379> getbit hello 7
+  (integer) 0
+  127.0.0.1:6379> setbit hello 7 1
+  (integer) 0
+  127.0.0.1:6379> get hello 
+  "cig"
+  127.0.0.1:6379> 
+  127.0.0.1:6379> setbit world 50 1
+  (integer) 0
+  127.0.0.1:6379> get world
+  "\x00\x00\x00\x00\x00\x00 "
+  127.0.0.1:6379> setbit world 50 0
+  (integer) 1
+  127.0.0.1:6379> get world
+  "\x00\x00\x00\x00\x00\x00\x00"
+  127.0.0.1:6379> 
+  ```
+
+  
+
+- 获取位图指定 bit 的值 - `getbit key offset`
+
+  使用 getbit 命令获取 String 类型指定 bit 的值。
+
+  ![img](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210809143513.jpeg)
+
+  
+
+  ```java
+  127.0.0.1:6379> set hello big
+  OK
+  127.0.0.1:6379> getbit hello 2
+  (integer) 1
+  127.0.0.1:6379> 
+  ```
+
+  
+
+- 统计位图指定区间中 bit 为 1 的总数量 - `bitcount key [start end]`
+
+  ```java
+  127.0.0.1:6379> setbit hello 10 1
+  (integer) 0
+  127.0.0.1:6379> setbit hello 15 1
+  (integer) 0
+  127.0.0.1:6379> bitcount hello
+  (integer) 2
+  127.0.0.1:6379> 
+  ```
+
+  
+
+- 对一个或多个 key 执行逻辑操作（与、非、或、异或） - `bitop operation destkey key [key ...]`
+
+  【BITOP】支持逻辑操作，包含 且 AND、或 OR、异或 XOR、非 NOT；
+
+  - 且 AND(&)：同 1 为 1，其余为 0；
+  - 或 OR(|)：有 1 为 1，同 0 为 0；
+  - 异或 XOR(^)：不同为 1，相同为 0；
+  - 非NOT(~)：1 变 0，0 变 1；
+
+  ```java
+  A 二进制 01000001
+  B 二进制 01000010
+  @ 二进制 01000000
+  
+  127.0.0.1:6379> set a A
+  OK
+  127.0.0.1:6379> set b B
+  OK
+  127.0.0.1:6379> 
+  127.0.0.1:6379> 
+  127.0.0.1:6379> 
+  127.0.0.1:6379> bitop and ggg a b 
+  (integer) 1
+  127.0.0.1:6379> get ggg
+  "@"
+  127.0.0.1:6379> 
+  ```
+
+- 查询指定字节区间第一个指定 bit （0 或 1）的位置 - `bitpos key bit [start] [end]`。
+
+  ```java
+  127.0.0.1:6379> setbit hello 0 1
+  (integer) 0
+  127.0.0.1:6379> setbit hello 1 1
+  (integer) 0
+  127.0.0.1:6379> setbit hello 2 0
+  (integer) 0
+  127.0.0.1:6379> bitpos hello 0
+  (integer) 2
+  127.0.0.1:6379> bitpos hello 1
+  (integer) 0
+  127.0.0.1:6379> 
+  ```
+
+### 实战总结
+
+- 用户每月签到
+
+  - 用户签到
+
+    `setbit signIn:YYYYMM:userId day 1`
+
+  - 统计当月签到总数
+
+    `bitcount signIn:YYYYMM:userId`
+
+  代码如下：
+
+  ```java
+  @Service
+  public class Bitmaps_SignInService {
+  
+      @Autowired
+      RedisUtil redisUtil;
+  
+      @Autowired
+      RedisTemplate redisTemplate;
+  
+      private final String SIGNIN = "signIN";
+  
+      /**
+       * 用户签到
+       */
+      public boolean signIn(String userId) {
+          //当月
+          String month = LocalDateTimeUtils.formatNow(LocalDateTimeUtils.YEAR_MONTH);
+          //本月第几天
+          int dayOfMonth = LocalDateTime.now().getDayOfMonth();
+          return redisUtil.setBit(getSignInKey(userId, month), dayOfMonth, true);
+      }
+  
+      /**
+       * 获取指定用户某月份签到总数
+       */
+      public int countMonthSignIn(String userId, String month) {
+          String signInKey = getSignInKey(userId, month);
+          //redisTemplate没有提供bitcount命令，可使用execute调用相关方法
+          Long execute = (Long) redisTemplate.execute(
+                  (RedisCallback<Long>) con -> con.bitCount(signInKey.getBytes()));
+          if (Objects.isNull(execute)) {
+              return 0;
+          }
+          return execute.intValue();
+      }
+  
+      private String getSignInKey(String userId, String month) {
+          return SIGNIN + ":" + month + ":" + userId;
+      }
+  
+  
+  }
+  ```
+
+  
+
+  测试例子如下：
+
+  ```java
+      /**
+       * bitmaps-用户签到
+       */
+      @Test
+      public void bitmapsTest() {
+          String userId = "xiaoming";
+          //签到
+          boolean signInFlag = bitmapsSignInService.signIn(userId);
+          System.out.println(userId + " => 签到状态：" + signInFlag);
+          String month = LocalDateTimeUtils.formatNow(LocalDateTimeUtils.YEAR_MONTH);
+          int signInCount = bitmapsSignInService.countMonthSignIn(userId, month);
+          System.out.println(userId + " => " + month + " => 签到次数为:" + signInCount);
+      }
+  
+      //output
+      xiaoming => 签到状态：false
+      xiaoming=>2021-08=> 签到次数为:1
+  ```
+
+### 参考链接
+
+- [Redis学习笔记 - Bitmaps（位图）](https://blog.csdn.net/lm324114/article/details/88959531)
+
+- [https://juejin.cn/post/6844903561839525902](https://juejin.cn/post/6844903561839525902)
+
+
 
    
 

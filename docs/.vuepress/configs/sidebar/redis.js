@@ -5,7 +5,7 @@ module.exports = [
         "collapsable": false,
         "children": [
             "/database/redis/redis简介",
-            "/database/redis/redis五大数据类型",
+            "/database/redis/redis八大数据类型",
             "/database/redis/redis常见问题",
             "/database/redis/发布订阅",
             "/database/redis/过期策略",
@@ -14,7 +14,7 @@ module.exports = [
             "/database/redis/redis实现分布式锁",
             "/database/redis/Redisson",
             "/database/redis/缓存问题",
-            "/database/redis/布隆过滤器.md"
+            "/database/redis/布隆过滤器"
 
         ]
     }

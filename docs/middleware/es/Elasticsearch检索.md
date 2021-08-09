@@ -179,7 +179,7 @@ Elasticsearch提供两种检索方式。
        }
    }
    
-   #address是keyword类型，不会进行分词，只会整体匹配。
+   //address是keyword类型，不会进行分词，只会整体匹配。
    {
        "query": {
            "term": {
@@ -271,98 +271,98 @@ Elasticsearch提供两种检索方式。
 
 ### 10. 模糊查询 - fuzzy
 
-    fuzzy 关键字：用来模糊查询含有指定关键字的文档。
+fuzzy 关键字：用来模糊查询含有指定关键字的文档。
+
+```java
+GET /{index}/{type}/_search
     
-    ```java
-    GET /{index}/{type}/_search
-        
-    {
-        "query": {
-            "fuzzy": {
-                "content": "sprin"
-            }
+{
+    "query": {
+        "fuzzy": {
+            "content": "sprin"
         }
     }
-    ```
+}
+```
 
 ### 11. 布尔查询 - bool
 
-    bool 关键字：用来组合多个条件实现复杂查询。
+bool 关键字：用来组合多个条件实现复杂查询。
+
+- must：需要同时成立。相当于 && 。
+- should：成立一个就行。相当于||。
+- must_not：不能满足任何一个。相当于！。
+
+```java
+GET /{index}/{type}/_search
     
-    - must：需要同时成立。相当于 && 。
-    - should：成立一个就行。相当于||。
-    - must_not：不能满足任何一个。相当于！。
-    
-    ```JAVA
-    GET /{index}/{type}/_search
-        
-    {
-      "query": {
-       "bool":{
-           "must":[
-               {
-                   "range":{
-                       "age":{
-                       "gte":5,
-                       "lte":10
-                   }}
+{
+  "query": {
+   "bool":{
+       "must":[
+           {
+               "range":{
+                   "age":{
+                   "gte":5,
+                   "lte":10
+               }}
+           }
+       ],
+       "must_not":[{
+           "term":{
+               "address":{
+
+            "value":"南京"
                }
-           ],
-           "must_not":[{
-               "term":{
-                   "address":{
-    
-                "value":"南京"
-                   }
-               }
-           }]
-       }
-      }
-    }
-    ```
+           }
+       }]
+   }
+  }
+}
+```
 
 ### 12. 高亮查询 - highlight
 
-    highlight 关键字：可以让指定关键字高亮。
+highlight 关键字：可以让指定关键字高亮。
+
+```java
+GET /{index}/{type}/_search
     
-    ```java
-    GET /{index}/{type}/_search
-        
-    {
-        "query": {
-            "term": {
-                "address": {
-                    "value": "南京"
-                }
+{
+    "query": {
+        "term": {
+            "address": {
+                "value": "南京"
             }
-        },
-        "highlight": {
-            "fields": {
-                "address": {
-                    
-                }
+        }
+    },
+    "highlight": {
+        "fields": {
+            "address": {
+                
             }
         }
     }
-    ```
+}
+```
 
 ### 13. 多字段查询 - multi_match
 
-    支持多个字段匹配。
-    
-    ```java
-    {
-        "query": {
-            "multi_match": {
-                "query": "开发",
-                "fields": [
-                    "name",
-                    "content"
-                ]
-            }
+支持多个字段匹配。
+
+```java
+{
+    "query": {
+        "multi_match": {
+            "query": "开发",
+            "fields": [
+                "name",
+                "content"
+            ]
         }
     }
-    ```
+}
+```
 
 ### 14. 多字段分词查询 - query_string
 
@@ -383,12 +383,25 @@ Elasticsearch提供两种检索方式。
 }
 ```
 
+### 15.排序 - sort
 
-
-
-​    
-
-
+```java
+{
+    "query": {
+        "range": {
+            "age": {
+                "gte": 5,
+                "lte": 10
+            }
+        }
+    },
+  	"sort":{
+      "age":{
+        "order":"desc"
+      }
+    }
+}
+```
 
 
 
