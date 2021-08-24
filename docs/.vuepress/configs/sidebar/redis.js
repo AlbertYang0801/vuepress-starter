@@ -8,6 +8,7 @@ module.exports = [
             "/database/redis/redis八大数据类型",
             "/database/redis/redis常见问题",
             "/database/redis/redis的持久化.md",
+            "/database/redis/redis的事务.md",
             "/database/redis/发布订阅",
             "/database/redis/过期策略",
             "/database/redis/内存淘汰策略",
