@@ -8,6 +8,7 @@ module.exports = [
             "/middleware/es/Elasticsearch环境安装.md",
             "/middleware/es/Elasticsearch基础概念.md",
             "/middleware/es/Elasticsearch检索.md",
+            "/middleware/es/Es聚合总结.md",
             "/middleware/es/倒排索引原理.md"
         ]
     }
