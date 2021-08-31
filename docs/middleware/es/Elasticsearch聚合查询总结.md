@@ -1,6 +1,5 @@
-## Es聚合操作
+# Elasticsearch聚合查询总结
 
-记录 Es 聚合操作的使用。
 
 ## 1.求和、最大值、最小值、平均值
 
@@ -237,7 +236,7 @@
 
 - dateHistogram - 指定聚合字段别名；
 - dateHistogramInterval - 指定时间间隔；
-  - 两小时 - DateHistogramInterval.hours(2);`
+  - 两小时 - `DateHistogramInterval.hours(2)`
   - 一天 - `DateHistogramInterval.days(1)`
 
 ```java
@@ -274,13 +273,13 @@
         }
     },
     "aggs": {
-        "groupBy": {
+        "countUserTotal": {//自定义字段
             "date_histogram": {
-                "field": "indexTime",
+                "field": "indexTime",//指定日期字段
                 "interval": "120m"	//指定时间间隔2小时
             },
             "aggs": {
-                "max_user": {
+                "max_user": {//自定义字段
                     "sum": {//求和
                         "field": "userTotal"	//用户总量字段
                     }
@@ -309,7 +308,7 @@
         "hits": []
     },
     "aggregations": {
-        "groupBy": {
+        "countUserTotal": {
             "buckets": [
                 {
                     "key_as_string": "2021-07-09T00:00:00.000Z",
@@ -421,8 +420,6 @@
 }
 ```
 
-
-
 ### Java API
 
 ```java
@@ -441,8 +438,6 @@
         searchRequestBuilder.addAggregation(dateHistogramAggregationBuilder);
 
 ```
-
-
 
 ## 参考链接
 
