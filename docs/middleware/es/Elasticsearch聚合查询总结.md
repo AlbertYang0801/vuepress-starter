@@ -441,6 +441,6 @@
 
 ## 参考链接
 
-- https://blog.csdn.net/wsdtq123/article/details/78263207
-- https://www.jianshu.com/p/eb1e98693810
+- [elastic按小时统计当天数据](https://blog.csdn.net/wsdtq123/article/details/78263207)
+- [ES聚合&去重查询](https://www.jianshu.com/p/eb1e98693810)
 

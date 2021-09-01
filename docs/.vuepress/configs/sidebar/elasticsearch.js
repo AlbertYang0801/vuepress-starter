@@ -1,7 +1,7 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "elasticsearch",
+        "title": "Elasticsearch",
         "collapsable": true,
         "children": [
             "/middleware/es/Elasticsearch简介.md",
