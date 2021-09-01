@@ -10,7 +10,7 @@ module.exports = [
     {
         "text": "数据库", items: [
             {text: 'MySQL', link: '/database/mysql/'},
-            {text: "Redis", link: '/database/redis/'}
+            {text: "redis", link: '/database/redis/'}
         ]
     },
     {
