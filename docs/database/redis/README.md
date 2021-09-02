@@ -3,6 +3,7 @@
 ## 目录
 
 - [redis简介](./redis简介)
+- [redis安装](./redis安装)
 - [redis八大数据类型](./redis八大数据类型)
 - [redis常见问题](./redis常见问题)
 - [redis的持久化](./redis的持久化)

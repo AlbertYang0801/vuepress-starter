@@ -5,6 +5,7 @@ module.exports = [
         "collapsable": false,
         "children": [
             "/database/redis/redis简介",
+            "/database/redis/redis安装.md",
             "/database/redis/redis八大数据类型",
             "/database/redis/redis常见问题",
             "/database/redis/redis的持久化.md",
