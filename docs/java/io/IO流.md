@@ -1,6 +1,6 @@
 
 
-
+# IO流
 
 ## 什么是流？
 
@@ -8,7 +8,7 @@
 
 > 比如一张图片保存在计算机上时，都是 0 和 1 组成，最终可以经过各种转换演变成了图片显示出来。
 
-流就是将**文件的二进制内容在各个设备之间进行传输**的过程的比喻。
+流（`Stream`），是一个抽象的概念，是指一连串的数据（字符或字节），是以先进先出的方式发送信息的通道。
 
 > 比如我们将图片从计算机复制到另一个文件夹的时候，将图片的二进制数据一点点的传递，类似于数据像水流一样一点点的流动到了目的地，所以整体传输的二进制数据称为数据流。
 
@@ -20,24 +20,36 @@ I/O 流是 Input/Output 的缩写，用于处理设备之间的数据传输。�
 
 ### 流的分类？
 
+#### 1. 数据流向
+
 根据程序和设备数据流向的不同，可以将流分为：**输入流 **和 **输出流**。
 
 - 输入流：从设备（磁盘等）将数据输入到程序中。
 - 输出流：将程序中的数据输出到设备（磁盘等）上保存。
 
-根据操作的数据单位的不同，可以将流分为：**字节流 **和 **字符流**。
+#### 2. 操作的数据单位
+
+ 根据操作的数据单位的不同，可以将流分为：**字节流 **和 **字符流**。
 
 - 字节流：以字节为单位进行数据传输（1 Byte=8 bit）。
 - 字符流：以字符为单位进行数据传输（1字符=2字节）。
 
 > 字符流的本质上也是通过字节流读取，Java 中的字符采用 Unicode 标准，在读取和输出的过程中，通过以字符为单位，查找对应的码表将字节转换为对应的字符。
 
----
-
 **什么时候需要用字节流，什么时候又要用字符流？**
 
-- 字符流只针对字符数据进行传输，对于文本文件（txt,java,cpp）使用**字符流**处理。
-- 对于非文本文件（mp3,jpg,doc,ppt) 使用**字节流**处理。
+- 对于非文本文件（mp3,jpg,doc,ppt) 使用**字节流**处理。字节流能处理所有文件，但是对于文本文件的处理效率较低。
+- 对于文本文件（txt,java,cpp）使用**字符流**处理，字符流只针对字符数据进行传输，只能处理文本文件。
+
+#### 3. 流的功能
+
+ 根据功能的不同，可以将流分为：**节点流 **和 **处理流**。
+
+- 节点流：节点流是**真正传输数据**的流对象，用于访问**特定的一个地方（节点）读写数据**，称为节点流。例如：访问文件、访问数组、访问管道、访问字符串。
+
+- 处理流：处理流是对节点流的封装，通过对基础输入/输出流进行封装，提高读写效率或额外功能。
+
+  比如 **缓冲流** 就是一种处理流，能够提高节点流的读写效率；
 
 ### IO流的总结
 
@@ -378,9 +390,316 @@ I/O 流是 Input/Output 的缩写，用于处理设备之间的数据传输。�
 
 
 
-
-
 ## 缓冲流
+
+为了提高数据读写的速度，Java 提供了带缓冲功能的流。
+
+*缓冲流是一种处理流，能够增强节点流的读写速率，而真正的读写功能的时候还是节点流来实现的。*
+
+在使用这些缓冲流的时候，会创建一个内部缓冲区数组，大小为 8192 个字节（8kb）。
+
+![image-20210909103012394](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210909103012.png)
+
+### 缓冲流的分类
+
+缓冲流要与节点流搭配使用，根据数据操作单位（字节或字符）可以把缓冲流分为字节型和字符型。
+
+- 字节型：BufferedInputStream 和 BufferedOutputStream。
+- 字符型：BufferedReader 和 BufferedWriter。
+
+### 缓冲流的过程
+
+![原理图](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210909112828.png)
+
+1. 读取过程
+
+   - 第一次读取数据时，会从文件中读取 8192 个字节数据写入缓冲区，并将第一个返回调用者。
+   - 再次读取数据时，直接从缓冲区获取。
+   - 当缓冲区数据被读完后，再次从文件中读取 8192 个字节数据写入缓冲区。
+
+2. 写入过程
+
+   - 写入数据时，会将数据先写入到缓冲区。
+
+   - 若缓冲区被写满，字节数达到 8192 个，则将缓冲区数据写入输出流，输出到文件。
+
+   - 若最后一次执行结束，缓冲区未被写满，则可以调用`flush()`方法。
+
+     `flush()` 方法可以强制将缓冲区的内容写入输出流。
+
+3. 关闭流
+   - 关闭流的时候，关闭最外层流，也会关闭对应的内层节点流。
+   - 如果是带缓冲区的流对象的 `close()` 方法，不但会关闭流，还会在关闭流之前刷新缓冲区。
+   - 必须调用 `flush()` 或 `close() ` 方法刷新缓冲区，这样数据才能写入到磁盘，不然数据都会留到缓冲区。
+
+---
+
+### 缓冲流和节点流速度对比
+
+**缓冲流的作用是提供一个缓冲区，该缓冲区位于内存中，能够减少读写过程中 IO 操作的次数。**
+
+#### 1. 数据写入的速率对比
+
+如下图，节点流在输出的过程中每次读取到数据输出到磁盘上的过程就是一次 IO 操作。而缓冲流提供的缓冲区，在每次读取数据的时，先将数据放到缓冲区，直到缓冲区满了之后，再输出到磁盘。相比较大大**减少了输出到磁盘的 IO 操作**。
+
+![临时文件 (9)](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210909145214.png)
+
+#### 2. 数据读取的速率对比
+
+如下图，节点流在读取数据时，每读取一次都是从磁盘读取数据到内存，对应一次IO操作。而缓冲流提供的缓冲区，在第一次读取数据时，从磁盘中读取缓冲区大小一致的数据放到缓冲区，然后返回一条数据到内存。第二次读取数据就直接从缓存区读数据，而不是从磁盘读取，**减少了读取磁盘的 IO 操作**。
+
+![临时文件 (10)](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210909145306.png)
+
+#### 3. 缓冲流真的比节点流快吗？
+
+**缓冲流并不是绝对的比节点流快。**
+
+当只需要进行一次 IO 操作的时候（读写一次数据量和缓冲区的数据量一致），节点流仅仅进行了一次 IO 操作。而缓冲流进行一次 IO 操作写入到缓冲区之后，还需要从缓冲区读取数据。这种情况下，缓冲流相较于节点流，多了一步操作。
+
+![临时文件 (11)](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210909145923.png)
+
+### 缓冲流练习
+
+1. 字节缓冲流实现非文本文件复制
+
+   ```java
+       /**
+        * 缓冲流复制非文本文件-字节缓冲流
+        * BufferedInputStream和BufferedOutputStream
+        */
+       @Test
+       public void testBufferIoCopyPic() {
+           String path = "src/main/java/com/albert/javase/io/file/hello.jpg";
+           String outputPath = "src/main/java/com/albert/javase/io/file/newhello.jpg";
+   
+           FileInputStream fileInputStream = null;
+           FileOutputStream fileOutputStream = null;
+           BufferedInputStream bufferedInputStream = null;
+           BufferedOutputStream bufferedOutputStream = null;
+           try {
+               //1.创建字节输入流和字节输出流
+               fileInputStream = new FileInputStream(path);
+               fileOutputStream = new FileOutputStream(outputPath);
+   
+               //2.创建对应的缓冲流
+               bufferedInputStream = new BufferedInputStream(fileInputStream);
+               bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+   
+               //3.创建字节数组
+               byte[] bytes = new byte[1024];
+               int length;
+               while ((length = bufferedInputStream.read(bytes)) != -1) {
+                   //缓冲区写入
+                   bufferedOutputStream.write(bytes, 0, length);
+               }
+               System.out.println("复制成功");
+           } catch (IOException e) {
+               e.printStackTrace();
+           } finally {
+               try {
+                   if (bufferedInputStream != null) {
+                       bufferedInputStream.close();
+                   }
+                   if (bufferedOutputStream != null) {
+   //                    bufferedOutputStream.flush();
+                       //缓冲区的流对象在关闭流之前，会自动刷新缓冲区
+                       bufferedOutputStream.close();
+                   }
+                   //关闭带缓冲区的流对象，会自动关闭节点流
+   //                fileInputStream.close();
+   //                fileOutputStream.close();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+   
+       }
+   ```
+
+2. 字符缓冲流实现文本文件复制
+
+   ```java
+       /**
+        * 缓冲流复制文本文件-字符缓冲流
+        * BufferedReader 和 BufferedWriter
+        */
+       @Test
+       public void testCopyText() {
+           String path = "src/main/java/com/albert/javase/io/file/data.txt";
+           String outputPath = "src/main/java/com/albert/javase/io/file/newdata.txt";
+           FileReader fileReader = null;
+           FileWriter fileWriter = null;
+           BufferedReader bufferedReader = null;
+           BufferedWriter bufferedWriter = null;
+   
+           try {
+               //节点流
+               fileReader = new FileReader(path);
+               fileWriter = new FileWriter(outputPath);
+               //缓冲流
+               bufferedReader = new BufferedReader(fileReader);
+               bufferedWriter = new BufferedWriter(fileWriter);
+             	//字符数组
+               char[] chars = new char[1024];
+               int length;
+               while ((length = bufferedReader.read(chars)) != -1) {
+                   bufferedWriter.write(chars, 0, length);
+               }
+           } catch (IOException e) {
+               e.printStackTrace();
+           } finally {
+               try {
+                   //关闭最外层流对象，对应节点流也会关闭
+                   if (bufferedReader != null) {
+                       //带有缓冲区的流对象关闭，会在关闭流之前刷新缓冲区
+                       bufferedReader.close();
+                   }
+                   if (bufferedWriter != null) {
+                       bufferedWriter.close();
+                   }
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+   
+       }
+   ```
+
+3. 统计文本中每个字符出现的次数，并输出统计结果到文本。
+
+   ```java
+       /**
+        * 统计某个文本中，各个字符出现的次数
+        * 并将字符统计结果输出到文本中
+        */
+       @Test
+       public void countChar() {
+           String path = "src/main/java/com/albert/javase/io/file/data.txt";
+           String outputPath = "src/main/java/com/albert/javase/io/file/newdata.txt";
+           FileReader fileReader = null;
+           FileWriter fileWriter = null;
+           BufferedReader bufferedReader = null;
+           BufferedWriter bufferedWriter = null;
+   
+           Map<Character, Integer> map = Maps.newHashMap();
+           try {
+               //节点流
+               fileReader = new FileReader(path);
+               fileWriter = new FileWriter(outputPath);
+               //缓冲流
+               bufferedReader = new BufferedReader(fileReader);
+               bufferedWriter = new BufferedWriter(fileWriter);
+               int b;
+               while ((b = bufferedReader.read()) != -1) {
+                   char cValue = (char) b;
+                   if (map.containsKey(cValue)) {
+                       Integer value = map.get(cValue);
+                       map.put(cValue, value + 1);
+                   } else {
+                       map.put(cValue, 1);
+                   }
+               }
+               System.out.println(JsonUtil.toString(map));
+               Set<Map.Entry<Character, Integer>> entries = map.entrySet();
+               for (Map.Entry<Character, Integer> entry : entries) {
+                   Character key = entry.getKey();
+                   Integer value = entry.getValue();
+                   bufferedWriter.write(key+"="+value);
+                   bufferedWriter.write("\n");
+               }
+           } catch (IOException e) {
+               e.printStackTrace();
+           } finally {
+               try {
+                   //关闭最外层流对象，对应节点流也会关闭
+                   if (bufferedReader != null) {
+                       //带有缓冲区的流对象关闭，会在关闭流之前刷新缓冲区
+                       bufferedReader.close();
+                   }
+                   if (bufferedWriter != null) {
+                       bufferedWriter.close();
+                   }
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+   
+   
+       }
+   ```
+
+   
+
+### 缓冲流实现图片加密
+
+图片的加密通过**异或运算**来完成。
+
+- **异或运算**：*两个位相同为 0 ，不同为 1*。
+
+  > 异或运算也可以这样理解：*男性和女性能生出孩子，否则就不行*。（来自某知乎大神相见恨晚的评论。）
+
+- **异或运算特性**：*一个二进制数 A 和 另一个二进制数 B 异或运算两次的话，结果还是原来的二进制数 A。*
+
+---
+
+图片作为非文本，在输入输出时需要使用字节流来操作，针对每个字节与指定的**二进制数 B**进行异或运算，**第一次运算为加密，第二次进行相同的运算即可得到原字节完成解密** 。
+
+```java
+    /**
+     * 使用缓冲流实现图片加密
+     */
+    @Test
+    public void encyPic() {
+        String path = "src/main/java/com/albert/javase/io/file/hello.jpg";
+        //加密图片
+        String encyOutputPath = "src/main/java/com/albert/javase/io/file/ency.jpg";
+        //解密图片
+        String decryptOutputPath = "src/main/java/com/albert/javase/io/file/decrypt.jpg";
+
+        //加密（对图片每个字节进行异或运算）
+        encyPic(path,encyOutputPath,10);
+        //再次加密即可解密（对图片每个字节进行第二次异或运算，即可得到原字节）
+      	//指定二进制数 B 为 10
+        encyPic(encyOutputPath,decryptOutputPath,10);
+
+    }
+
+    private void encyPic(String path, String outputPath, int password) {
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        BufferedInputStream bufferedInputStream = null;
+        BufferedOutputStream bufferedOutputStream = null;
+        try {
+            //节点流
+            fileInputStream = new FileInputStream(path);
+            fileOutputStream = new FileOutputStream(outputPath);
+            //缓冲流
+            bufferedInputStream = new BufferedInputStream(fileInputStream);
+            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            int b;
+            while ((b = bufferedInputStream.read()) != -1) {
+                //将字节加密（字节b进行异或运算，解密时再进行一次异或运算即可得到b）
+                //再次调用该方法即可得到原字节
+                bufferedOutputStream.write(b ^ password);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //关闭最外层流对象，对应节点流也会关闭
+                if (bufferedInputStream != null) {
+                    //带有缓冲区的流对象关闭，会在关闭流之前刷新缓冲区
+                    bufferedInputStream.close();
+                }
+                if (bufferedOutputStream != null) {
+                    bufferedOutputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+```
 
 
 
@@ -402,6 +721,12 @@ I/O 流是 Input/Output 的缩写，用于处理设备之间的数据传输。�
 | 字节流 => 字符流 | 输入     | InputStreamReader        |
 | 字符流 => 字节流 | 输出     | OutputStreamWriter       |
 
-https://juejin.cn/post/7001735044825874462#heading-5
 
-https://juejin.cn/post/6869537077122301965#heading-5
+
+
+
+## 参考链接
+
+- [https://juejin.cn/post/7001735044825874462#heading-5](https://juejin.cn/post/7001735044825874462#heading-5)
+- [https://juejin.cn/post/6869537077122301965#heading-5](https://juejin.cn/post/6869537077122301965#heading-5)
+- [【叙述】Java的IO流的缓冲流的原理（前面简单阐述，后面带源码剖析）](https://blog.csdn.net/qq_43019319/article/details/107283238?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.no_search_link&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.no_search_link)
