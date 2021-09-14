@@ -640,6 +640,7 @@ I/O 流是 Input/Output 的缩写，用于处理设备之间的数据传输。�
 
 图片作为非文本，在输入输出时需要使用字节流来操作，针对每个字节与指定的**二进制数 B**进行异或运算，**第一次运算为加密，第二次进行相同的运算即可得到原字节完成解密** 。
 
+
 ```java
     /**
      * 使用缓冲流实现图片加密
@@ -699,8 +700,6 @@ I/O 流是 Input/Output 的缩写，用于处理设备之间的数据传输。�
 
 
 
-
-
 ## 转换流
 
 转换流提供了在**字节流和字符流之间的转换**，很多时候我们使用转换流来解决文件乱码的问题。
@@ -731,6 +730,413 @@ Java 提供了两个转换流的 API。
 | 字节流 => 字符流 | 输入流   | InputStreamReader        |
 | 字符流 => 字节流 | 输出流   | OutputStreamWriter       |
 
+### 转换流练习
+```java
+    /**
+     * 测试InputStreamReader
+     * 输入
+     * 字节流=》字符流
+     */
+    @Test
+    public void testInputStreamReader() {
+        String path = "src/main/java/com/albert/javase/io/file/data.txt";
+        FileInputStream fileInputStream = null;
+        InputStreamReader inputStreamReader = null;
+        try {
+            fileInputStream = new FileInputStream(path);
+            inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+            char[] chars = new char[1024];
+            int len;
+            while ((len = inputStreamReader.read(chars)) != -1) {
+                String content = new String(chars, 0, len);
+                System.out.println(content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 测试OutputStreamWriter
+     * 输出流
+     * 字符流=》字节流
+     */
+    @SneakyThrows
+    @Test
+    public void testInputStreamReader2() {
+        String path = "src/main/java/com/albert/javase/io/file/newdata.txt";
+        FileOutputStream fileOutputStream = null;
+        OutputStreamWriter outputStreamWriter = null;
+        try {
+            fileOutputStream = new FileOutputStream(path);
+            //将字节流转换为对应字符流输出
+            outputStreamWriter = new OutputStreamWriter(fileOutputStream, "GBK");
+            outputStreamWriter.write("这是一行测试数据");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            outputStreamWriter.close();
+        }
+
+    }
+```
+
+
+
+## 数据流
+
+数据输出流允许应用程序以适当方式将基本 Java 数据类型写入输出流中。然后，应用程序可以使用数据输入流将数据读入。
+
+### 数据流API
+
+- `DataInputStream`
+
+  作为 `InputStream` 的外部流使用。
+
+- `DataOutputStream`
+
+  作为 `OutputStream` 的外部流使用。
+
+### 数据流练习
+
+```java
+    /**
+     * 将内存中的字符串，基本数据类型变量写入到文件中。
+     */
+    @Test
+    public void testWrite() {
+        String path = "src/main/java/com/albert/javase/io/file/data.txt";
+        DataOutputStream dataOutputStream = null;
+        try {
+            dataOutputStream = new DataOutputStream(new FileOutputStream(path));
+            dataOutputStream.writeUTF("我回来了");
+            dataOutputStream.flush();
+            dataOutputStream.writeInt(222);
+            dataOutputStream.flush();
+            dataOutputStream.writeBoolean(true);
+            dataOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                dataOutputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 从文件中读取字符串、基本数据类型到内存中
+     */
+    @Test
+    public void testRead() {
+        String path = "src/main/java/com/albert/javase/io/file/data.txt";
+        DataInputStream dataInputStream = null;
+        try {
+            dataInputStream=new DataInputStream(new FileInputStream(path));
+            String content = dataInputStream.readUTF();
+            int i = dataInputStream.readInt();
+            boolean b = dataInputStream.readBoolean();
+            System.out.println(content);
+            System.out.println(i);
+            System.out.println(b);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                dataInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+```
+
+
+
+
+
+## 序列化和反序列化
+
+### 序列化的定义
+
+- **序列化**：把 Java 对象转换为字节序列的过程。
+
+  *不能够序列化 `static` 和 `transient` 修饰的成员变量。*
+
+- **反序列化**：把字节序列恢复为 Java 对象的过程。
+
+### 序列化的作用
+
+- 把对象的字节序列保存到硬盘，通常存放在一个文件中。（持久化对象）
+- 在网络上传送对象的字节序列。（网络传输对象）
+
+### 序列化的实现
+
+只有实现了 `Serializable` 或者 `Externalizable` 接口的类的对象才能被序列化为字节序列。*否则会抛出 `NotSerializableException` 异常。*
+
+> Externalizable继承了Serializable，该接口中定义了两个抽象方法：writeExternal()与readExternal()。当使用Externalizable接口来进行序列化与反序列化的时候需要重写writeExternal()与readExternal()方法。若没有重写方法，输出内容为空。
+>
+> 在使用Externalizable进行序列化的时候，在读取对象时，会调用被序列化类的无参构造器去创建一个新的对象，然后再将被保存对象的字段的值分别填充到新对象中。所以，实现Externalizable接口的类必须要提供一个public的无参的构造器。
+
+---
+
+1. Serializable
+
+   - 自定义对象
+
+     > 自定义对象实现 `Serializable` 接口，通过对象流进行序列化和反序列化。
+
+     ```java
+     	/**
+          * 实现Serializable接口支持序列化
+          */
+         @Data
+         @NoArgsConstructor
+         @AllArgsConstructor
+         class Person implements Serializable {
+     
+             private String name;
+             private int age;
+     
+         }	
+     ```
+
+   - 使用对象流
+
+     ```java
+     		/**
+          * 测试对象流的写入
+          */
+         @Test
+         public void testWrite() {
+             String path = "src/main/java/com/albert/javase/io/file/data.bat";
+             ObjectOutputStream objectOutputStream = null;
+             try {
+                 Person person = new Person("小明", 10);
+                 objectOutputStream = new ObjectOutputStream(new FileOutputStream(path));
+                 //序列化
+                 objectOutputStream.writeObject(person);
+                 objectOutputStream.flush();
+             } catch (IOException ioException) {
+                 ioException.printStackTrace();
+             } finally {
+                 try {
+                     objectOutputStream.close();
+                 } catch (IOException ioException) {
+                     ioException.printStackTrace();
+                 }
+             }
+         }
+     
+         /**
+          * 测试对象流的读取
+          */
+         @Test
+         public void testRead() {
+             String path = "src/main/java/com/albert/javase/io/file/data.bat";
+             ObjectInputStream objectInputStream = null;
+             try {
+                 objectInputStream = new ObjectInputStream(new FileInputStream(path));
+                 //反序列化
+                 Person person = (Person) objectInputStream.readObject();
+                 System.out.println(JsonUtil.toString(person));
+             } catch (IOException | ClassNotFoundException ioException) {
+                 ioException.printStackTrace();
+             } finally {
+                 try {
+                     objectInputStream.close();
+                 } catch (IOException ioException) {
+                     ioException.printStackTrace();
+                 }
+             }
+         }
+     ```
+
+   
+
+2. Externalizable
+
+   - 自定义对象
+
+     ```java
+     /**
+      * 实现Externalizable接口支持序列化
+      * 反序列化机制根据重写的两个方法实现
+      * 若没有实现内容，则反序列化的对象属性都是默认值。
+      */
+     @Data
+     @NoArgsConstructor
+     @AllArgsConstructor
+     class OldMan implements Externalizable {
+     
+         private String name;
+         private int age;
+     
+         @Override
+         public void writeExternal(ObjectOutput out) throws IOException {
+             out.writeUTF(name);
+             out.write(age);
+         }
+     
+         @Override
+         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException 		{
+             name = in.readUTF();
+             age = in.read();
+         }
+     }
+     ```
+
+   - 使用对象流
+
+     ```java
+         /**
+          * 测试Externalizable序列化
+          */
+         @Test
+         public void testExternalizableWrite() {
+             String path = "src/main/java/com/albert/javase/io/file/data.bat";
+             ObjectOutputStream objectOutputStream = null;
+             try {
+                 OldMan oldMan = new OldMan("小明", 10);
+                 objectOutputStream = new ObjectOutputStream(new FileOutputStream(path));
+                 objectOutputStream.writeObject(oldMan);
+                 objectOutputStream.flush();
+             } catch (IOException ioException) {
+                 ioException.printStackTrace();
+             } finally {
+                 try {
+                     objectOutputStream.close();
+                 } catch (IOException ioException) {
+                     ioException.printStackTrace();
+                 }
+             }
+         }
+     
+         /**
+          * 测试Externalizable反序列化
+          */
+         @Test
+         public void testExternalizableRead() {
+             String path = "src/main/java/com/albert/javase/io/file/data.bat";
+             ObjectInputStream objectInputStream = null;
+             try {
+                 objectInputStream = new ObjectInputStream(new FileInputStream(path));
+                 OldMan person = (OldMan) objectInputStream.readObject();
+                 System.out.println(JsonUtil.toString(person));
+             } catch (IOException | ClassNotFoundException ioException) {
+                 ioException.printStackTrace();
+             } finally {
+                 try {
+                     objectInputStream.close();
+                 } catch (IOException ioException) {
+                     ioException.printStackTrace();
+                 }
+             }
+         }
+     ```
+
+     
+
+### Transient关键字
+
+Transient 关键字的作用：**控制变量某个属性的序列化**。加上该关键字的属性，在被反序列化的时候，会被设置为初始值。
+
+```java
+/**
+ * 实现Serializable接口支持序列化
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class Person implements Serializable {
+		//反序列化不输出该属性
+    transient private String name;
+    private int age;
+
+}
+
+//output
+//{"name":null,"age":10}
+```
+
+### serialVersionUID的理解
+
+实现 `Serializable` 接口的类都有一个表示序列化版本标识符的静态变量-`serialVersionUID`；
+
+- 手动配置- `private static final long serialVersionUID = 475463534532L;`
+
+- 自动配置
+
+  若是类没有显示定义这个静态常量，它的值是 Java 运行时环境根据类的内部细节自动生成的。
+
+---
+
+Java 的序列化机制是在运行时判断类的 `serialVersionUID ` 来验证版本一致性的。在反序列化时，JVM 会把传来的字节流中的 `serialVersionUID ` 和 本地实体类的 `serialVersionUID` 比较，如果相同就认为是一致的，可以进行反序列化，负责就会抛出版本不一致异常（InvalidCastException）。
+
+
+
+## 对象流
+
+对象流是用来存取基本数据类型和对象的处理流。对象流的对象有 `ObjectInputStream` 和 `OjbectOutputSteam`。
+
+*用于存储和读取基本数据类型数据或对象的处理流。它的强大之处就是可以把Java中的对象写入到数据源中，也能把对象从数据源中还原回来。*
+
+```java
+/**
+     * 测试对象流的写入
+     */
+    @Test
+    public void testWrite() {
+        String path = "src/main/java/com/albert/javase/io/file/data.bat";
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            Person person = new Person("小明", 10);
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(path));
+            //序列化
+            objectOutputStream.writeObject(person);
+            objectOutputStream.flush();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            try {
+                objectOutputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 测试对象流的读取
+     */
+    @Test
+    public void testRead() {
+        String path = "src/main/java/com/albert/javase/io/file/data.bat";
+        ObjectInputStream objectInputStream = null;
+        try {
+            objectInputStream = new ObjectInputStream(new FileInputStream(path));
+            //反序列化
+            Person person = (Person) objectInputStream.readObject();
+            System.out.println(JsonUtil.toString(person));
+        } catch (IOException | ClassNotFoundException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+```
+
+
+
+
+
 
 
 
@@ -740,3 +1146,4 @@ Java 提供了两个转换流的 API。
 - [https://juejin.cn/post/7001735044825874462#heading-5](https://juejin.cn/post/7001735044825874462#heading-5)
 - [https://juejin.cn/post/6869537077122301965#heading-5](https://juejin.cn/post/6869537077122301965#heading-5)
 - [【叙述】Java的IO流的缓冲流的原理（前面简单阐述，后面带源码剖析）](https://blog.csdn.net/qq_43019319/article/details/107283238?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.no_search_link&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.no_search_link)
+- https://www.zhihu.com/question/47794528/answer/672095170
