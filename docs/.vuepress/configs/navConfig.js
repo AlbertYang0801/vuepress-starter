@@ -2,9 +2,11 @@ module.exports = [
     {"text": "首页", "link": "/"},
     {
         "text": "Java篇", items: [
-            {text: 'Java容器', link: '/java/collection/'},
-            {text: "JVM虚拟机", link: '/java/jvm/'},
-            {text: "高并发", link: '/java/concurrent/'}
+            {text: 'Java 容器', link: '/java/collection/'},
+            {text: "Java 虚拟机", link: '/java/jvm/'},
+            {text: "Java 高并发", link: '/java/concurrent/'},
+            {text: "Java IO", link: '/java/io/'},
+
         ]
     },
     {

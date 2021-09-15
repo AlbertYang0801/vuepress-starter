@@ -1,12 +1,12 @@
-## File类
+# 文件操作-File类
 
-`java.io.File` 类：*文件和文件目录路径的抽象表示形式*，File 类的一个对象，代表一个文件或者一个文件夹。
+`java.io.File` 类：**文件**和**文件目录路径**的抽象表示形式，File 类的一个对象，代表一个文件或者一个文件夹。
 
-**File 能新建、删除、重命名文件和目录，但是 File 不能访问文件内容本身。*若需要访问文件内容，则需要使用IO流。***
+***File 能新建、删除、重命名文件和目录，但是 File 不能访问文件内容本身。若需要访问文件内容，则需要使用IO流。***
 
-[练习代码](https://gitee.com/zztiyjw/JavaAdvanced/tree/master/javase-practice/src/main/java/com/albert/javase/io)
+---
 
-### 1. 文件扩展
+## 文件相关扩展
 
 1. 相对路径和绝对路径
 
@@ -68,7 +68,7 @@
    //macOs分隔符结果为：/
    ```
 
-### 2. File类的实例化
+## File类的实例化
 
 - `File(String pathname)`
 
@@ -82,7 +82,7 @@
 
   以父 File 对象和子路径进行实例化。
 
-### 3. File类的常用方法
+## File类的常用方法
 
 ```java
 
@@ -193,7 +193,9 @@
     }
 ```
 
-### 4. 练习
+## 相关练习
+
+[练习代码地址](https://gitee.com/zztiyjw/JavaAdvanced/tree/master/javase-practice/src/main/java/com/albert/javase/io)
 
 ```java
 /**

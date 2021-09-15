@@ -1,5 +1,8 @@
 //高并发
 const concurrent = require('./sidebar/concurrent');
+//io
+const io = require('./sidebar/io');
+
 //设计模式
 const design = require('./sidebar/design');
 //工具向
@@ -22,6 +25,7 @@ const elasticsearch = require('./sidebar/elasticsearch');
 // 为以下路由添加左侧边栏
 const sidebarConfig = {
     "/java/concurrent/": concurrent,
+    "/java/io/": io,
     "/design/": design,
     "/util/": util,
     "/frame/spring/": spring,
