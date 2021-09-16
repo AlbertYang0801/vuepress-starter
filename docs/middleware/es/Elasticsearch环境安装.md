@@ -22,7 +22,7 @@
 
   > You Know, for Search 
 
-## Elasticsearch-head
+## Elasticsearch-head插件
 
 Elasticsearch-head 是一个 Elasticsearch 数据可视化插件，可以查看索引、数据，还可以进行基本的查询操作和复杂操作。
 
@@ -50,7 +50,7 @@ Elasticsearch-head 是一个 Elasticsearch 数据可视化插件，可以查看�
 
    ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210628110536.png)
 
-## Kibana 
+## Kibana 安装
 
 Kibana 是 Elasticsearch 可视化平台的一种。
 

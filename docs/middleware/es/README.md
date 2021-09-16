@@ -3,15 +3,27 @@
 ## 目录
 
 - [Elasticsearch简介](./Elasticsearch简介.md)
+  - [Elasticsearch介绍](./Elasticsearch简介.md)
+  - [Elastic Stack介绍](./Elasticsearch简介.md)
+  - [Elasticsearch通信方式](./Elasticsearch简介.md)
+  - [Elasticsearch和Solr对比](./Elasticsearch简介.md)
 - [Elasticsearch环境安装](./Elasticsearch环境安装.md)
+  - [Elasticsearch安装](./Elasticsearch环境安装.md)
+  - [Elasticsearch-head插件](./Elasticsearch环境安装.md)
+  - [Kibana](./Elasticsearch环境安装.md)
+  - [IK分词器](./Elasticsearch环境安装.md)
 - [Elasticsearch基础概念](./Elasticsearch基础概念.md)
 - [Elasticsearch检索](./Elasticsearch检索.md)
-- [Elasticsearch聚合查询总结](./Elasticsearch聚合查询总结.md)
+  - [URL检索](./Elasticsearch检索.md)
+  - [DSL检索](./Elasticsearch检索.md)
+- [Elasticsearch聚合查询](docs/middleware/es/Elasticsearch聚合查询.md)
 - [倒排索引原理](./倒排索引原理.md)
+  - [正排索引](./倒排索引原理.md)
+  - [倒排索引](./倒排索引原理.md)
 
-## 学习计划
+## 思维导图
 
-![](https://img-blog.csdnimg.cn/20200602225308707.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3J1bmV3Ymll,size_16,color_FFFFFF,t_70)
+![image-20210916144809841](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210916144809.png)
 
 
 ## 参考链接

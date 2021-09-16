@@ -19,7 +19,7 @@
 1. Elasticsearch 是一个基于 Lucene 的高扩展性分布式搜索服务器。
 2. Elasticsearch 隐藏了 Lucene 的复杂性，对外提供 Restful 接口来操作。
 
-## Elastic Stack
+## Elastic Stack 介绍
 
 ELK Stack 是 Elasticsearch、Logstash、Kibana 三大开源框架的合集简称。
 

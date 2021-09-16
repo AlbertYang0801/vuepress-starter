@@ -383,7 +383,7 @@ GET /{index}/{type}/_search
 }
 ```
 
-### 15.排序 - sort
+### 15. 排序 - sort
 
 ```java
 {
