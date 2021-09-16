@@ -24,9 +24,11 @@ module.exports = [
         ]
     },
     {
-        text: "中间件",
+        text: "进阶篇",
         items: [
             {text: 'Elasticsearch', link: '/middleware/es/'},
+            {text: 'Docker', link: '/middleware/docker/'},
+            {text: 'Kubernetes', link: '/middleware/k8s/'},
         ]
     },
     {"text": "设计模式", "link": "/design/"},

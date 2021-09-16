@@ -18,6 +18,11 @@ const redis = require('./sidebar/redis');
 const jvm = require('./sidebar/jvm');
 //elasticsearch
 const elasticsearch = require('./sidebar/elasticsearch');
+//docker
+const docker = require('./sidebar/docker');
+
+//k8s
+const k8s = require('./sidebar/k8s');
 
 
 
@@ -34,6 +39,9 @@ const sidebarConfig = {
     "/database/mysql": mysql,
     "/database/redis": redis,
     "/middleware/es": elasticsearch,
+    "/middleware/docker":docker,
+    "/middleware/k8s":k8s,
+
     "/personal/": [
         {
             "title": "个人随笔",
