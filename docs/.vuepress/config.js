@@ -20,7 +20,7 @@ module.exports = {
     themeConfig: {
         nav: navConfig,		//导航栏
         sidebar: sidebarConfig, //侧边栏配置，自定义
-        sidebarDepth: 3,    //侧边栏深度
+        sidebarDepth: 5,    //侧边栏深度
         lastUpdated: '上次更新',
         // logo: "/images/logo.png", // 左上角logo
         // repo: 'itclanCode/blogcode', // 链接的仓库
