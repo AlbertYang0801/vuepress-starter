@@ -64,6 +64,12 @@ module.exports = [
             "/java/concurrent/nolock/CAS",
             "/java/concurrent/nolock/AtomicInteger"
         ]
+    }, {
+        "title": "八、并发设计模式",
+        "collapsable": true,
+        "children": [
+            "/java/concurrent/design/并发设计模式.md"
+        ]
     }
 ]
 
