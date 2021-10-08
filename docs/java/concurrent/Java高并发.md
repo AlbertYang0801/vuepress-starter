@@ -625,7 +625,7 @@ public class SpinLock {
 
    因为在第一个线程不释放锁的情况下，`atomicReference` 的值为第一个线程值, `atomicReference.compareAndSet(null, thread)` 判断会返回 false。
 
-3. `第一个线程请求 `unlock()` 方法，释放锁资源。
+3. 第一个线程请求 `unlock()` 方法，释放锁资源。
 
    `atomicReference.compareAndSet(thread,null)` 意为若 `atomicReference` 等于当前线程值，则将`atomicReference` 赋值为 null。
 
