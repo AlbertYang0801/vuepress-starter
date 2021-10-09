@@ -13,7 +13,7 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 ---
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211008164601.png)
+![高并发](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211009095427.png)
 
 ---
 
@@ -1220,6 +1220,8 @@ void signalAll();
 
 [读写锁的练习和可重入锁的效率对比](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chapterthree/ReadWriteLock_08.java)
 
+---
+
 ### 锁优化
 
 加锁之后线程之间竞争必然会导致性能下降，针对锁的使用，可以优化提高性能。
@@ -1377,13 +1379,9 @@ public E take() throws InterruptedException {
 
 [ThreadLocal总结](https://albertyang0801.github.io/blog/java/concurrent/single/ThreadLocal.html)
 
-
-
 ---
 
 ### 倒计数器CountdownLatch
-
----
 
 `CountDownLatch` 是线程相关的一个倒计数器。位于 `java.util.concurrent.CountDownLatch`。
 
