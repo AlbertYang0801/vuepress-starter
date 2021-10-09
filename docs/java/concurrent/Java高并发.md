@@ -165,6 +165,31 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 ### 进程和线程的区别
 
+**一个程序至少有一个进程,一个进程至少有一个线程。**
+
+**进程**：指在系统中正在运行的一个应用程序；程序一旦运行就是进程；从内核的观点看，进程的目的就是担当分配系统资源（CPU时间、内存等）的基本单位，**进程是系统进行资源分配和调度的基本单位**。
+
+**线程**：线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。线程自己基本上不拥有系统资源，只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈)，但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。
+
+>做个简单的比喻：进程=火车，线程=车厢
+>
+>- 线程在进程下行进（单纯的车厢无法运行）
+>- 一个进程可以包含多个线程（一辆火车可以有多个车厢）
+>- 不同进程间数据很难共享（一辆火车上的乘客很难换到另外一辆火车，比如站点换乘）
+>- 同一进程下不同线程间数据很易共享（A车厢换到B车厢很容易）
+>- 进程要比线程消耗更多的计算机资源（采用多列火车相比多个车厢更耗资源）
+>- 进程间不会相互影响，一个线程挂掉将导致整个进程挂掉（一列火车不会影响到另外一列火车，但是如果一列火车上中间的一节车厢着火了，将影响到所有车厢）
+>- 进程可以拓展到多机，进程最多适合多核（不同火车可以开在多个轨道上，同一火车的车厢不能在行进的不同的轨道上）
+>- 进程使用的内存地址可以上锁，即一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。（比如火车上的洗手间）－"互斥锁"
+>- 进程使用的内存地址可以限定使用量（比如火车上的餐厅，最多只允许多少人进入，如果满了需要在门口等，等有人出来了才能进去）－“信号量”
+>
+>
+>
+>作者：biaodianfu
+>链接：https://www.zhihu.com/question/25532384/answer/411179772
+>来源：知乎
+>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 
 
 ### 线程通信方式
@@ -172,6 +197,8 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 
 ### 线程的生命周期
+
+[线程的生命周期总结](https://albertyang0801.github.io/blog/java/concurrent/single/线程的生命周期.html)
 
 
 
@@ -305,14 +332,14 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 可按照功能将不同线程进行分组。
 
-参考：[线程组的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadGroup_08.java)
+[线程组的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadGroup_08.java)
 
 ---
 ### 守护线程
 
 守护线程是一种特殊的线程，会在所有的用户线程执行完成之后，随之结束。
 
-参考：[守护线程的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadDaemon_09.java)
+[守护线程的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadDaemon_09.java)
 
 ---
 ### 线程优先级
@@ -346,7 +373,7 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
     public final static int MAX_PRIORITY = 10;
 ```
 
-参考：[线程优先级的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadPriority_10.java)
+[线程优先级的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/test/java/com/albert/concurrent/book/chaptertwo/ThreadPriority_10.java)
 
 ---
 
@@ -451,6 +478,8 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 
 
+---
+
 ### volatile 关键字
 
 - `volatile` 变量可保证可见性，但不保证原子性。`volatile` 修饰变量时，会把该线程本地内存中的该变量刷新到主存中。
@@ -463,9 +492,15 @@ ________|  | | /| / / ___   / / ____ ___   __ _  ___    |_______
 
 
 
+---
+
 ### final 关键字
 
 
+
+
+
+---
 
 ### synchronized关键字
 
@@ -473,7 +508,7 @@ synchronized 关键字的作用是实现线程之间的同步。是一个互斥�
 
 #### synchronized 特点
 
-- 可重入
+- 可重入（主要解决死锁的问题）
 - 不可中断
 - 非公平
 
@@ -548,40 +583,44 @@ synchronized 加在普通方法上或者静态方法上，可实现同步方法�
 
 **参考链接**
 
-[synchronized同步代码块的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/main/java/com/albert/concurrent/synchronizedprac/SynchrodizedCodebolck.java)
-[synchronized同步方法的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/main/java/com/albert/concurrent/synchronizedprac/SynchrodizedMethod.java)
+- [synchronized同步代码块的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/main/java/com/albert/concurrent/synchronizedprac/SynchrodizedCodebolck.java)
+- [synchronized同步方法的练习](https://gitee.com/zztiyjw/concurrent-practice/blob/master/src/main/java/com/albert/concurrent/synchronizedprac/SynchrodizedMethod.java)
 
 ---
 
 #### synchronized怎么实现的线程安全
 
-
-
-
+[synchronized原理](https://albertyang0801.github.io/blog/java/concurrent/single/synchronized原理.html)
 
 #### 锁升级的过程
 
-
+[synchronized锁的优化机制](https://albertyang0801.github.io/blog/java/concurrent/single/synchronized锁的优化机制.html)
 
 ---
 
 ##  三、并发基础
 
+针对并发重要的 AQS 和 CAS 进行总结，还有 Java 提供的原子类总结。
+
+---
+
 ### AQS
 
-可单独开一篇文章
+[AQS总结](https://albertyang0801.github.io/blog/java/concurrent/single/AQS.html)
 
-
+---
 
 ### CAS
 
 [CAS总结](https://albertyang0801.github.io/blog/java/concurrent/single/CAS.html)
 
+---
+
 ### 原子类
 
 [原子类](https://albertyang0801.github.io/blog/java/concurrent/single/原子类.html)
 
-
+---
 
 ## 四、锁
 

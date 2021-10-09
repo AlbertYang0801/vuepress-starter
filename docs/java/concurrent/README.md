@@ -4,6 +4,4 @@
 
 ## 思维导图
 
-
-
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211008164601.png)
+![高并发](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211009095642.png)
