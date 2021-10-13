@@ -164,7 +164,7 @@ Elasticsearch提供两种检索方式。
 
 ### 5. 关键字查询 - term
 
-   Elasticsearch 里 text 类型字段会分词，keyword、date、Integer 等类型不会分词，只会按照整体取匹配。
+   Elasticsearch 里 text 类型字段会分词，keyword、date、Integer 等类型不会分词，只会按照整体去匹配。
 
    ```java
    GET /{index}/{type}/_search
@@ -383,6 +383,8 @@ GET /{index}/{type}/_search
 }
 ```
 
+
+
 ### 15. 排序 - sort
 
 ```java
@@ -400,6 +402,33 @@ GET /{index}/{type}/_search
         "order":"desc"
       }
     }
+}
+```
+
+
+
+### 16.多字段精确匹配- terms
+
+terems 支持对多个字段进行精确匹配。
+
+类似 MySQL 的 `IN` 关键字，`select * from table where id in (value1,value2);`
+
+```java
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "contentKey": [
+              "/apm2.0-yanshi_default_default-snmpother-1/_search",
+              "/metrics"
+            ]
+          }
+        }
+      ]
+    }
+  }
 }
 ```
 

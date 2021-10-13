@@ -439,8 +439,128 @@
 
 ```
 
+
+
+## 4. 分组-聚合
+
+根据某个字段分组，然后再进行聚合操作。
+
+### DSL查询语句
+
+```java
+{
+    "size": 10,
+    "query": {
+        "bool": {
+            "must": {
+                "terms": {
+                    "contentKey": [
+                        "/baidu/request",
+                        "/metrics"
+                    ]
+                }
+            }
+        }
+    },
+    "aggs": {
+        "url_count": {
+            "terms": {
+                "field": "contentKey"
+            },
+            "aggs": {
+                "5xxCount": {
+                    "sum": {
+                        "field": "code4xx"
+                    }
+                },
+                "4xxCount": {
+                    "sum": {
+                        "field": "code5xx"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+查询结果
+
+![image-20211013171516395](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211013171622.png)
+
+### Java API
+
+查询条件代码如下：
+
+```java
+  /**
+  * 封装查询条件
+  */
+	private SearchSourceBuilder fillSourceBuilder(String masterIp, String namespace, String from, String to, List<String> urlList) {
+        // 过滤
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+        // 过滤指标
+//        query.filter(QueryBuilders.termQuery("name", Constant.METRIC_PREFIX_NPM_AGG_ENTITY_REQUEST));
+        query.filter(QueryBuilders.rangeQuery(TIMESTAMP).from(from).lt(to));
+        query.filter(QueryBuilders.termQuery("labels.masterip", masterIp));
+        query.filter(QueryBuilders.termQuery("labels.namespace", namespace));
+        //url过滤
+        query.filter(QueryBuilders.termsQuery(CONTENT_KEY, urlList));
+
+        //指定字段聚合
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().query(query).size(0);
+        TermsAggregationBuilder termsAggregationBuilder = AggregationBuilders.terms(URL_COUNT).field("content_key");
+        termsAggregationBuilder.subAggregation(AggregationBuilders.sum(AGG_4XX).field("values.statuscode_4xx_total"))
+                .subAggregation(AggregationBuilders.sum(AGG_5XX).field("values.statuscode_5xx_total"));
+        sourceBuilder.aggregation(termsAggregationBuilder);
+        logger.debug("getNodeHealthCheckUrlListsourceBuilder:{}",sourceBuilder.toString());
+        return sourceBuilder;
+    }
+```
+
+处理返回结果代码如下：
+
+```java
+
+		try {
+            SearchResponse response = ConnectEs.instance().doSearchAction(request);
+            if (response != null) {
+                Aggregations aggregations = response.getAggregations();
+                Terms terms = aggregations.get(URL_COUNT);
+                for (Terms.Bucket bucket : terms.getBuckets()) {
+                    //4.封装es返回值
+                    healthCheckUrlListBeanList.add(fillHealthCheckUrlListBean(bucket));
+                }
+            }
+        } catch (Exception ex) {
+            logger.warn("[getNodeHealthCheckUrlList] Occurred exp, msg:{}", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+		/**
+		* 封装es返回值
+		*/
+    private HealthCheckUrlListBean fillHealthCheckUrlListBean(Terms.Bucket bucket) {
+        Aggregations singleAggregations = bucket.getAggregations();
+        Long code4xxCount = Convert.toLong(MathUtil.decimal(((Sum) singleAggregations.get(AGG_4XX)).getValue()), 0L);
+        Long code5xxCount = Convert.toLong(MathUtil.decimal(((Sum) singleAggregations.get(AGG_5XX)).getValue()), 0L);
+        HealthCheckUrlListBean healthCheckUrlListBean = new HealthCheckUrlListBean();
+        healthCheckUrlListBean.setUrl(bucket.getKeyAsString());
+        healthCheckUrlListBean.setCode4xxCount(code4xxCount);
+        healthCheckUrlListBean.setCode5xxCount(code5xxCount);
+        healthCheckUrlListBean.setTotalCount(NumberUtil.add(code4xxCount, code5xxCount).longValue());
+        return healthCheckUrlListBean;
+    }
+```
+
+
+
+
+
+
+
 ## 参考链接
 
 - [elastic按小时统计当天数据](https://blog.csdn.net/wsdtq123/article/details/78263207)
 - [ES聚合&去重查询](https://www.jianshu.com/p/eb1e98693810)
-
+- [ES基本的聚合查询](https://www.baidu.com/s?ie=UTF-8&wd=es%E7%9A%84%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2)
