@@ -2,6 +2,10 @@
 
 ## 一、查询总结
 
+**测试数据**
+
+<img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211014192757.png" alt="image-20211014192757892" style="zoom:50%;" />
+
 ### 基础运算总结
 
 #### 除法 div 和 / 的区别
@@ -51,8 +55,6 @@ select 19820523 div 1000
 
   
 
-
-
 ### 模糊查询
 
 使用 LIKE 关键字进行模糊查询。
@@ -79,26 +81,16 @@ where order_name like '%2_'
 
 
 
-
-
-
-
 ### 去重查询
 
 **在查询列前添加关键字 `DISTINCT`,可实现对查询结果的去重复。**
 
-测试表内容如下：
-
-<img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211014192757.png" alt="image-20211014192757892" style="zoom:50%;" />
-
 - 单列去重
 
   ```sql
-select DISTINCT order_name from order_info
+	select DISTINCT order_name from order_info
   ```
   
-  
-
   <img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211014192844.png" alt="image-20211014192844791" style="zoom:50%;" />
 
   
@@ -125,11 +117,11 @@ MySQL 中有聚合函数，用来对**某一列**进行计算，常用函数列�
 
 | 函数                                                         | 作用         | 备注                                                     |
 | ------------------------------------------------------------ | ------------ | -------------------------------------------------------- |
-| [AVG([distinct\] expr)](https://www.cnblogs.com/geaozhang/p/6745147.html#sum-avg) | 求平均值     | 适用于数值型字段                                         |
-| [COUNT({*\|[distinct\] } expr)](https://www.cnblogs.com/geaozhang/p/6745147.html#count) | 统计行的数量 | `count(*)`统计数据行数；`count(列名)`统计列值非空的数量; |
-| [MAX([distinct\] expr)](https://www.cnblogs.com/geaozhang/p/6745147.html#max-min) | 求最大值     | 适用于任意数据类型字段                                   |
-| [MIN([distinct\] expr)](https://www.cnblogs.com/geaozhang/p/6745147.html#max-min) | 求最小值     | 适用于任意数据类型字段                                   |
-| [SUM([distinct\] expr)](https://www.cnblogs.com/geaozhang/p/6745147.html#sum-avg) | 求累加和     | 适用于数值型字段                                         |
+| AVG([distinct\] expr) | 求平均值     | 适用于数值型字段                                         |
+| COUNT({*\|[distinct\] } expr) | 统计行的数量 | `count(*)`统计数据行数；`count(列名)`统计列值非空的数量; |
+| MAX([distinct\] expr) | 求最大值     | 适用于任意数据类型字段                                   |
+| MIN([distinct\] expr) | 求最小值     | 适用于任意数据类型字段                                   |
+| SUM([distinct\] expr) | 求累加和     | 适用于数值型字段                                         |
 
 **注意**
 
@@ -166,14 +158,14 @@ select avg(TO_DAYS(create_time)) from order_info
 **分组查询格式**
 
 ```sql
-select [聚合函数] 字段名 from 表名 [where 查询条件] [group by 字段名] [having 过滤条件]
+select [聚合函数](字段名),字段名 from 表名 [where 查询条件] [group by 字段名] [having 过滤条件]
 ```
 
 GROUP BY 语句根据一个或多个列对结果集进行分组，在分组的列上我们可以使用 COUNT, SUM, AVG 等聚合函数。
 
 Having 是用来对**查询结果过滤**的，使用的**过滤条件须为查询结果包含的字段**，在Having 中可以使用聚合函数。
 
-*包含 GROUP BY 的查询语句，SELECT 后的字段若未包含在 GROUP BY 后作为分组的条件，就要使用聚合函数进行聚合，否则会报错。（若某个字段没有作为分组条件，有可能会产生多条记录，若再不使用聚合函数将多条记录聚合为一条记录，则与分组会发生冲突）*
+包含 GROUP BY 的分组查询语句，SELECT 后查询出来的字段，要么包含在聚合函数里，要么作为分组的依据包含在 GROUP BY 后面。（若某个字段没有作为分组条件，有可能会产生多条记录，若再不使用聚合函数将多条记录聚合为一条记录，则与分组会发生冲突）
 
 **SQL练习**
 
@@ -245,7 +237,7 @@ ORDER BY 可以对查询结果排序，位于 SELECT 查询语句的结尾（若
 
 通过 LIMIT 关键字可以对查询结果进行分页，返回分页后的数据。
 
-**分页查询公式：LIMIT （当前页数-1）* 每页条数，每页条数**
+> 分页查询公式：LIMIT （当前页数-1）* 每页条数，每页条数
 
 ```sql
 SELECT * FROM TABLE LIMIT (PageNo - 1)*PageSize,PageSize ；
@@ -274,7 +266,7 @@ SELECT * FROM TABLE LIMIT (PageNo - 1)*PageSize,PageSize ；
   select * from table limit 20,10
   ```
 
-**LIMIT n, m的效率是十分低的，一般可以通过在 WHERE 条件中指定范围来优化。 WHERE id > ? limit 10；**
+**LIMIT n, m 的效率是十分低的，一般可以通过在 WHERE 条件中指定范围来优化。 WHERE id > ? limit 10；**
 
 ---
 
@@ -624,11 +616,11 @@ div为整除，只会取商的整数部分，不会四舍五入。
 
 ---
 
-![image-20211019145016090](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019145016090.png)
+![image-20211019145016090](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213555.png)
 
 *为数据表添加了唯一约束之后，新增内容重复则会提示异常。*
 
-![image-20211019144159146](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019144159146.png)
+![image-20211019144159146](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213548.png)
 
 ---
 
@@ -640,7 +632,7 @@ div为整除，只会取商的整数部分，不会四舍五入。
 
 MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所在列或列组合上建立对应的唯一索引**。
 
-![image-20211019152710954](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019152710954.png)
+![image-20211019152710954](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213541.png)
 
 ---
 
@@ -730,11 +722,11 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
        CONSTRAINT `student-class` FOREIGN KEY (`classroom`) REFERENCES `class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
      ```
 
-     ![image-20211019093858371](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019093858371.png)
+     ![image-20211019093858371](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213526.png)
 
    - 更新数据
 
-     ![image-20211019094138544](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019094138544.png)
+     ![image-20211019094138544](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213503.png)
 
    - 结论。
 
@@ -762,11 +754,11 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
 
    - 设置外键，将删除时和更新时的处理方式都设置为 RESTRICT。
 
-     ![image-20211018173853091](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211018173853.png)
+     ![image-20211018173853091](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213418.png)
 
    - 删除数据
 
-     ![image-20211019093358107](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019093358107.png)
+     ![image-20211019093358107](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213415.png)
 
    - 结论
 
@@ -781,11 +773,11 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
        CONSTRAINT `student-class` FOREIGN KEY (`classroom`) REFERENCES `class` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
      ```
 
-     ![image-20211019094629416](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019094629416.png)
+     ![image-20211019094629416](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213433.png)
 
    - 删除数据
 
-     ![image-20211019094602089](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019094602089.png)
+     ![image-20211019094602089](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213428.png)
 
    - 结论
 
@@ -838,7 +830,7 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
 
 *数据表的字段默认为 NULL，为字段添加了非空约束之后，若添加空值会报出异常。*
 
-![image-20211019143321668](/Users/yangjunwei/Library/Application Support/typora-user-images/image-20211019143321668.png)
+![image-20211019143321668](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213350.png)
 
 
 
