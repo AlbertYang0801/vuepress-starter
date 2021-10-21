@@ -1,27 +1,244 @@
 # MySQL基础
 
-## 一、查询总结
+
+* [MySQL基础](#mysql基础)
+  * [一、DDL语句](#一、ddl语句)
+    * [数据库的管理](#数据库的管理)
+    * [数据表的管理](#数据表的管理)
+  * [二、DML语言](#二、dml语言)
+    * [插入](#插入)
+    * [更新](#更新)
+    * [删除](#删除)
+      * [delete](#delete)
+      * [truncate](#truncate)
+      * [两种删除方式的区别](#两种删除方式的区别)
+  * [三、查询总结](#三、查询总结)
+    * [比较运算](#比较运算)
+    * [模糊查询](#模糊查询)
+    * [去重查询](#去重查询)
+    * [聚合查询](#聚合查询)
+    * [分组查询](#分组查询)
+    * [排序查询](#排序查询)
+    * [分页查询](#分页查询)
+    * [合并查询](#合并查询)
+    * [子查询](#子查询)
+      * [where 型子查询](#where-型子查询)
+      * [from 型子查询](#from-型子查询)
+    * [多表查询](#多表查询)
+      * [笛卡尔集](#笛卡尔集)
+      * [等值连接](#等值连接)
+      * [自连接](#自连接)
+      * [内连接](#内连接)
+      * [左连接](#左连接)
+      * [右连接](#右连接)
+  * [四、数据类型](#四、数据类型)
+    * [整数类型](#整数类型)
+    * [小数类型](#小数类型)
+      * [浮点类型](#浮点类型)
+      * [定点类型](#定点类型)
+      * [浮点数和定点数的比较](#浮点数和定点数的比较)
+    * [时间类型](#时间类型)
+    * [字符类型](#字符类型)
+  * [五、常用函数](#五、常用函数)
+    * [字符函数](#字符函数)
+    * [数学函数](#数学函数)
+    * [日期函数](#日期函数)
+    * [其它函数](#其它函数)
+    * [连接函数- concat](#连接函数--concat)
+    * [分组聚合函数 - group_concat](#分组聚合函数---group_concat)
+    * [时间戳格式化函数 - date-format](#时间戳格式化函数---date-format)
+  * [六、约束](#六、约束)
+    * [什么是约束？](#什么是约束？)
+    * [唯一约束 - UNIQUE](#唯一约束---unique)
+      * [唯一约束和唯一索引的关系？](#唯一约束和唯一索引的关系？)
+      * [新增和取消唯一约束](#新增和取消唯一约束)
+    * [主键约束 - PRIMARY](#主键约束---primary)
+    * [外键约束](#外键约束)
+      * [如何添加外键](#如何添加外键)
+      * [删除和更新的处理策略](#删除和更新的处理策略)
+    * [非空约束](#非空约束)
+      * [新增和取消非空约束](#新增和取消非空约束)
+  * [七、常见问题](#七、常见问题)
+    * [having 和 where 的区别？](#having-和-where-的区别？)
+    * [SELECT 语句执行顺序](#select-语句执行顺序)
+    * [除法 div 和 / 的区别](#除法-div-和--的区别)
+  * [参考链接](#参考链接)
+
+
+
+## 一、DDL语句
+
+数据定义语言DDL用来创建数据库中的各种对象-----表、视图、索引、同义词、聚簇等。DDL操作是隐性提交的，不能 rollback。
+
+### 数据库的管理
+
+1. 新建数据库
+
+   ```sql
+   create database 库名
+   ```
+
+2. 删除数据库
+
+   ```sql
+   drop database 库名
+   ```
+
+### 数据表的管理
+
+1. 创建表
+
+   ```sql
+   CREATE TABLE `user` (
+     `id` int(11) NOT NULL,
+     `username` varchar(255) DEFAULT NULL,
+     `sex` tinyint(1) DEFAULT NULL COMMENT '性别',
+     `group_code` int(4) DEFAULT NULL COMMENT '外键',
+     `property` decimal(10,2) DEFAULT NULL,
+     `money` float(10,2) DEFAULT NULL,
+     `create_time` datetime DEFAULT NULL,
+     `timestamp` timestamp NULL DEFAULT NULL,
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+   ```
+
+2. 删除表	
+
+   ```sql
+   drop table [表名]
+   ```
+
+3. 修改表
+
+   ```sql
+   ALTER TABLE 表名 ADD|MODIFY|DROP|CHANGE COLUMN 字段名 【字段类型】;
+   ```
+
+4. 修改表名
+
+   ```sql
+   ALTER TABLE classroom RENAME  class;
+   ```
+
+5. 修改表字段
+
+   **语法**
+   
+   ```sql
+ALTER TABLE student CHANGE COLUMN [旧字段名] [新字段名] [字段类型];
+   ```
+
+   比如如下 SQL：
+   
+   ```sql
+ALTER TABLE student CHANGE COLUMN old new bigint(8);
+   ```
+
+6. 修改表字段类型
+
+   ```sql
+   ALTER TABLE student MODIFY COLUMN sex tinyint(1) ;
+   ```
+
+7. 新增字段
+
+   ```sql
+   ALTER TABLE student ADD COLUMN email VARCHAR(20) ;
+   ```
+
+8. 删除字段
+
+   ```sql
+   ALTER TABLE student DROP COLUMN email;
+   ```
+
+   
+
+## 二、DML语言
+
+数据操纵语言DML主要有三种形式：插入（INSERT）、更新（UPDATE）和删除（DELETE）。
+
+### 插入
+
+```sql
+insert into 表名(字段名，...)	values(值1，...);
+```
+
+**特点**
+
+1. 字段类型和值类型一致或兼容，而且一一对应。
+2. 可以为空的字段，可以不用插入值，或用 NULL 填充。
+3. 不可以为空的字段，必须插入值。
+4. 字段个数和值的个数必须一致。
+5. 字段可以省略，但默认所有字段，并且顺序和表中的存储顺序一致。
+
+---
+
+### 更新
+
+- 更新单表
+
+  ```sql
+  update 表名 set filed1=value1,filed2=value2 【where 条件】
+  ```
+
+- 更新多表
+
+  ```sql
+  update  别名1,表2 别名2
+  set 字段=新值，字段=新值
+  where 连接条件
+  and 筛选条件
+  ```
+
+---
+
+### 删除
+
+#### delete 
+
+- 单表删除
+
+  ```sql
+  delete from 表名 【where 筛选条件】
+  ```
+
+- 多表删除
+
+  ```sql
+  delete 别名1，别名2
+  	from 表1 别名1，表2 别名2
+  	where 连接条件
+  	and 筛选条件;
+  ```
+
+#### truncate
+
+**语法**
+
+```sql
+truncate table 表名
+```
+
+#### 两种删除方式的区别
+
+- DELETE 是逐行一条一条删除记录的；TRUNCATE 则是直接删除原来的表，再重新创建一个一模一样的新表，而不是逐行删除表中的数据，执行数据比 DELETE 快。因此需要删除表中全部的数据行时，尽量使用 TRUNCATE 语句， 可以缩短执行时间。
+- DELETE 删除数据后，配合事件回滚可以找回数据；TRUNCATE 不支持事务的回滚，数据删除后无法找回。
+- DELETE 删除数据后，系统不会重新设置自增字段的计数器；TRUNCATE 清空表记录后，系统会重新设置自增字段的计数器。
+- DELETE 的使用范围更广，因为它可以通过 WHERE 子句指定条件来删除部分数据；而 TRUNCATE 不支持 WHERE 子句，只能删除整体。
+- DELETE 会返回删除数据的行数，但是 TRUNCATE 只会返回 0，没有任何意义。
+
+**总结**
+
+**当不需要该表时，用 DROP；当仍要保留该表，但要删除所有记录时，用 TRUNCATE；当要删除部分记录时，用 DELETE。**
+
+---
+
+## 三、查询总结
 
 **测试数据**
 
 <img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211014192757.png" alt="image-20211014192757892" style="zoom:50%;" />
-
-### 基础运算总结
-
-#### 除法 div 和 / 的区别
-
-- div 为整除，该运算符只取商的整数部分，而不会四舍五入。
-- / 运算符为实数除，运算结果为浮点型。
-
-```sql
-select 19820523 / 1000
-//19820.5230
-
-select 19820523 div 1000
-//19820
-```
-
-
 
 ### 比较运算
 
@@ -266,7 +483,7 @@ SELECT * FROM TABLE LIMIT (PageNo - 1)*PageSize,PageSize ；
   select * from table limit 20,10
   ```
 
-**LIMIT n, m 的效率是十分低的，一般可以通过在 WHERE 条件中指定范围来优化。 WHERE id > ? limit 10；**
+**`LIMIT n, m ` 的效率是十分低的，一般可以通过在 WHERE 条件中指定范围来优化。 WHERE id > ? limit 10；**
 
 ---
 
@@ -394,7 +611,17 @@ where order_info.id = tenant_info.id
 //24	23.60	《繁华2》	24	test
 ```
 
+#### 自连接
 
+同一个表连接查询。
+
+案例：查询员工名和直接上级的名称
+
+```sql
+SELECT e.last_name,m.last_name
+FROM employees e
+JOIN employees m ON e.`manager_id`=m.`employee_id`;
+```
 
 #### 内连接
 
@@ -408,8 +635,6 @@ on order_info.id = tenant_info.id
 
 24	23.60	《繁华2》	24	test
 ```
-
-
 
 #### 左连接
 
@@ -446,13 +671,165 @@ NULL	3			NULL	NULL	NULL
 24	23.60	《繁华2》	24		test
 ```
 
+---
 
+## 四、数据类型                                                                                              
+
+### 整数类型
+
+常用整数类型有 TINYINT、INT、BIGINT 等。
+
+![image-20211021090440027](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103234.png)
+
+*在设计表格的时候要为列选择合适的数据类型。比如存储枚举字段，只有 0 和 1 两个值，此时应该选择 TINYINT 。若选择了 BIGINT，则会造成大量的空间浪费，是不可取的。*
+
+**TINYINT 测试**
+
+1. 有符号
+
+   设置 sex 字段为 (tinyint) 数据类型后，发现默认是带符号的。由此可以得出 **MySQL 默认整数数据类型是带符号的**。
+
+   同时当填充 128 时，报错超出范围，验证了 tinyint 数据类型有符号时的范围是 -128 ～ 127。
+
+   tinyint 大小是 1 个字节，有符号取值范围是 10000000 ～ 01111111。
+
+   ![image-20211020111644652](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103240.png)
+
+   ![image-20211020111720215](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103246.png)
+
+2. 无符号
+
+   创建字段时添加 `unsigned` 标识或者在工具中为字段勾选 *无符号* 选项。
+
+   ```sql
+    `sex` tinyint(4) unsigned DEFAULT NULL
+   ```
+
+   ![image-20211020112655313](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103250.png)
+
+   设置无符号之后，为 sex 字段填充 -1 就会报错超出范围，验证了**无符号时不能存储负数**。
+
+   ![image-20211020112546487](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103256.png)
+
+   填充 256 报错超出范围，验证了**无符号时 tinyint 的数据范围是 0 ～ 255**。
+
+   ![image-20211020112905690](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103259.png)
+
+3. 长度-填充零
+
+   整数数据类型设置长度的时候，和存储数据的大小是没有联系的，比如 tinyint 类型存储数据大小还是 1 个字节，int 类型依然是 4 个字节。
+
+   长度指的是展示数据的长度，比如 sex 长度为 2，填充 sex 为 1 时，会自动填充为 01。填充值若超过该长度，无作用。（只针对填充数值不足长度限制时）
+
+   长度限制只在对字段添加**填充零（zerofill）**的规范时生效。
+
+   
+
+   ![image-20211021085912509](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103308.png)
+
+   ​	通过测试结果发现，当 sex 长度为 2，且添加 zerofill 规范后。填充 sex = 1 时，查询会自动补齐两位。当 sex = 127，超过长度 2 时，则数值无变化。
+
+<img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103310.png" alt="image-20211021085938289" style="zoom:50%;" />
+
+---
+
+### 小数类型
+
+MySQL 支持的小数类型有 FLOAT、DOUBLE、DECIMAL等，其中 FLOAT 和 DOUBLE 是浮点数类型，而 DECLMAL 是定点数类型。
+
+浮点类型和定点类型都可以用`(M, D)`来表示，其中`M`称为精度，表示总共的位数；`D`称为标度，表示小数的位数。
+
+![ ](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103320.png)
+
+#### 浮点类型
+
+FLOAT 代表单精度浮点类型。DOUBLE 代表双精度浮点类型。
+
+*FLOAT(M,N) 格式，M 代表整数位加小数位的和，N 代表小数位。FLOAT(5,2) 代表整数位加小数位总长度为 5，小数点后长度为 2。*
+
+与整数数值一样，浮点类型也可以设置数据长度，还能设置小数点位数，若插入元素超过了允许的长度时，系统会自动的四舍五入。
+
+浮点数也可以使用无符号（unsigned）规范和长度规范（zerofile）。
+
+![image-20211021095311960](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021102556.png)
+
+#### 定点类型
+
+DECIMAL 类型不同于 FLOAT 和 DOUBLE。DOUBLE 实际上是以字符串的形式存放的，DECIMAL 可能的最大取值范围与 DOUBLE 相同，但是有效的取值范围由 M 和 D 决定。如果改变 M 而固定 D，则取值范围将随 M 的变大而变大。
+
+**DECIMAL 的默认 D 值为 0、M 值为 10。**
+
+![image-20211021101837077](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021101837.png)
+
+#### 浮点数和定点数的比较
+
+在 MySQL 中，浮点数容易丢失精度，存储近似值。而定点数以字符串形式存储，在对**精度要求比较高的时候（如货币、科学数据），使用 DECIMAL 的类型比较好**，另外两个浮点数进行减法和比较运算时也容易出问题，所以**在使用浮点数时需要注意，并尽量避免做浮点数比较**。 
+
+比如当同时存 **9876543.21** 时，`float(10,2)` 类型存储结果为 `9876543.00` ，丢失了小数点后的数字。而 `decimal(10,2)` 类型存储正常。
+
+![image-20211021102810188](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021102810.png)
+
+![image-20211021102833961](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021102834.png)
+
+---
+
+### 时间类型
+
+![image-20211020102328282](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103334.png)
+
+timestamp 和实际时区有关，更能反映实际的日期，而 dataTime 只能反映出插入时的当地时区时间。
+
+---
+
+### 字符类型
+
+![image-20211020102343121](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211021103336.png)
 
 
 
 ---
 
-## 二、常用函数
+## 五、常用函数
+
+### 字符函数
+
+- concat拼接
+- substr截取子串
+- upper转换成大写
+- lower转换成小写
+- trim去前后指定的空格和字符
+- ltrim去左边空格
+- rtrim去右边空格
+- replace替换
+- lpad左填充
+- rpad右填充
+- instr返回子串第一次出现的索引
+- length 获取字节个数
+
+### 数学函数
+
+- round 四舍五入
+- rand 随机数
+- floor向下取整
+- ceil向上取整
+- mod取余
+- truncate截断
+
+### 日期函数
+
+- now当前系统日期+时间
+- curdate当前系统日期
+- curtime当前系统时间
+- str_to_date 将字符转换成日期
+- date_format将日期转换成字符
+
+### 其它函数
+
+- version版本
+- database当前库
+- user当前连接用户
+
+
 
 ### 连接函数- concat
 
@@ -535,7 +912,7 @@ div为整除，只会取商的整数部分，不会四舍五入。
 
 ---
 
-## 三、约束
+## 六、约束
 
 ### 什么是约束？
 
@@ -543,7 +920,7 @@ div为整除，只会取商的整数部分，不会四舍五入。
 - 约束是对数据表的强制规定。
 - 可以在创建数据表时添加约束，也可以在数据表创建之后添加约束（通过 ALTER TABLE 语句）。
 
-### 约束的种类
+**约束的种类**
 
 - 唯一约束 - UNIQUE
 - 主键约束 - PRIMARY KEY
@@ -577,6 +954,8 @@ div为整除，只会取商的整数部分，不会四舍五入。
 ### 唯一约束 - UNIQUE
 
 唯一约束用来限制数据表的某些字段值不能重复，创建唯一约束时可以指定单列，也可以指定多列。同一个表也可以设置多个唯一约束。
+
+#### 唯一约束和唯一索引的关系？
 
 *创建唯一性约束，会自动创建一个同名的唯一索引，这个索引不能够单独删除，删除唯一约束会自动删除该索引*。**唯一约束是通过唯一索引来实现数据的唯一**。
 
@@ -838,7 +1217,7 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
 
 
 
-## 四、常见问题
+## 七、常见问题
 
 ### having 和 where 的区别？
 
@@ -885,7 +1264,22 @@ having 和 where 都是用来过滤筛选数据的。
 
 
 
-[[MySQL（五）SELECT语句执行顺序](https://www.cnblogs.com/warehouse/p/9410599.html)](https://www.cnblogs.com/warehouse/p/9410599.html)
+[MySQL（五）SELECT语句执行顺序](https://www.cnblogs.com/warehouse/p/9410599.html)
+
+---
+
+### 除法 div 和 / 的区别
+
+- div 为整除，该运算符只取商的整数部分，而不会四舍五入。
+- / 运算符为实数除，运算结果为浮点型。
+
+```sql
+select 19820523 / 1000
+//19820.5230
+
+select 19820523 div 1000
+//19820
+```
 
 
 
