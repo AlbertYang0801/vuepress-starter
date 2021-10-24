@@ -4,14 +4,14 @@ heroImage:
 actionText: 了解我 →
 actionLink: /personal/
 features:
-- title: 高并发学习笔记
-  details: 高并发是比较重要的技术，也是进阶的关键。记录学习过程的笔记，以便随时复习。
-- title: 设计模式
-  details: 总结23种设计模式的学习笔记，根据概念、实现方式和源码中的应用来各个掌握。
-- title: JVM学习笔记
-  details: Java 有路勤为径，JVM 无涯苦作舟，与君共勉。
-- title: 服务器向
-  details: 记录常用命令，服务器相关软件安装过程，以及遇到的问题解决方式。
+- title: Java篇
+  details: Java容器、Java虚拟机、Java高并发、Java IO。
+- title: 数据库
+  details: MySQL、Redis。
+- title: 框架篇
+  details: Spring、SpringBoot、MyBatis。
+- title: 进阶篇
+  details: Elasticsearch、Docker、Kubernetes。
 - title: 工具向
   details: 记录Git、Maven、GitHub等，以及Java实现的工具向的功能总结。
 - title: 个人随笔
@@ -20,23 +20,25 @@ features:
 footer: Albert Yang | Copyright © 2021
 ---
 
-## 个人技术空间
 
-- 博观而约取,厚积而薄发
-- 生活不止眼前的代码，还有迈向田野的步伐
 
-## 本站目的
+---
+<img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
 
-- 持续学习、总结。🚀
-- 技术积累。
-- 记录工作感受。
+## Hi, I'm [Albert Yang!](https://albertyang0801.github.io/blog/) 👋.
 
-## 关于我
-*Hi, I'm [Albert Yang!](https://github.com/AlbertYang0801) 👋*
+
 - ⭐ 软件工程 | Java开发工程师 🤖
-- 🌱 河南 | 郑州高新区
+- 🌱 浙江 | 杭州余杭区
 - 💬  [18438049166@163.com](mailto:2434387555@qq.com)
 
-## 技术主页 
+### Recent Books
+- [实战Java高并发程序设计（第2版）](https://item.jd.com/12458866.html)
+- [大话设计模式](https://item.jd.com/10079261.html)
+- [代码精进之路 从码农到工匠](https://item.jd.com/12612417.html)
 
+### About me
 - [GitHub](https://github.com/AlbertYang0801) 💻  | [码云](https://gitee.com/zztiyjw)😏 |	 [LeetCode](https://leetcode-cn.com/u/yang-jun-wei-z/)💯 |	[CSDN](https://blog.csdn.net/qq_40389276)⚡
+
+### Interesting stats
+<img align="left" src="https://github-readme-stats.vercel.app/api?username=AlbertYang0801&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true" />

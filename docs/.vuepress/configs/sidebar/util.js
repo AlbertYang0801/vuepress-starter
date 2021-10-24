@@ -1,13 +1,6 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "Docker学习总结",
-        "collapsable": false,
-        "children": [
-            "/util/Docker学习总结.md"
-        ]
-    },
-    {
         "title": "Maven管理",
         "collapsable": false,
         "children": [

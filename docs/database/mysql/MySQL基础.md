@@ -68,7 +68,7 @@
 
 ## 一、DDL语句
 
-数据定义语言DDL用来创建数据库中的各种对象-----表、视图、索引、同义词、聚簇等。DDL操作是隐性提交的，不能 rollback。
+数据定义语言DDL用来创建数据库中的各种对象-----表、视图、索引、同义词、聚簇等。DDL操作是隐性提交的，不能 RollBack。
 
 ### 数据库的管理
 
@@ -125,13 +125,13 @@
    **语法**
    
    ```sql
-ALTER TABLE student CHANGE COLUMN [旧字段名] [新字段名] [字段类型];
+	ALTER TABLE student CHANGE COLUMN [旧字段名] [新字段名] [字段类型];
    ```
 
    比如如下 SQL：
    
    ```sql
-ALTER TABLE student CHANGE COLUMN old new bigint(8);
+	ALTER TABLE student CHANGE COLUMN old new bigint(8);
    ```
 
 6. 修改表字段类型
@@ -152,11 +152,12 @@ ALTER TABLE student CHANGE COLUMN old new bigint(8);
    ALTER TABLE student DROP COLUMN email;
    ```
 
-   
+
+---
 
 ## 二、DML语言
 
-数据操纵语言DML主要有三种形式：插入（INSERT）、更新（UPDATE）和删除（DELETE）。
+数据操纵语言 DML 主要有三种形式：插入（INSERT）、更新（UPDATE）和删除（DELETE）。
 
 ### 插入
 
@@ -240,6 +241,8 @@ truncate table 表名
 
 <img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211014192757.png" alt="image-20211014192757892" style="zoom:50%;" />
 
+---
+
 ### 比较运算
 
 | 操作符                    | 含义               | 备注        |
@@ -255,8 +258,6 @@ truncate table 表名
 | LIKE                      | 模糊查询           |             |
 | IS (NOT) NULL             | 判断空值           |             |
 
-
-
 - BETWEEN-AND
 
   `BETWEEN [START] AND [END]` 范围查询，包含条件的边界值，类似于 `END <= value <=START `。
@@ -270,7 +271,8 @@ truncate table 表名
   28	限时发送的订单	100.00	4	yjw	2021-07-14 16:20:01	1
   ```
 
-  
+
+---
 
 ### 模糊查询
 
@@ -902,14 +904,6 @@ div为整除，只会取商的整数部分，不会四舍五入。
 
 
 
-- 数据库存放的数据格式 （时间戳格式）
-
-​    ![image](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211018101918.png)
-
-- 转换的时间格式
-
-![image](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211018101923.png)
-
 ---
 
 ## 六、约束
@@ -1211,15 +1205,11 @@ MySQL 主键名总是 PRIMARY，当创建主键约束时系统默认会在 **所
 
 ![image-20211019143321668](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211019213350.png)
 
-
-
-
-
-
+---
 
 ## 七、常见问题
 
-### having 和 where 的区别？
+### 1. having 和 where 的区别？
 
 having 和 where 都是用来过滤筛选数据的。
 
@@ -1229,9 +1219,9 @@ having 和 where 都是用来过滤筛选数据的。
 
 2. where 子句不能使用组函数，而 having 子句可以使用组函数。
 
+---
 
-
-### SELECT 语句执行顺序
+### 2. SELECT 语句执行顺序
 
 查询处理的顺序如下:
 
@@ -1262,13 +1252,13 @@ having 和 where 都是用来过滤筛选数据的。
 (7)LIMIT n, m
 ```
 
-
+**参考链接**
 
 [MySQL（五）SELECT语句执行顺序](https://www.cnblogs.com/warehouse/p/9410599.html)
 
 ---
 
-### 除法 div 和 / 的区别
+### 3. 除法 div 和 / 的区别
 
 - div 为整除，该运算符只取商的整数部分，而不会四舍五入。
 - / 运算符为实数除，运算结果为浮点型。
@@ -1280,10 +1270,6 @@ select 19820523 / 1000
 select 19820523 div 1000
 //19820
 ```
-
-
-
-
 
 
 

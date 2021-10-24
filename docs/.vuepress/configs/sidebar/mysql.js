@@ -5,6 +5,7 @@ module.exports = [
         "collapsable": false,
         "children": [
             "/database/mysql/MySQL基础.md",
+            "/database/mysql/MySQL高级.md",
             "/database/mysql/MySQL面试题.md",
             "/database/mysql/MySQL异常问题汇总.md"
         ]
