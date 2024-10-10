@@ -33,5 +33,6 @@ module.exports = [
     },
     {"text": "设计模式", "link": "/design/"},
     {"text": "工具向", "link": "/util/"},
+    {"text": "项目总结", "link": "/project/"},
     {"text": "关于我", "link": "/personal/"}
 ]

@@ -24,7 +24,7 @@ const docker = require('./sidebar/docker');
 //k8s
 const k8s = require('./sidebar/k8s');
 
-
+const project = require('./sidebar/project');
 
 
 // 为以下路由添加左侧边栏
@@ -39,8 +39,9 @@ const sidebarConfig = {
     "/database/mysql": mysql,
     "/database/redis": redis,
     "/middleware/es": elasticsearch,
-    "/middleware/docker":docker,
-    "/middleware/k8s":k8s,
+    "/middleware/docker": docker,
+    "/middleware/k8s": k8s,
+    "/project": project,
 
     "/personal/": [
         {
