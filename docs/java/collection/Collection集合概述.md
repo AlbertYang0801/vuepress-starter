@@ -26,8 +26,7 @@
 
 ### 集合架构图
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210323230109.png)
-
+![](https://s2.loli.net/2025/05/28/wt5PE7Qi4yzFUpj.png)
 
 
 ### 参考链接

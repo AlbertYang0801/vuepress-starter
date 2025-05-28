@@ -4,8 +4,7 @@
 
 ## 思维导图
 
-![高并发](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211009095642.png)
-
+![高并发](https://s2.loli.net/2025/05/28/5o6lvPCFT4gp2QH.png)
 
 
 ## 参考链接

@@ -1,30 +1,35 @@
-### 阻塞队列BlockQueue
+# 阻塞队列BlockQueue
 
 阻塞队列`BlockQueue`比起传统的`Queue`多了阻塞的功能，适合用于多线程之间的数据共享。阻塞主要发生在队列为空和队列满的情况。
 
 - 在队列为空的时候，操作元素出队的线程会进行循环等待，直到队列变为非空。
 - 在队列满的时候，操作元素入队的线程会进行循环等待，直到队列变为非满。
 
-#### 常见方法
+## 常见方法
 
 `BlockQueue入队`的方法有如下几种：
 
 - `offer()`方法，如果队列已满，无法存放，直接返回false。
-
 - `add()`方法，实际调用了offer()方法，增加了（Queue Full）的异常信息返回。
 - `put()`方法，若队列已满，会进行线程等待，直到队列有空余位置，会将线程唤醒，进行插入操作。
 
 `BlockQueue出队`的方法有如下几种：
 
-- `poll()`方法，若队列为空，则返回null.
+- ```
+  poll(long timeout, TimeUnit unit)
+  ```
 
- * `take()`方法，若队列为空，会进行线程等待，直到队列不为空，会将等待线程唤醒，进行获取操作。
+  方法，若队列为空，则返回null。
 
-#### 队列类型
+  - poll 可以选择进行有限等待。
+
+- `take()`方法，若队列为空，会进行线程等待，直到队列不为空，会将等待线程唤醒，进行获取操作。
+
+## 队列类型
 
 `BlockQueue`是一个接口，其实现类有`ArrayBlockingQueue`、`LinkedBlockingQueue`、`SynchronousQueue`、`DelayQueue`、`PriorityBlockingQueue`等。下面以`ArrayBlockingQueue`为例，主要分析`put()`方法和`take()`方法的阻塞实现。
 
-##### 1. ArrayBlockingQueue（有界队列）
+### ArrayBlockingQueue（有界队列）
 
 是一个基于数组结构的有界阻塞队列，此队列按 FIFO（先进先出）原则对元素进行排序，由于结构基于数组，所以在创建的时候需要指定长度。
 
@@ -164,21 +169,28 @@ ArrayBlockingQueue<Integer> blockingQueue = new ArrayBlockingQueue<>(5);
 }     
 ```
 
+### **`ArrayBlockingQueue`**的锁
 
+在 `ArrayBlockingQueue` 队列源码中 ，`take()` 和 `put()` 分别实现了从队列中取得数据和往队列中增加数据，而这两个方法使用的是同一把重入锁来保证线程安全。
 
-##### 2. LinkedBlockingQueue（无界队列）
+- 保证同时只有一个线程操作底层数组，不然可能会破坏FIFO特性。
+- 读写锁在`ArrayBlockingQueue`这种情况，性能更低。
+- `ArrayBlockingQueue`设计目的是阻塞机制。而读写锁很难实现阻塞机制。
+- 使用同一把锁，在读或写阻塞时，结合Condition的await能释放锁并阻塞，signal能通知await的线程重新参与竞争。
 
-一个基于链表结构的阻塞队列，此队列按FIFO （先进先出） 排序元素，吞吐量通常要高于`ArrayBlockingQueue`。静态工厂方法 `Executors.newFixedThreadPool()` 使用了这个队列。
+### LinkedBlockingQueue（无界队列）
 
-在 `ArrayBlockingQueue`  队列源码中 ，`take()` 和 `put()`  分别实现了从队列中取得数据和往队列中增加数据，而这两个方法使用的是同一把重入锁来保证线程安全。
+一个基于链表结构的阻塞队列，此队列按FIFO （先进先出） 排序元素，吞吐量通常要高于`ArrayBlockingQueue`。
 
-而在  LinkedBlockingQueue  源码中，其实就应用了锁分离的思想。
+静态工厂方法 `Executors.newFixedThreadPool()` 使用了这个队列。
 
-LinkedBlockingQueue 里面的 `take()` 和 `put()`  同样实现了从队列中取得数据和往队列中增加数据。但是由于 LinkedBlockingQueue 是基于链表实现的，两个操作分别作用于队列的头部和尾部。所以，两个操作并不冲突。
+而在 LinkedBlockingQueue 源码中，其实就应用了**锁分离**的思想。
 
-如果和 `ArrayBlockingQueue` 一样使用同一把锁， `take()` 和 `put()`  操作就不能实现并发，两个操作之间还是会有竞争，进而影响性能。
+LinkedBlockingQueue 里面的 `take()` 和 `put()` 同样实现了从队列中取得数据和往队列中增加数据。但是由于 LinkedBlockingQueue 是基于链表实现的，两个操作分别作用于队列的头部和尾部。所以，两个操作并不冲突。
 
-而 JDK实现 LinkedBlockingQueue 时，使用了两把不同的锁分离了 `take()` 和 `put()`  操作。
+如果和 `ArrayBlockingQueue` 一样使用同一把锁， `take()` 和 `put()` 操作就不能实现并发，两个操作之间还是会有竞争，进而影响性能。
+
+而 JDK实现 LinkedBlockingQueue 时，使用了两把不同的锁分离了 `take()` 和 `put()` 操作。
 
 ```java
 public class LinkedBlockingQueue<E> extends AbstractQueue<E>
@@ -266,15 +278,51 @@ public E take() throws InterruptedException {
 
 通过两把锁，实现了读数据和写数据的分离，实现了真正意义上的并发。
 
-##### 3.SynchronousQueue（同步队列）
+### SynchronousQueue（同步队列）
 
-一个不存储元素的阻塞队列。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量通常要高于LinkedBlockingQueue，静态工厂方法Executors.newCachedThreadPool使用了这个队列。
+一个不存储元素的阻塞队列。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量通常要高于LinkedBlockingQueue，静态工厂方法 Executors.newCachedThreadPool 使用了这个队列。
 
-##### 4.DelayQueue（延迟队列）
+### DelayQueue（延迟队列）
 
 一个任务定时周期的延迟执行的队列。根据指定的执行时间从小到大排序，否则根据插入到队列的先后排序。
 
-##### 5.PriorityBlockingQueue（优先级队列）
+*元素需要实现Delayed接口，任务到达指定时间后执行。*
+
+- 指定过期时间逻辑。
+- 指定比较大小逻辑。
+
+```java
+public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
+    implements BlockingQueue<E> {
+}
+public class OrderTask implements Delayed {
+
+    private String orderId;
+
+    private Long expire;
+
+    /**
+      * 指定过期时间逻辑
+      */
+    @Override
+    public long getDelay(TimeUnit unit) {
+        long diff = expire - System.currentTimeMillis();
+        return unit.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public int compareTo(Delayed o) {
+        if (o == this) {
+            return 0;
+        }
+        long diff = getDelay(TimeUnit.MILLISECONDS) - o.getDelay(TimeUnit.MILLISECONDS);
+        return (diff < 0) ? -1 : (diff > 0) ? 1 : 0;
+    }
+}
+```
+
+### PriorityBlockingQueue（优先级队列）
 
 一个具有优先级的无限阻塞队列。
 
+需要元素实现 `compareTo`方法，在出队的时候，按照该方法进行比较。

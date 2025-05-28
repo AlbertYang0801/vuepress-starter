@@ -16,14 +16,8 @@ module.exports = [
         "children": [
             "/java/collection/HashMap1.7",
             "/java/collection/ConcurrentHashMap1.7",
-            "/java/collection/HashMap1.8"
-        ]
-    },
-    {
-        "title": "三、扩展数据结构",
-        "collapsable": true,
-        "children": [
-            "/java/collection/二叉树.md"
+            "/java/collection/HashMap1.8",
+            "/java/collection/ConcurrentHashMap1.8"
         ]
     }
 ]

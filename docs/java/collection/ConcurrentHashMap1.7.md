@@ -291,7 +291,7 @@ public ConcurrentHashMap(int initialCapacity,
 
 结合 1.7 的 HashMap 来看，ConcurrentHashMap 的底层数据结构是 Segment[]，而每一个 Segment 包含了一个 HashEntry[]，而 HashEntry[] 里的每个 HashEntry 才是存储数据的位置。
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210424235121.png)
+![image-20250528155353852](https://s2.loli.net/2025/05/28/j67dYCFMZwRpVTK.png)
 
 1. 通过特定 Hash 算法计算 Key 的 Hash 值。
 
@@ -301,31 +301,27 @@ public ConcurrentHashMap(int initialCapacity,
 
 4. 根据 Key 的 Hash 值和 HashEntry[] 长度 - 1 的与运算结果，得到新增元素对应的 HashEntry。
 
-6. 若数组对应的 index 位置为 NULL，将 Entry 存放到数组的 index 位置上。
+5. 若数组对应的 index 位置为 NULL，将 Entry 存放到数组的 index 位置上。
 
-   ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113537.png)
+   ![image-20250528155404125](https://s2.loli.net/2025/05/28/djTntJr8oDbq756.png)
 
 7. 若数组对应的 index 位置不为 NULL，即发生了索引冲突，此时采用链表的方式来保存元素，新增的元素会保存在链表的头部，并存放到数组对应的 index 位置上（头插法）。
 
-   ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113812.png)
+   ![image-20250528155410858](https://s2.loli.net/2025/05/28/Inga4wylH3rj21Q.png)
 
-## 五、读取元素的原理？
+## 五、底层扩容原理
 
+Segment的个数初始化之后不能改变。
 
+所以扩容是更新每个Segment对应的数组，而不是直接更新整个数组。
 
-## 六、跨段操作的原理？
-
-
-
-## 七、底层扩容原理？
-
-扩容是更新单个Segment。而不是整个数组。
+这样能提高扩容的并发度。
 
 
 
-## 八、常见问题
+## 六、常见问题
 
-### 1. 怎么实现的线程安全？（待总结）
+### 1. 怎么实现的线程安全？
 
 - 通过锁分段技术保证并发环境下的写操作；
 - 通过 HashEntry的不变性、Volatile变量的内存可见性和加锁重读机制保证高效、安全的读操作；

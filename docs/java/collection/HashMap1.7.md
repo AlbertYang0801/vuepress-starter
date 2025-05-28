@@ -86,7 +86,7 @@ size 表示 HashMap 中实际保存元素的个数。
 
 - 链表是为了解决 **索引冲突** 问题，当出现元素计算的 **桶位置** 一样的情况时，就出现了冲突问题，也叫做 **哈希冲突** 。1.7 采用了 **拉链法** 解决哈希冲突，在此时桶的位置上上形成一个 **链表** 来保存元素。
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407172541.png)
+![image-20250528154338078](https://s2.loli.net/2025/05/28/RT9tDcah3UFgqSK.png)
 
 1. 通过特定 Hash 算法计算 Key 的 Hash 值。
 
@@ -94,11 +94,11 @@ size 表示 HashMap 中实际保存元素的个数。
 
 3. 若数组对应的 index 位置为 NULL，将 Entry 存放到数组的 index 位置上。
 
-   ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113537.png)
+   ![image-20250528154424229](https://s2.loli.net/2025/05/28/djTntJr8oDbq756.png)
 
 4. 若数组对应的 index 位置不为 NULL，即发生了索引冲突，此时采用链表的方式来保存元素，新增的元素会保存在链表的头部，并存放到数组对应的 index 位置上（头插法）。
 
-   ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210407113812.png)
+   ![image-20250528154430617](https://s2.loli.net/2025/05/28/Inga4wylH3rj21Q.png)
 
 ### 为什么引入链表？
 
@@ -353,7 +353,7 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
 
 总共有两个条件，缺一不可。
 
-1. **hashmap 元素总量大于等于扩容临界值**。
+1. **元素总量大于等于扩容临界值**。
 
    扩容临界值 = 底层数组容量 * 负载因子
 
@@ -378,7 +378,9 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
 
 **即使 hashmap 中元素总数量大于等于扩容临界值的时候，也不一定发生扩容**。因为还有一个条件必须满足，即**新增元素对应的桶不为空**。
 
-![image-20210715211200026](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/image-20210715211200026.png)
+![image-20250528154815457](https://s2.loli.net/2025/05/28/dIUejVh3it6ENW1.png)
+
+
 
 ### 底层数组扩容过程
 
@@ -503,11 +505,11 @@ threshold = (int) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
 
    桶对应链表上的元素 key 的哈希值是一样的，即使根据新数组长度重新哈希之后，这些元素还是会在一个桶上。只是由于 **头插法** 的原因，在新数组上的链表和之前相比较顺序是反的。
 
-   ![image-20210715212512467](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/image-20210715212512467.png)
+   ![image-20250528154901120](https://s2.loli.net/2025/05/28/ygdRcsO6A5JXVYa.png)
 
 3. 假设底层数组长度是 100，扩容临界指是 75，那么当第 76 个元素插入的时候会发生扩容吗？
 
-   扩容发生的条件有两个。分别是 **hashmap 元素总量大于等于扩容临界值** 和 **新增元素对应的桶不为空**。
+   扩容发生的条件有两个。分别是 **HashMap元素总量大于等于扩容临界值** 和 **新增元素对应的桶不为空**。
 
    当新增第 76 个元素的时候，hashmap 元素总量为 75 ，满足第一个条件。
 
@@ -1066,9 +1068,15 @@ JDK 1.7 的删除方法较为简单，理解单向链表的删除原理，再结
 
 这个机制在多线程的环境下，有可能发生死循环的情况，类似 A -> B -> C -> B。
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210412160633.png)
+![image-20250528155117586](https://s2.loli.net/2025/05/28/CZBFDxUXnfoWTm6.png)
 
 **如果扩容前位于同一链表的两个 Entry 在扩容后还是分配到相同的 index 上，就会出现死循环的问题。根本原因还是链表的插入方式采用的是头插法，这样会导致链表顺序反过来。**
+
+![image-20250528155219419](https://s2.loli.net/2025/05/28/9eOKqthGIaHL1YV.png)
+
+头插法改变了链表的顺序，多线程情况，其它线程可能保留扩容前的链表关系，执行时发生死循环。
+
+
 
 ### 5. 多线程导致的元素丢失问题？（重要）
 
@@ -1078,7 +1086,7 @@ JDK 1.7 的删除方法较为简单，理解单向链表的删除原理，再结
 
   例如：线程A 和 线程B 分别插入元素 1111 和元素 11111，假设对应索引位置都为 1 。采用头插法时获取的链表头节点都为 1 ，则完成插入之后形成的链表如右图所示，此时会造成元素 11111 丢失。
 
-  ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210412153653.png)
+  ![image-20250528155229510](https://s2.loli.net/2025/05/28/Nxb28Pek3Zdq67T.png)
 
 - 多个线程同时执行 get 和 put 操作，导致获取元素为 null
 

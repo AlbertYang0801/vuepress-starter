@@ -70,7 +70,7 @@
 
   执行该方法时，ArrayList 会将要插入的位置 i 和其之后的元素（n-i）都后移一位，然后将新元素放到插入位置。此时时间复杂度为`O(n-i)`。
 
-  ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210329002708.gif)
+  ![](https://s2.loli.net/2025/05/28/1wySuQEUrRlz8IG.gif)
 
   该方法会检查索引是否越界。
 
@@ -100,9 +100,7 @@
 
   执行该方法时，删除该列表中指定位置的元素，并将该位置后所有元素统一前移一位。
 
-  ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210329002809.gif)
-  
-  
+  ![20210329002809](https://s2.loli.net/2025/05/28/QB3e7vD1Fn6TwhV.gif)
 
 ### ArrayList 的扩容机制？
 
@@ -171,7 +169,9 @@ Vector 的扩容因子是 2。
 
 从空间上和时间上对比分析来看。
 
-![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210408110935.png)
+![20210408110935](https://s2.loli.net/2025/05/28/DFNjpKtOs5baQzC.png)
+
+
 
 **空间**
 
@@ -385,12 +385,13 @@ Vector 的扩容因子是 2。
          }
      ```
 
-     ![双向链表的插入](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324185341.png)
+
+​				![20210324185341](https://s2.loli.net/2025/05/28/INKvOgUcasdre3W.png)
 
 - `remove()`
 
   默认删除 `链表的第一个元素`
-  
+
   ```java
       public E remove() {
           //删除首位元素
@@ -431,17 +432,17 @@ Vector 的扩容因子是 2。
           return element;
       }
   ```
+
   
-  
-  
+
 - `remove(Object o)`
 
   默认从链表`头部`开始遍历，删除第一个匹配到的元素。
-  
+
   1. 删除前驱。
   2. 删除后继。
   3. 删除数据域。
-  
+
   ```java
       public boolean remove(Object o) {
         	//对象为空
@@ -510,8 +511,8 @@ Vector 的扩容因子是 2。
           return element;
       }
   ```
-  
-  ![](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324221753.png)
+
+  ![20210324221753](https://s2.loli.net/2025/05/28/4l7Y2KNP9HEJVkX.png)
 
 - `get(int index)`
 
@@ -556,11 +557,11 @@ Vector 的扩容因子是 2。
 
 - 单链表由`数据`和`后继节点 next`组成。
 
-![单链表](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324225608.png)
+  ![20210324225608](https://s2.loli.net/2025/05/28/sLiuSTazWB9NrMw.png)
 
 - 双向链表的节点对象由`数据`、`前驱节点`和`后继节点`组成。
 
-![双向链表](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324230307.png)
+  ![20210324230307](https://s2.loli.net/2025/05/28/NQPuaF5cZ69UJCt.png)
 
 #### 效率对比
 
@@ -603,11 +604,13 @@ Vector 的扩容因子是 2。
 
 双向普通链表包含头指针和尾指针，分别指向第一个节点和最后一个节点。
 
-![双向链表](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324230307.png)
+![20210324230307](https://s2.loli.net/2025/05/28/NQPuaF5cZ69UJCt.png)
+
+
 
 双向循环链表的尾节点的 next 指向头节点，而头节点的 prev 指向尾节点，构成一个环。
 
-![双向链表](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210324234152.png)
+![20210324234152](https://s2.loli.net/2025/05/28/JvTQiIfRWnjzUgD.png)
 
 **JDK1.6 之前为双向循环链表，JDK1.7 以及以后为普通双向链表**
 
