@@ -20,7 +20,7 @@ public class GitbookManualScript {
     /**
      * gitbook目录
      */
-    private final static String GITBOOK_PATH = "D:\\IdeaWorkSpace\\vuepress-starter\\docs";
+    private final static String GITBOOK_PATH = "D:\\IdeaWorkSpace\\vuepress-starter";
     /**
      * github对应本地项目目录
      */

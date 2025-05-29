@@ -4,7 +4,7 @@ module.exports = [
         "title": "项目总结",
         "collapsable": false,
         "children": [
-            "/project/seckill.md"
+            // "/project/seckill.md"
         ]
     }
 ]

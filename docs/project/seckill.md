@@ -684,8 +684,6 @@ docker 安装 RabbitMQ。
 
 <img src="https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20211119154100.png" alt="临时文件 (20)" style="zoom: 67%;" />
 
-![20211119154100](../../yjw/TyporaWorkSpace/pic/20211119154100.png)
-
 ---
 
 ### 第二阶段：下订单

@@ -1,14 +1,14 @@
 // 为以下路由添加左侧边栏
 module.exports = [
     {
-        "title": "Java工程师成长计划",
-        "collapsable": true,
+        "title": "Java高并发",
+        "collapsable": false,
         "children": [
             "/java/concurrent/Java高并发.md"
         ]
     }, {
         "title": "重点总结",
-        "collapsable": true,
+        "collapsable": false,
         "children": [
             "/java/concurrent/single/线程的生命周期.md",
             "/java/concurrent/single/synchronized原理.md",

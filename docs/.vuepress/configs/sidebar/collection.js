@@ -2,7 +2,7 @@
 module.exports = [
     {
         "title": "一、Collection集合",
-        "collapsable": true,
+        "collapsable": false,
         "children": [
             "/java/collection/Collection集合概述",
             "/java/collection/List集合体系",
@@ -12,7 +12,7 @@ module.exports = [
     },
     {
         "title": "二、Map集合",
-        "collapsable": true,
+        "collapsable": false,
         "children": [
             "/java/collection/HashMap1.7",
             "/java/collection/ConcurrentHashMap1.7",

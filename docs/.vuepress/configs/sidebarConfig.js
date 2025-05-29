@@ -2,20 +2,24 @@
 const concurrent = require('./sidebar/concurrent');
 //io
 const io = require('./sidebar/io');
+//jvm
+const jvm = require('./sidebar/jvm');
+//Java容器
+const collection = require('./sidebar/collection');
+//io
+const cache = require('./sidebar/cache');
 
 //设计模式
 const design = require('./sidebar/design');
 //工具向
 const util = require('./sidebar/util');
 const spring = require('./sidebar/spring');
-//Java容器
-const collection = require('./sidebar/collection');
+
 //mysql
 const mysql = require('./sidebar/mysql');
 //redis
 const redis = require('./sidebar/redis');
-//jvm
-const jvm = require('./sidebar/jvm');
+
 //elasticsearch
 const elasticsearch = require('./sidebar/elasticsearch');
 //docker
@@ -31,11 +35,14 @@ const project = require('./sidebar/project');
 const sidebarConfig = {
     "/java/concurrent/": concurrent,
     "/java/io/": io,
+    "/java/collection": collection,
+    "/java/jvm/": jvm,
+    "/java/cache/": cache,
+
     "/design/": design,
     "/util/": util,
     "/frame/spring/": spring,
-    "/java/collection": collection,
-    "/java/jvm/": jvm,
+
     "/database/mysql": mysql,
     "/database/redis": redis,
     "/middleware/es": elasticsearch,

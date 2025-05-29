@@ -1,12 +1,12 @@
 module.exports = [
     {"text": "首页", "link": "/"},
     {
-        "text": "Java篇", items: [
-            {text: 'Java 容器', link: '/java/collection/'},
-            {text: "Java 虚拟机", link: '/java/jvm/'},
-            {text: "Java 高并发", link: '/java/concurrent/'},
-            {text: "Java IO", link: '/java/io/'},
-
+        "text": "Java", items: [
+            {text: "JVM", link: '/java/jvm/'},
+            {text: "高并发", link: '/java/concurrent/'},
+            {text: "IO", link: '/java/io/'},
+            {text: '缓存', link: '/java/cache/'},
+            {text: '集合', link: '/java/collection/'}
         ]
     },
     {
@@ -16,7 +16,7 @@ module.exports = [
         ]
     },
     {
-        text: '框架篇',
+        text: '框架',
         items: [
             {text: 'Spring', link: '/frame/spring/'},
             {text: 'SpringBoot', link: '/frame/springboot/'},
@@ -24,7 +24,7 @@ module.exports = [
         ]
     },
     {
-        text: "进阶篇",
+        text: "进阶",
         items: [
             {text: 'Elasticsearch', link: '/middleware/es/'},
             {text: 'Docker', link: '/middleware/docker/'},
