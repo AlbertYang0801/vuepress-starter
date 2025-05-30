@@ -1,6 +1,4 @@
-
-
-## BeanFactory 和 FactoryBean总结
+# BeanFactory和FactoryBean总结
 
 ### BeanFactory总结
 
@@ -30,15 +28,13 @@ public interface BeanFactory {
 }
 ```
 
-
-
 ### FactoryBean总结
 
 FactoryBean 也是 Spring 中的一个接口，但是和 BeanFactory 不同的是，其为 IOC 中 Bean 的实现提供了更加灵活的方式，适用于创建复杂的 Bean 对象。其中应用了工厂模式和装饰模式，我们可以在对应的 `getObject()` 方法中增加获取 Bean 对象的方法。
 
 FactoryBean 以 Bean 结尾，表示其也是一个 Bean。但是不同于普通的 Bean，从 BeanFactory 获取该实例的时候，返回的 Bean 是 FactoryBean 的 `getObject()` 方法返回的对象，而不是 FactoryBean 本身。如果想要获取 FactoryBean 本身就需要在类名之前加一个 `&` 符号来获取。
 
-#### 功能练习
+### 功能练习
 
 创建一个 继承FactoryBean的类 `FactoryBeanDemo` ，一个测试类 `FactoryBeanServiceImpl`（未注入到容器中）, 获取容器中的 Bean 工具类 `SpringBeanUtil`。
 
@@ -57,7 +53,6 @@ public class FactoryBeanDemo implements FactoryBean {
         return FactoryBeanServiceImpl.class;
     }
 
-
 }
 
 //测试类(未注入到容器中)
@@ -66,7 +61,6 @@ public class FactoryBeanServiceImpl {
     public void print() {
         System.out.println("bean init!");
     }
-
 
 }
 
@@ -88,7 +82,6 @@ public class SpringBeanUtil implements ApplicationContextAware {
     public static <T> T getBean(Class<T> cls) {
         return applicationContext.getBean(cls);
     }
-
 
 }
 ```
@@ -151,8 +144,6 @@ public String testFactoryBean(){
 //output
 //bean init!
 ```
-
-
 
 ### 参考链接
 

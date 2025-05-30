@@ -1,6 +1,4 @@
-
-
-## ApplicationContext和BeanFactory区别
+# ApplicationContext和BeanFactory区别
 
 ### ApplicationContext 总结
 
@@ -10,10 +8,9 @@ ApplicationContext 容器上下文，包含了 BeanFactory 的所有功能，还
 - 资源访问，如 URL 和文件
 - 事件传播
 
-#### 工具类
+### 工具类
 
 可以通过实现 `ApplicationContextAware` 接口注入 ApplicationContext
-
 
 ```java
 @Component
@@ -35,10 +32,8 @@ public class SpringBeanUtil implements ApplicationContextAware {
         return applicationContext.getBean(cls);
     }
 
-
 }
 ```
-
 
 ### BeanFactory总结
 
@@ -68,39 +63,35 @@ public interface BeanFactory {
 }
 ```
 
-
 ### ApplicationContext 和 BeanFactory的对比
 
-#### 关系
+### 关系
 
 ApplicationContext 继承自 BeanFactory，所以 ApplicationContext 拥有 BeanFactory 的所有功能。
 
 ApplicationContext 一般称为`应用上下文`，而 BeanFactory 称为 `IOC容器`。
 
-#### 相同点
+### 相同点
 
 - 都可以作为容器。
 - 都可以通过 `getBean()` 方法获取对象。
 
 注意：ApplicationContext 的 `getBean()` 方法，实际上还是调用了 BeanFactory 的 `getBean()` 方法。
 
-#### 不同点
+### 不同点
 
 1. 实例化 Bean 对象
-
-   - BeanFactory 是延迟加载，实例化的时候并不会实例化 Bean，只有在调用 `getBean()` 方法后才会创建 Bean对象。
-
-   - ApplicationContext 在初始化的时候加载，在启动的时候就把所有的 Bean 对象进行实例化了。
-
-     注意：如果Bean没有完全注入，BeanFactory 加载后，会在第一次调用 `getBean()` 方法才会抛出异常，而 ApplicationContext 会在初始化的时候就会加载 Bean 并且进行检查。所以选择 ApplicationContext 的好处还有能及时检查依赖是否完全注入。
-
+    - BeanFactory 是延迟加载，实例化的时候并不会实例化 Bean，只有在调用 `getBean()` 方法后才会创建 Bean对象。
+    - ApplicationContext 在初始化的时候加载，在启动的时候就把所有的 Bean 对象进行实例化了。
+        
+        注意：如果Bean没有完全注入，BeanFactory 加载后，会在第一次调用 `getBean()` 方法才会抛出异常，而 ApplicationContext 会在初始化的时候就会加载 Bean 并且进行检查。所以选择 ApplicationContext 的好处还有**能及时检查依赖是否完全注入**。
+        
 2. 支持后置处理器
+    - BeanFactory 和 ApplicationContext 都支持后置处理器。
+    - BeanFactory需要手动注册。
+    - **ApplicationContext 实现了自动注册**。
 
-   - BeanFactory 和 ApplicationContext 都支持后置处理器。
-   - BeanFactory需要手动注册。
-   - ApplicationContext 实现了自动注册。
-
-#### 总结
+### 总结
 
 - ApplicationContext 功能更为全面，一般使用 ApplicationContext 作为容器使用。
 - BeanFactory 职责单一，负责 Bean 的加载和实例化，维护 Bean 之间的关系，负责 Bean 的生命周期。功能较少，占内存少，适合内存受限的设备使用。
