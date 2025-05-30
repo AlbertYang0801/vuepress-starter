@@ -10,17 +10,17 @@ module.exports = [
         ]
     },
     {
-        "text": "数据库", items: [
-            {text: 'MySQL', link: '/database/mysql/'},
-            {text: "Redis", link: '/database/redis/'}
-        ]
-    },
-    {
         text: '框架',
         items: [
             {text: 'Spring', link: '/frame/spring/'},
             {text: 'SpringBoot', link: '/frame/springboot/'},
             {text: 'MyBatis', link: '/frame/mybatis/'}
+        ]
+    },
+    {
+        "text": "数据库", items: [
+            {text: 'MySQL', link: '/database/mysql/'},
+            {text: "Redis", link: '/database/redis/'}
         ]
     },
     {

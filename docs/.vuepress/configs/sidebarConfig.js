@@ -1,3 +1,5 @@
+
+//------------------------------------Java---------------------------------
 //高并发
 const concurrent = require('./sidebar/concurrent');
 //io
@@ -9,11 +11,16 @@ const collection = require('./sidebar/collection');
 //io
 const cache = require('./sidebar/cache');
 
+//------------------------------------框架---------------------------------
+const spring = require('./sidebar/spring');
+const springboot = require('./sidebar/springboot');
+
+
+//------------------------------------设计模式---------------------------------
 //设计模式
 const design = require('./sidebar/design');
 //工具向
 const util = require('./sidebar/util');
-const spring = require('./sidebar/spring');
 
 //mysql
 const mysql = require('./sidebar/mysql');
@@ -39,9 +46,12 @@ const sidebarConfig = {
     "/java/jvm/": jvm,
     "/java/cache/": cache,
 
+    "/frame/spring/": spring,
+    "/frame/springboot/": springboot,
+
     "/design/": design,
     "/util/": util,
-    "/frame/spring/": spring,
+
 
     "/database/mysql": mysql,
     "/database/redis": redis,
