@@ -13,8 +13,10 @@ module.exports = [
         text: '框架',
         items: [
             {text: 'Spring', link: '/frame/spring/'},
+            {text: 'MyBatis', link: '/frame/mybatis/'},
             {text: 'SpringBoot', link: '/frame/springboot/'},
-            {text: 'MyBatis', link: '/frame/mybatis/'}
+            {text: 'SpringCloud', link: '/frame/springcloud/'},
+            {text: 'Netty', link: '/frame/netty/'}
         ]
     },
     {
@@ -28,7 +30,7 @@ module.exports = [
         items: [
             {text: 'Elasticsearch', link: '/middleware/es/'},
             {text: 'Docker', link: '/middleware/docker/'},
-            {text: 'Kubernetes', link: '/middleware/k8s/'},
+            {text: 'Kubernetes', link: '/middleware/k8s/'}
         ]
     },
     {"text": "设计模式", "link": "/design/"},

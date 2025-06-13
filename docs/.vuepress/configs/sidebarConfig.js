@@ -14,6 +14,9 @@ const cache = require('./sidebar/cache');
 //------------------------------------框架---------------------------------
 const spring = require('./sidebar/spring');
 const springboot = require('./sidebar/springboot');
+const mybatis = require('./sidebar/mybatis');
+const springcloud = require('./sidebar/springcloud');
+const netty = require('./sidebar/netty');
 
 
 //------------------------------------设计模式---------------------------------
@@ -48,6 +51,10 @@ const sidebarConfig = {
 
     "/frame/spring/": spring,
     "/frame/springboot/": springboot,
+    "/frame/mybatis/": mybatis,
+    "/frame/springcloud/": springcloud,
+    "/frame/netty/": netty,
+
 
     "/design/": design,
     "/util/": util,
