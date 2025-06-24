@@ -12,7 +12,7 @@ LRU （Least Recently Used） 算法即**最近最久未使用**，每次选择�
 - 访问元素（查询、更新和删除）时，将元素移动到队列头部。
 - 当超过内存限制，需要淘汰数据时，将已排序队列的最后元素删除。
 
-![临时文件 (2)](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%20(2).png)
+![](https://s2.loli.net/2025/06/18/AGai9Cs2RKnyVcB.png)
 
 ### 数据结构
 
@@ -25,7 +25,7 @@ LRU 算法内部的数据结构需要根据元素的访问时间排序。还需�
 
 在 LRU 算法中，使用的是**哈希链表**的数据结构，来同时保证查找、插入、删除的速度，同时链表还能够满足排序。
 
-![未命名文件 (1)](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/未命名文件 (1).png)
+![](https://s2.loli.net/2025/06/18/yGFmosOYpeLrjTk.png)
 
 ### LinkedHashMap
 
@@ -33,7 +33,7 @@ LinkedHashMap 底层数据结构是哈希链表，是 `HashMap + DoubleLinkedLis
 
 在 LinkedHashMap 中有一个方法 `removeEldestEntry` 是支持 LRU 算法的。
 
-```JAVA
+```java
     protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
         //默认为false
         return false;
@@ -89,33 +89,30 @@ public class LruCacheDemo<K,V> extends LinkedHashMap<K,V> {
     }
 ```
 
-
-
 - accessOrder = true；
-
-  内部元素根据访问顺序会重新排列，访问的元素排列到队尾。
-
-  ```JAVA
-  //output
-  [1, 2, 3]
-  [2, 3, 4]
-  [2, 4, 3]
-  [4, 3, 5]
-  ```
-
-- accessOrder = false；
-
-  内部元素不会根据访问顺序重新排列，按照插入的顺序进行排列。
-
-  ```java
-  //output
-  [1, 2, 3]
-  [2, 3, 4]
-  [2, 3, 4]
-  [3, 4, 5]
-  ```
-
   
+    内部元素根据访问顺序会重新排列，访问的元素排列到队尾。
+    
+    ```java
+    //output
+    [1, 2, 3]
+    [2, 3, 4]
+    [2, 4, 3]
+    [4, 3, 5]
+    ```
+    
+- accessOrder = false；
+  
+    内部元素不会根据访问顺序重新排列，按照插入的顺序进行排列。
+    
+    ```java
+    //output
+    [1, 2, 3]
+    [2, 3, 4]
+    [2, 3, 4]
+    [3, 4, 5]
+    ```
+    
 
 ### 手写LRU算法
 
@@ -124,20 +121,20 @@ public class LruCacheDemo<K,V> extends LinkedHashMap<K,V> {
 除了实现链表本身具有的有序性外，还由于 LRU 算法要求访问过的数据放到队尾，所以必须包含以下方法。
 
 - 添加元素到队尾。
-
-  每次新增都插入到队尾的位置（访问、更新元素时也要放到队尾）。
-
+  
+    每次新增都插入到队尾的位置（访问、更新元素时也要放到队尾）。
+    
 - 获取头结点元素。
-
-  在内部缓存满的时候，删除最近最久未使用元素。 
-
+  
+    在内部缓存满的时候，删除最近最久未使用元素。
+    
 - 删除元素。
 
-#### Node类
+### Node类
 
 实现的是双向链表，包含一个前驱和一个后继。
 
-```JAVA
+```java
 /**
  * 结点类
  */
@@ -164,7 +161,7 @@ class Node<K, V> {
 }
 ```
 
-#### 双向链表
+### 双向链表
 
 实现的双向链表，包含头尾指针，还实现了添加元素到尾部、删除结点、获取第一个节点等方法。
 
@@ -205,15 +202,14 @@ class DoubleLinkedList<K, V> {
         return head.next;
     }
 
-
 }
 ```
 
-#### LRU算法实现类
+### LRU算法实现类
 
 以 HashMap 来保存结点数据，用手写的双向链表来保存元素的访问顺序。
 
-```JAVA
+```java
 public class LruCacheDemo {
 
     private int cacheSize;
@@ -298,7 +294,6 @@ public class LruCacheDemo {
         System.out.println(lruCacheDemo.sortKeyList());
     }
 
-
 }
 
 //output
@@ -308,15 +303,11 @@ public class LruCacheDemo {
 [4, 3, 5]
 ```
 
-
-
 ### LRU算法的缺陷
 
 在 LRU 算法中，当热点数据比较多的时候，淘汰时能够把冷数据给淘汰点。但是当某些冷数据被突然访问的时候，根据 LRU 的策略，很可能把热点数据淘汰掉，这种情况下，存在缓存污染的问题。
 
-![image-20210803174619336](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/20210803174619.png)
-
-
+![](https://s2.loli.net/2025/06/18/X1TYMUmPNO9wVxp.png)
 
 ## LFU算法
 
@@ -333,24 +324,16 @@ LFU 算法基于**如果一个数据在最近一段时间内使用次数很少�
 - 若元素访问次数相同，则根据元素的访问时间进行排序。
 - 当超过内存限制，需要淘汰数据时，将已排序队列的最后元素删除。
 
-![临时文件](https://cdn.jsdelivr.net/gh/AlbertYang0801/pic-bed@main/img/%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6.png)
-
-
+![](https://s2.loli.net/2025/06/18/tjhuDTWxKp79NMe.png)
 
 ### LFU和 LRU 比较
 
 1. LFU 能够避免 LRU 的缺陷，即某些冷数据突然被访问导致热点数据被淘汰的问题，又称**缓存污染**。但是 LFU 同样也具有问题。
-
 2. LFU 需要记录数据的历史访问记录，若 LRU 中的热点数据由于访问模式的修改变为冷数据，意味着之前的热点数据在接下来很长时间不会被访问，但是由于之前的访问计数器的缘故，转换后的冷数据在很长时间都不会被删除。即 LFU 中的历史数据会占用缓存，同样存在**缓存污染**问题。
-
 3. LFU 算法需要记录所有数据的访问记录，消耗内存。
-
 4. LFU 算法元素每次修改后，都需要对队列重排序，性能消耗较高。
-
-
 
 ## 参考链接
 
 - [LRU . LFU 和 LRU-K 的解释与区别](https://blog.csdn.net/zhanglong_4444/article/details/88344953)
 - [阳哥大厂面试题第三季-第 5 章 Redis](https://blog.csdn.net/oneby1314/category_10692968.html)
-

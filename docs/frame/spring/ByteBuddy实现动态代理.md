@@ -4,7 +4,6 @@
 
 ![](https://s2.loli.net/2025/05/30/2BCRyQ5SGbaevEg.png)
 
-image.png
 
 > CGLIB已经不维护了，建议使用ByteBuddy。
 > 

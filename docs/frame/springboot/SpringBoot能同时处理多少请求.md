@@ -42,7 +42,6 @@ server.tomcat.accept-count=100
 
 ![](https://s2.loli.net/2025/05/30/EcT4hm5ikZnJdSF.png)
 
-image.png
 
 ![](https://s2.loli.net/2025/05/30/o9s7ZvV23kX8IJz.png)
 
