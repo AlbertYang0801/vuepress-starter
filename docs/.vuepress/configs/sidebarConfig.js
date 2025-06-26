@@ -25,10 +25,10 @@ const design = require('./sidebar/design');
 //工具向
 const util = require('./sidebar/util');
 
-//mysql
 const mysql = require('./sidebar/mysql');
-//redis
 const redis = require('./sidebar/redis');
+const clickhouse = require('./sidebar/clickhouse');
+
 
 //elasticsearch
 const elasticsearch = require('./sidebar/elasticsearch');
@@ -62,6 +62,9 @@ const sidebarConfig = {
 
     "/database/mysql": mysql,
     "/database/redis": redis,
+    "/database/clickhouse": clickhouse,
+
+
     "/middleware/es": elasticsearch,
     "/middleware/docker": docker,
     "/middleware/k8s": k8s,

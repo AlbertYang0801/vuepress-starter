@@ -22,13 +22,19 @@ module.exports = [
     {
         "text": "数据库", items: [
             {text: 'MySQL', link: '/database/mysql/'},
-            {text: "Redis", link: '/database/redis/'}
+            {text: "Redis", link: '/database/redis/'},
+            {text: "ClickHouse", link: '/database/clickhouse/'}
         ]
     },
     {
-        text: "进阶",
+        text: "中间件",
         items: [
-            {text: 'Elasticsearch', link: '/middleware/es/'},
+            {text: 'Elasticsearch', link: '/middleware/es/'}
+        ]
+    },
+    {
+        text: "云原生",
+        items: [
             {text: 'Docker', link: '/middleware/docker/'},
             {text: 'Kubernetes', link: '/middleware/k8s/'}
         ]
