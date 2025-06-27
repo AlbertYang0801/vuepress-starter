@@ -2,7 +2,7 @@
 module.exports = [
     {
         "title": "Elasticsearch基础",
-        "collapsable": true,
+        "collapsable": false,
         "children": [
             "/middleware/es/Elasticsearch基础概念.md",
             "/middleware/es/Elasticsearch检索.md",

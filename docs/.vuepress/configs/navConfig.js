@@ -29,7 +29,8 @@ module.exports = [
     {
         text: "中间件",
         items: [
-            {text: 'Elasticsearch', link: '/middleware/es/'}
+            {text: 'Elasticsearch', link: '/middleware/es/'},
+            {text: 'Kafka', link: '/middleware/kafka/'}
         ]
     },
     {

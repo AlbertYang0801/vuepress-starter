@@ -18,6 +18,11 @@ const mybatis = require('./sidebar/mybatis');
 const springcloud = require('./sidebar/springcloud');
 const netty = require('./sidebar/netty');
 
+//------------------------------------中间件---------------------------------
+
+const elasticsearch = require('./sidebar/elasticsearch');
+const kafka = require('./sidebar/kafka');
+
 
 //------------------------------------设计模式---------------------------------
 //设计模式
@@ -30,8 +35,6 @@ const redis = require('./sidebar/redis');
 const clickhouse = require('./sidebar/clickhouse');
 
 
-//elasticsearch
-const elasticsearch = require('./sidebar/elasticsearch');
 //docker
 const docker = require('./sidebar/docker');
 
@@ -56,6 +59,10 @@ const sidebarConfig = {
     "/frame/netty/": netty,
 
 
+    "/middleware/es": elasticsearch,
+    "/middleware/kafka": kafka,
+
+
     "/design/": design,
     "/util/": util,
 
@@ -65,7 +72,6 @@ const sidebarConfig = {
     "/database/clickhouse": clickhouse,
 
 
-    "/middleware/es": elasticsearch,
     "/middleware/docker": docker,
     "/middleware/k8s": k8s,
     "/project": project,
