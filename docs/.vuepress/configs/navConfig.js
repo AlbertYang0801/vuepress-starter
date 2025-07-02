@@ -30,7 +30,8 @@ module.exports = [
         text: "中间件",
         items: [
             {text: 'Elasticsearch', link: '/middleware/es/'},
-            {text: 'Kafka', link: '/middleware/kafka/'}
+            {text: 'Kafka', link: '/middleware/kafka/'},
+            {text: 'RocketMQ', link: '/middleware/rocketmq/'}
         ]
     },
     {

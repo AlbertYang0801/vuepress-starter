@@ -22,6 +22,7 @@ const netty = require('./sidebar/netty');
 
 const elasticsearch = require('./sidebar/elasticsearch');
 const kafka = require('./sidebar/kafka');
+const rocketmq = require('./sidebar/rocketmq');
 
 
 //------------------------------------设计模式---------------------------------
@@ -61,6 +62,7 @@ const sidebarConfig = {
 
     "/middleware/es": elasticsearch,
     "/middleware/kafka": kafka,
+    "/middleware/rocketmq": rocketmq,
 
 
     "/design/": design,
